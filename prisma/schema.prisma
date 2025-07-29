@@ -1,0 +1,217 @@
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Attendee {
+  id                                       String        @id
+  eventId                                  String
+  eventName                                String?
+  image                                    String?
+  name                                     String
+  email                                    String?
+  phone                                    String?
+  link                                     String?
+  token                                    String?
+  thankyouMail                             Boolean?      @default(false)
+  createdAt                                DateTime      @default(now())
+  deletedAt                                DateTime?
+  updatedAt                                DateTime
+  ticketId                                 String?
+  userId                                   String?
+  checkedOut                               DateTime?
+  checkedIn                                DateTime?
+  displayPicture                           String?
+  Event                                    Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  Ticket                                   Ticket?       @relation(fields: [ticketId], references: [id])
+  ChatMessage                              ChatMessage[]
+  ChatRoom_ChatRoom_participantAToAttendee ChatRoom[]    @relation("ChatRoom_participantAToAttendee")
+  ChatRoom_ChatRoom_participantBToAttendee ChatRoom[]    @relation("ChatRoom_participantBToAttendee")
+  ChatRoom_AttendeeToChatRoom              ChatRoom[]    @relation("AttendeeToChatRoom")
+  Invitation                               Invitation[]
+
+  @@unique([eventId, email])
+  @@unique([eventId, phone])
+  @@unique([eventId, userId])
+  @@unique([id, eventId])
+  @@index([userId])
+}
+
+model ChatMessage {
+  id            String    @id
+  chat_room_id  String
+  attendee_id   String?
+  message       String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime
+  deletedAt     DateTime?
+  isFromCreator Boolean   @default(false)
+  creator_id    String?
+  Attendee      Attendee? @relation(fields: [attendee_id], references: [id])
+  ChatRoom      ChatRoom  @relation(fields: [chat_room_id], references: [id], onDelete: Cascade)
+}
+
+model ChatRoom {
+  id                                       String        @id
+  event_id                                 String
+  event_name                               String
+  createdAt                                DateTime      @default(now())
+  updatedAt                                DateTime
+  deletedAt                                DateTime?
+  isPrivate                                Boolean       @default(false)
+  participantA                             String?
+  participantB                             String?
+  creatorId                                String?
+  ChatMessage                              ChatMessage[]
+  Event                                    Event         @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  Attendee_ChatRoom_participantAToAttendee Attendee?     @relation("ChatRoom_participantAToAttendee", fields: [participantA], references: [id])
+  Attendee_ChatRoom_participantBToAttendee Attendee?     @relation("ChatRoom_participantBToAttendee", fields: [participantB], references: [id])
+  Attendee_AttendeeToChatRoom              Attendee[]    @relation("AttendeeToChatRoom")
+}
+
+model Event {
+  id             String       @id
+  title          String
+  description    String?
+  location       String
+  town           String
+  image          String?
+  cleanName      String?      @unique
+  startDate      DateTime
+  endDate        DateTime?
+  userId         String?
+  createdAt      DateTime     @default(now())
+  deletedAt      DateTime?
+  updatedAt      DateTime
+  audienceSize   Int?         @default(0)
+  categories     String[]     @default([])
+  hasFreeTickets Boolean      @default(false)
+  platformLink   String?
+  platformName   String?
+  galleryLink    String?
+  qrCode         String?      @unique
+  qrCodeUrl      String?
+  capacity       Int?         @default(0)
+  host           String?
+  time           String?
+  latitude       Float?
+  longitude      Float?
+  Attendee       Attendee[]
+  ChatRoom       ChatRoom[]
+  Gallery        Gallery[]
+  Invitation     Invitation[]
+  Ticket         Ticket[]
+}
+
+model EventUrl {
+  id                String    @id
+  access_code       String
+  authorization_url String
+  reference         String
+  metadata          String
+  createdAt         DateTime  @default(now())
+  deletedAt         DateTime?
+  updatedAt         DateTime
+}
+
+model Gallery {
+  id        String    @id
+  eventId   String?
+  name      String
+  image     String?
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime
+  Event     Event?    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model Invitation {
+  id              String     @id
+  invitation_name String
+  invitation_desc String
+  event_id        String
+  event_name      String
+  token           String     @unique
+  accepted        Boolean    @default(false)
+  createdAt       DateTime   @default(now())
+  deletedAt       DateTime?
+  updatedAt       DateTime
+  invite_link     String?
+  isReusable      Boolean    @default(false)
+  isFree          Boolean    @default(false)
+  ticketId        String?
+  isReserved      Boolean    @default(false)
+  Event           Event      @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  Ticket          Ticket?    @relation(fields: [ticketId], references: [id])
+  Payment         Payment[]
+  Attendee        Attendee[]
+
+  @@index([ticketId])
+}
+
+model Payment {
+  id             String        @id
+  userId         String
+  reference      String        @unique
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime
+  deletedAt      DateTime?
+  email          String?
+  name           String
+  phone          String?
+  ticketId       String?
+  priceData      Json?
+  status         PaymentStatus @default(PENDING)
+  amount         Float
+  invitationId   String?
+  displayPicture String?
+  Invitation     Invitation?   @relation(fields: [invitationId], references: [id])
+  Ticket         Ticket?       @relation(fields: [ticketId], references: [id])
+}
+
+model Ticket {
+  id           String       @id
+  eventId      String
+  quantity     Int
+  ticketStatus TicketStatus @default(PENDING)
+  amount       Float
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime
+  available    Int?
+  currency     String?      @default("NGN")
+  title        String
+  isFree       Boolean      @default(false)
+  Attendee     Attendee[]
+  Invitation   Invitation[]
+  Payment      Payment[]
+  Event        Event        @relation(fields: [eventId], references: [id])
+
+  @@index([eventId])
+}
+
+model Token {
+  id        String    @id
+  token     String
+  used      Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum TicketStatus {
+  PENDING
+  PAID
+  USED
+  CANCELLED
+}
