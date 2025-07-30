@@ -6,3 +6,6 @@ export interface IAuthResponse {
     accessToken: string;
   };
 }
+
+export type CountdownCallback = (minutes: number, seconds: number) => void;
+export type CountdownEndCallback = () => void;

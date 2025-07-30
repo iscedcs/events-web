@@ -5,22 +5,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiRename } from "react-icons/bi";
 import { MdEmail } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import z, { email } from "zod";
 import { signUpForIndividualSchema } from "@/lib/schema/signUpIndividual";
 
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { startFiveMinuteCountdown } from "@/lib/utils";
+import { timeLog } from "node:console";
 
 export default function SignUp() {
   const [step, setStep] = useState(15);
@@ -29,6 +33,8 @@ export default function SignUp() {
   const [userType, setUserType] = useState("USER");
   const [stepNumber, setStepNumber] = useState(1);
   const [isOtpScreen, setIsOtpScreen] = useState(false);
+  const [loading, setIsLoading] = useState(false);
+  const [time, setTime] = useState("05:00");
 
   type signUpValues = z.infer<typeof signUpForIndividualSchema>;
 
@@ -46,6 +52,21 @@ export default function SignUp() {
     },
   });
 
+  useEffect(() => {
+    const stop = startFiveMinuteCountdown(
+      (min, sec) => {
+        setTime(
+          `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
+        );
+      },
+      () => {
+        console.log("Countdown finished!");
+      }
+    );
+
+    return stop; // cleanup on unmount
+  }, []);
+
   const handleBusiness = () => {
     setBusiness(true);
     setIndividual(false);
@@ -58,19 +79,50 @@ export default function SignUp() {
     setUserType("USER");
   };
 
-  const handleNextStep = () => {
-    setStep(step + 15);
-    setStepNumber(stepNumber + 1);
-    if (step === 15 * 3) {
-      setIsOtpScreen(true);
-      setStepNumber(3);
-      setStep(15 * 3);
+  const email = form.getValues("email");
+
+  const handleNextStep = async () => {
+    if (step < 45 || step > 45) {
+      setStep(step + 15);
+      setStepNumber(stepNumber + 1);
+    }
+
+    if (step === 15 * 3 && !isOtpScreen) {
+      // const email = form.getValues("email");
+      try {
+        setIsLoading(true);
+        const res = await fetch("/api/auth/request-verfication", {
+          body: JSON.stringify({ email }),
+          method: "POST",
+        });
+        const data = res.json();
+        if (res.ok) {
+          toast.success("Verification Code Sent", {
+            description: "Check your email for the code.",
+          });
+          setIsOtpScreen(true);
+          setIsLoading(false);
+          setStepNumber(3);
+          setStep(15 * 3);
+          return data;
+        }
+        toast.error("Something went wrong", {
+          description: "There was a problem getting the verification code.",
+        });
+        setIsLoading(false);
+        setStepNumber(3);
+        setStep(15 * 3);
+        return null;
+      } catch (e: any) {
+        setIsLoading(false);
+        console.log("", e);
+      }
     }
   };
 
   const handlePreviousStep = () => {
     // setStep(step - 15);
-    // setStepNumber(stepNumber - 1);
+    setStepNumber(stepNumber - 1);
     setIsOtpScreen(false);
   };
 
@@ -239,12 +291,19 @@ export default function SignUp() {
                       Enter OTP code*
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        // placeholder="Enter OTP code"
-                        className=" mt-[15px] py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
-                      />
+                      <div className=" relative">
+                        <Input
+                          {...field}
+                          // placeholder="Enter OTP code"
+                          className=" mt-[15px] py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
+                        />
+                        <p className=" right-0 top-1/2 absolute">{time}</p>
+                      </div>
                     </FormControl>
+                    <FormDescription className=" text-[12px]">
+                      You only have to enter an OTP code we sent to your email
+                      address - {email}
+                    </FormDescription>
                   </FormItem>
                 )}
               />
@@ -290,6 +349,8 @@ export default function SignUp() {
             <p className=" text-center">{userType}</p>
             <Button
               onClick={handleNextStep}
+              type="button"
+              disabled={loading}
               className="  w-full rounded-[12px] font-semibold py-[24px] "
             >
               Continue
