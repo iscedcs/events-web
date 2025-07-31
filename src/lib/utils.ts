@@ -26,5 +26,5 @@ export function startFiveMinuteCountdown(
     totalSeconds--;
   }, 1000);
 
-  return () => clearInterval(interval); // returns a cleanup function
+  return () => clearInterval(interval);
 }

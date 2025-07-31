@@ -7,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import React, { useEffect, useState } from "react";
 import { BiRename } from "react-icons/bi";
-import { MdEmail } from "react-icons/md";
+import { MdEmail, MdFormatListNumbered } from "react-icons/md";
 import { GoArrowLeft } from "react-icons/go";
 import { useForm } from "react-hook-form";
-import z, { email } from "zod";
+import z from "zod";
 import { signUpForIndividualSchema } from "@/lib/schema/signUpIndividual";
 
 import {
@@ -24,7 +24,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { startFiveMinuteCountdown } from "@/lib/utils";
-import { timeLog } from "node:console";
 
 export default function SignUp() {
   const [step, setStep] = useState(15);
@@ -34,7 +33,8 @@ export default function SignUp() {
   const [stepNumber, setStepNumber] = useState(1);
   const [isOtpScreen, setIsOtpScreen] = useState(false);
   const [loading, setIsLoading] = useState(false);
-  const [time, setTime] = useState("05:00");
+  const [time, setTime] = useState("00:00");
+  const [resendOTP, setResendOTP] = useState(false);
 
   type signUpValues = z.infer<typeof signUpForIndividualSchema>;
 
@@ -52,20 +52,9 @@ export default function SignUp() {
     },
   });
 
-  useEffect(() => {
-    const stop = startFiveMinuteCountdown(
-      (min, sec) => {
-        setTime(
-          `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
-        );
-      },
-      () => {
-        console.log("Countdown finished!");
-      }
-    );
-
-    return stop; // cleanup on unmount
-  }, []);
+  const email = form.getValues("email");
+  const otpWatch = form.watch("otp");
+  const code = form.getValues("otp");
 
   const handleBusiness = () => {
     setBusiness(true);
@@ -78,8 +67,6 @@ export default function SignUp() {
     setIndividual(true);
     setUserType("USER");
   };
-
-  const email = form.getValues("email");
 
   const handleNextStep = async () => {
     if (step < 45 || step > 45) {
@@ -115,7 +102,7 @@ export default function SignUp() {
         return null;
       } catch (e: any) {
         setIsLoading(false);
-        console.log("", e);
+        console.log("Error sending OTP", e);
       }
     }
   };
@@ -126,7 +113,102 @@ export default function SignUp() {
     setIsOtpScreen(false);
   };
 
-  const handleResendOTP = () => {};
+  useEffect(() => {
+    if (!isOtpScreen) {
+      setTime("0:00");
+      // return;
+    }
+
+    const stop = startFiveMinuteCountdown(
+      (min, sec) => {
+        setTime(
+          `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
+        );
+      },
+      () => {
+        toast.error("The verifiction code has expired", {
+          description:
+            "Enter your email address again for a new verfication code.",
+        });
+        setIsOtpScreen(false);
+        console.log("Countdown finished!");
+      }
+    );
+
+    return stop;
+  }, [isOtpScreen, resendOTP]);
+
+  const handleResendOTP = async () => {
+    try {
+      setResendOTP(true);
+      setIsLoading(true);
+      const res = await fetch("/api/auth/request-verfication", {
+        body: JSON.stringify({ email }),
+        method: "POST",
+      });
+      const data = res.json();
+      if (res.ok) {
+        toast.success("Verification Code Resent", {
+          description: "Check your email for the code.",
+        });
+        setIsLoading(false);
+        setResendOTP(false);
+        return data;
+      }
+      toast.error("Something went wrong", {
+        description: "There was a problem getting the verification code.",
+      });
+      setIsLoading(false);
+      setIsLoading(false);
+
+      return null;
+    } catch (e: any) {
+      setIsLoading(false);
+      setIsLoading(false);
+
+      console.log("Error resending OTP Code", e);
+    }
+  };
+
+  useEffect(() => {
+    const verifyOTP = async () => {
+      if (otpWatch.length === 6) {
+        const isValid = await form.trigger("otp");
+        if (!isValid) return;
+        try {
+          setIsLoading(true);
+          const res = await fetch("/api/auth/verify-code", {
+            body: JSON.stringify({ email, code }),
+            method: "POST",
+          });
+          console.log({ email, code });
+          const data = await res.json();
+          if (res.ok) {
+            setIsLoading(false);
+            setIsOtpScreen(false);
+            toast.success("Email verified successfully", {
+              description: "Your email has been verified successfully",
+            });
+            setStep(step + 15);
+            setStepNumber(stepNumber + 1);
+            return data;
+          }
+          setIsLoading(false);
+          setStepNumber(3);
+          setStep(15 * 3);
+          toast.error("Something went wrong", {
+            description:
+              "There was a problem verifying your email address please try again",
+          });
+        } catch (e) {
+          setIsLoading(false);
+          console.log("Problem verifying email address", e);
+        }
+      }
+    };
+    verifyOTP();
+  }, [otpWatch]);
+
   const handleSubmit = (data: signUpValues) => {
     console.log(data);
   };
@@ -294,6 +376,8 @@ export default function SignUp() {
                       <div className=" relative">
                         <Input
                           {...field}
+                          maxLength={6}
+                          // onChange={handleVerifyOTP}
                           // placeholder="Enter OTP code"
                           className=" mt-[15px] py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
                         />
@@ -347,14 +431,25 @@ export default function SignUp() {
           </div>
           <div className="  absolute bottom-0 mb-[30px] w-full">
             <p className=" text-center">{userType}</p>
-            <Button
-              onClick={handleNextStep}
-              type="button"
-              disabled={loading}
-              className="  w-full rounded-[12px] font-semibold py-[24px] "
-            >
-              Continue
-            </Button>
+            {isOtpScreen ? (
+              <Button
+                onClick={handleResendOTP}
+                type="button"
+                disabled={loading}
+                className="  w-full rounded-[12px] font-semibold py-[24px] "
+              >
+                Resend OTP
+              </Button>
+            ) : (
+              <Button
+                onClick={handleNextStep}
+                type="button"
+                disabled={loading}
+                className="  w-full rounded-[12px] font-semibold py-[24px] "
+              >
+                Continue
+              </Button>
+            )}
           </div>
         </div>
       </form>
