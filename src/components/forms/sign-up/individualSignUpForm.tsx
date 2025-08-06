@@ -1,29 +1,46 @@
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { signUpForIndividualSchema } from "@/lib/schema/signUpIndividual";
-import { startFiveMinuteCountdown } from "@/lib/utils";
+import { PASSWORDCHECK } from "@/lib/const";
+import { MOI, signUpForIndividualSchema } from "@/lib/schema/signUpIndividual";
+import { cn, startFiveMinuteCountdown } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns/format";
+import { CalendarIcon } from "lucide-react";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiRename } from "react-icons/bi";
-import { FaPhoneAlt } from "react-icons/fa";
+import { FaPhoneAlt, FaRegEye } from "react-icons/fa";
 import { GoArrowLeft } from "react-icons/go";
-import { MdEmail } from "react-icons/md";
+import { HiMiniIdentification } from "react-icons/hi2";
+import { IoMdCheckmark, IoMdClose } from "react-icons/io";
+import { LuEyeClosed } from "react-icons/lu";
+import { MdEmail, MdLocationOn, MdOutlinePassword } from "react-icons/md";
+import { PiTrash } from "react-icons/pi";
+import { TbNumber123 } from "react-icons/tb";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -41,9 +58,16 @@ export default function IndividualSignUpForm({
   //   const [step, setStep] = useState(15);
   const [userType, setUserType] = useState("USER");
   const [isOtpScreen, setIsOtpScreen] = useState(false);
+  const [isConfirmPasswordScreen, setIsConfirmPasswordScreen] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const [time, setTime] = useState("00:00");
   const [resendOTP, setResendOTP] = useState(false);
+  const [password, setPassword] = useState(true);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isBuildingProfile, setIsBuidlingProfile] = useState(false);
+
+  //   const [errorCheck, setErrorCheck] = useState(false);
+  console.log({ step });
 
   type signUpValues = z.infer<typeof signUpForIndividualSchema>;
 
@@ -51,23 +75,40 @@ export default function IndividualSignUpForm({
     resolver: zodResolver(signUpForIndividualSchema),
     defaultValues: {
       otp: "",
+      dob: new Date(),
       email: "",
       phoneNumber: "",
       firstName: "",
+      moi: "NIN",
+      address: "",
       lastName: "",
+      idNumber: "",
+      profilePhoto: "",
       passwordObj: {
         confirmPassword: "",
         password: "",
       },
     },
+    mode: "all",
   });
 
   const email = form.getValues("email");
   const otpWatch = form.watch("otp");
   const code = form.getValues("otp");
+  const passwordValues = form.watch("passwordObj.password");
+  const confirmPasswordValues = form.watch("passwordObj.confirmPassword");
+
+  const hasEightCharacters = form.getValues("passwordObj.password").length >= 8;
+  const hasUppercase = /[A-Z]/.test(passwordValues);
+  const hasLowercase = /[a-z]/.test(passwordValues);
+  const hasNumber = /[0-9]/.test(passwordValues);
+
+  //   console.log({ hasEightCharacters });
+  // console.log({ loading });
 
   const handleNextStep = async () => {
     if (step < 45 || step > 45) {
+      // setIsLoading(false);
       setStep(step + 15);
       setStepNumber(stepNumber + 1);
     }
@@ -80,7 +121,8 @@ export default function IndividualSignUpForm({
           body: JSON.stringify({ email }),
           method: "POST",
         });
-        const data = res.json();
+        const data = await res.json();
+        console.log({ data });
         if (res.ok) {
           toast.success("Verification Code Sent", {
             description: "Check your email for the code.",
@@ -91,9 +133,16 @@ export default function IndividualSignUpForm({
           setStep(15 * 3);
           return data;
         }
-        toast.error("Something went wrong", {
-          description: "There was a problem getting the verification code.",
-        });
+        if (res.status === 500) {
+          toast.error("Something went wrong", {
+            description: "This email is already being used.",
+          });
+        } else {
+          toast.error("Something went wrong", {
+            description: "There was a problem getting the verification code.",
+          });
+        }
+
         setIsLoading(false);
         setStepNumber(3);
         setStep(15 * 3);
@@ -105,6 +154,21 @@ export default function IndividualSignUpForm({
     }
   };
 
+  const handleShowConfirmPasswordScreen = () => {
+    setIsConfirmPasswordScreen(true);
+    if (confirmPasswordValues) {
+      setIsConfirmPasswordScreen(false);
+      setStep(step + 15);
+      setStepNumber(stepNumber + 1);
+    }
+
+    // if (isConfirmPasswordScreen === true) {
+    //   setIsConfirmPasswordScreen(false);
+    //   setStep(step + 15);
+    //   setStepNumber(stepNumber + 1);
+    // }
+  };
+
   const handlePreviousStep = () => {
     // setStep(step - 15);
     setStepNumber(stepNumber - 1);
@@ -114,7 +178,7 @@ export default function IndividualSignUpForm({
   useEffect(() => {
     if (!isOtpScreen) {
       setTime("0:00");
-      // return;
+      return;
     }
 
     const stop = startFiveMinuteCountdown(
@@ -135,6 +199,45 @@ export default function IndividualSignUpForm({
 
     return stop;
   }, [isOtpScreen, resendOTP]);
+
+  useEffect(() => {
+    const checkPassword = () => {
+      if (hasLowercase) {
+        PASSWORDCHECK[0].state = true;
+      } else {
+        PASSWORDCHECK[0].state = false;
+      }
+
+      if (hasEightCharacters) {
+        PASSWORDCHECK[1].state = true;
+      } else {
+        PASSWORDCHECK[1].state = false;
+      }
+
+      if (hasUppercase) {
+        PASSWORDCHECK[2].state = true;
+      } else {
+        PASSWORDCHECK[2].state = false;
+      }
+
+      if (hasNumber) {
+        PASSWORDCHECK[3].state = true;
+      } else {
+        PASSWORDCHECK[3].state = false;
+      }
+
+      if (
+        (!hasEightCharacters || !hasLowercase || !hasNumber || !hasUppercase) &&
+        isConfirmPasswordScreen === true
+      ) {
+        setIsLoading(true);
+      } else {
+        setIsLoading(false);
+      }
+    };
+    checkPassword();
+  }, [hasEightCharacters, hasLowercase, hasUppercase, hasNumber]);
+  //   console.log(PASSWORDCHECK[1].state);
 
   const handleResendOTP = async () => {
     try {
@@ -191,13 +294,20 @@ export default function IndividualSignUpForm({
             setStepNumber(stepNumber + 1);
             return data;
           }
+          setTime("0");
           setIsLoading(false);
           setStepNumber(3);
           setStep(15 * 3);
-          toast.error("Something went wrong", {
-            description:
-              "There was a problem verifying your email address please try again",
-          });
+          if (res.status === 400) {
+            toast.error("Something went wrong", {
+              description: "OTP Code is not valid, please try again",
+            });
+          } else {
+            toast.error("Something went wrong", {
+              description:
+                "There was a problem verifying your email address please try again",
+            });
+          }
         } catch (e) {
           setIsLoading(false);
           console.log("Problem verifying email address", e);
@@ -206,6 +316,41 @@ export default function IndividualSignUpForm({
     };
     verifyOTP();
   }, [otpWatch]);
+
+  const handleDisplayPassword = () => {
+    setPassword(!password);
+  };
+
+  const handleImageUpload = async (file: File) => {
+    setIsUploadingImage(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        form.setValue("profilePhoto", result.url);
+        toast.success("Profile image uploaded successfully");
+      } else {
+        toast.error(result.error || "Failed to upload profile image");
+      }
+    } catch (error) {
+      toast.error("An error occurred while uploading the profile image");
+      console.error(error);
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const handleDeleteImage = () => {
+    form.setValue("profilePhoto", "");
+  };
 
   const handleSubmit = (data: signUpValues) => {
     console.log(data);
@@ -227,9 +372,9 @@ export default function IndividualSignUpForm({
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className=" mt-[10px] font-extrabold text-[24px]">
+                <Label className=" mt-[10px] font-extrabold text-[24px]">
                   Enter your first name*
-                </FormLabel>
+                </Label>
                 <FormControl>
                   <Input
                     {...field}
@@ -237,6 +382,7 @@ export default function IndividualSignUpForm({
                     className=" mt-[15px] py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
                   />
                 </FormControl>
+                <FormMessage className=" text-accent" />
               </FormItem>
             )}
           />
@@ -245,9 +391,9 @@ export default function IndividualSignUpForm({
             name="lastName"
             render={({ field }) => (
               <FormItem className=" mt-[20px]">
-                <FormLabel className=" mt-[10px] font-extrabold text-[24px]">
+                <Label className=" mt-[10px] font-extrabold text-[24px]">
                   Enter your last name*
-                </FormLabel>
+                </Label>
                 <FormControl>
                   <Input
                     {...field}
@@ -255,6 +401,7 @@ export default function IndividualSignUpForm({
                     className=" mt-[15px] py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
                   />
                 </FormControl>
+                <FormMessage className=" text-accent" />
               </FormItem>
             )}
           />
@@ -272,9 +419,9 @@ export default function IndividualSignUpForm({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className=" mt-[10px] font-extrabold text-[24px]">
+                <Label className=" mt-[10px] font-extrabold text-[24px]">
                   What’s your email?
-                </FormLabel>
+                </Label>
                 <FormControl>
                   <Input
                     {...field}
@@ -282,6 +429,7 @@ export default function IndividualSignUpForm({
                     className=" mt-[15px] py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
                   />
                 </FormControl>
+                <FormMessage className=" text-accent" />
               </FormItem>
             )}
           />
@@ -302,9 +450,9 @@ export default function IndividualSignUpForm({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel className=" mt-[10px] font-extrabold text-[24px]">
+                <Label className=" mt-[10px] font-extrabold text-[24px]">
                   Enter OTP code*
-                </FormLabel>
+                </Label>
                 <FormControl>
                   <div className=" relative">
                     <Input
@@ -314,7 +462,7 @@ export default function IndividualSignUpForm({
                       // placeholder="Enter OTP code"
                       className=" mt-[15px] py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
                     />
-                    <p className=" right-0 top-1/2 text-[12px] absolute">
+                    <p className=" right-0 top-1/2 text-[12px] -translate-y-1/2 absolute">
                       {time}
                     </p>
                   </div>
@@ -340,9 +488,9 @@ export default function IndividualSignUpForm({
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className=" w-[70%] mt-[10px] font-extrabold text-[24px]">
+                <Label className=" w-[70%] mt-[10px] font-extrabold text-[24px]">
                   What’s your phone number?
-                </FormLabel>
+                </Label>
                 <FormControl>
                   <div className=" mt-[15px] items-center flex gap-5">
                     <Select>
@@ -361,18 +509,111 @@ export default function IndividualSignUpForm({
                     />
                   </div>
                 </FormControl>
+                <FormMessage className=" text-accent" />
               </FormItem>
             )}
           />
         </div>
         <div
           className={` ${
-            step === 15 * 5
+            step === 15 * 5 && isConfirmPasswordScreen === false
               ? " inline translate-x-0 "
               : " hidden -translate-x-full  "
           } hidden transition-all w-full mt-[20px]`}
         >
-          <p>Page 5</p>
+          <MdOutlinePassword className=" w-[32px] h-[32px]" />
+          <FormField
+            control={form.control}
+            name="passwordObj.password"
+            render={({ field }) => (
+              <FormItem>
+                <Label className=" mt-[10px] font-extrabold text-[24px]">
+                  Setup your password
+                </Label>
+                <FormControl>
+                  <div className=" relative">
+                    <Input
+                      {...field}
+                      // placeholder="What’s your email?"
+                      type={`${password ? "password" : "text"}`}
+                      className=" mt-[10px] pr-[50px]  py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
+                    />
+                    {!password ? (
+                      <FaRegEye
+                        onClick={handleDisplayPassword}
+                        className=" absolute right-0 -translate-y-1 top-1/2  w-[24px] h-[24px]"
+                      />
+                    ) : (
+                      <LuEyeClosed
+                        onClick={handleDisplayPassword}
+                        className=" absolute right-0 -translate-y-1 top-1/2  w-[24px] h-[24px]"
+                      />
+                    )}
+                  </div>
+                </FormControl>
+                <div className=" text-[12px] mt-[10px]">
+                  {PASSWORDCHECK.map((check) => (
+                    <div
+                      key={check.key}
+                      className={`flex gap-2 items-center ${
+                        check.state === true ? " text-white " : " text-accent"
+                      } `}
+                    >
+                      {check.state === true ? <IoMdCheckmark /> : <IoMdClose />}
+                      <div>{check.message}</div>
+                    </div>
+                  ))}
+                </div>
+              </FormItem>
+            )}
+          />
+        </div>
+        <div
+          className={`${
+            isConfirmPasswordScreen === true
+              ? " inline translate-x-0 "
+              : " hidden -translate-x-full  "
+          } hidden transition-all w-full mt-[20px]`}
+        >
+          <GoArrowLeft
+            onClick={() => {
+              setIsConfirmPasswordScreen(false);
+            }}
+            className=" w-[32px] h-[32px]"
+          />
+          <FormField
+            name="passwordObj.confirmPassword"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <Label className=" mt-[10px] font-extrabold text-[24px]">
+                  Confirm your password
+                </Label>
+                <FormControl>
+                  <div className=" relative">
+                    <Input
+                      {...field}
+                      // placeholder="What’s your email?"
+                      type={`${password ? "password" : "text"}`}
+                      className=" mt-[10px] pr-[50px]  py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
+                    />
+                    {!password ? (
+                      <FaRegEye
+                        onClick={handleDisplayPassword}
+                        className=" absolute right-0 -translate-y-1 top-1/2  w-[24px] h-[24px]"
+                      />
+                    ) : (
+                      <LuEyeClosed
+                        onClick={handleDisplayPassword}
+                        className=" absolute right-0 -translate-y-1 top-1/2  w-[24px] h-[24px]"
+                      />
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage className=" text-accent" />
+              </FormItem>
+            )}
+          />
         </div>
         <div
           className={` ${
@@ -381,7 +622,156 @@ export default function IndividualSignUpForm({
               : " hidden  -translate-x-full "
           } hidden transition-all w-full mt-[20px]`}
         >
-          <p>Page 6</p>
+          <div className="">
+            <p className=" text-[24px] font-extrabold">
+              Customize your Events Account
+            </p>
+            <ScrollArea className=" h-[400px]">
+              <div className=" mt-[10px]">
+                <FormField
+                  name="address"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className=" relative">
+                          <MdLocationOn className=" absolute top-1/2 -translate-y-1/2 w-[24px] h-[24px]" />
+                          <Input
+                            {...field}
+                            className="border-r-0 border-t-0 border-l-0 pl-[40px] py-[25px] rounded-none placeholder:text-[18px]"
+                            placeholder="Input your address"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className=" text-accent" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="moi"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative mt-[10px]">
+                          <HiMiniIdentification className="w-[24px] h-[24px] top-1/2 -translate-y-1/2 absolute left-0" />
+                          <Select
+                            onValueChange={field.onChange}
+                            // value={field.value}
+                            // defaultValue={field.value}
+                          >
+                            <SelectTrigger className="text-[18px] py-[25px] pl-[40px] rounded-none border-t-0 border-l-0 border-r-0 w-full">
+                              <SelectValue placeholder="Select a means of identification" />
+                            </SelectTrigger>
+                            <SelectContent className="border-[0.5px] p-[10px] mt-[10px] bg-black text-white rounded-[8px]">
+                              {MOI.map((moi, k) => (
+                                <SelectItem
+                                  className="rounded-none text-[18px]"
+                                  key={k}
+                                  value={moi}
+                                >
+                                  {moi}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-accent" />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="idNumber"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className=" mt-[10px] relative">
+                          <TbNumber123 className=" absolute top-1/2 -translate-y-1/2 w-[24px] h-[24px]" />
+                          <Input
+                            {...field}
+                            className="border-r-0 border-t-0 border-l-0 pl-[40px] py-[25px] rounded-none placeholder:text-[18px]"
+                            placeholder="Provide your identification number"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-accent" />
+                    </FormItem>
+                  )}
+                />
+                <div className=" mt-[20px]">
+                  <p className=" text-[18px]">Add a profile photo</p>
+                  <FormField
+                    name="profilePhoto"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className=" mt-[10px]">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleImageUpload(file);
+                              }}
+                              className="hidden"
+                              id="event-image-upload"
+                              disabled={isUploadingImage}
+                            />
+                            <div className=" h-[150px] border-[2px] border-dashed rounded-[8px] bg-secondary w-[30%]">
+                              <div
+                                onClick={() =>
+                                  document
+                                    .getElementById("event-image-upload")
+                                    ?.click()
+                                }
+                                className=" flex items-center h-full justify-center "
+                              >
+                                {field.value ? (
+                                  <div className=" relative h-full">
+                                    <div className=" w-full absolute h-full flex justify-center items-center bg-black/40 ">
+                                      <PiTrash
+                                        onClick={() => {
+                                          handleDeleteImage();
+                                        }}
+                                        className=" w-[24px] h-[24px]"
+                                      />
+                                    </div>
+                                    <Image
+                                      src={field.value || ""}
+                                      alt="profile image"
+                                      width={100}
+                                      height={100}
+                                      className="object-cover h-full w-full rounded-[8px]"
+                                    />
+                                  </div>
+                                ) : (
+                                  <p className=" text-[20px]">+</p>
+                                )}
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  form.setValue("profilePhoto", "")
+                                }
+                                className="bg-white absolute top-1 right-1 rounded-full shadow-lg p-1"
+                              >
+                                {/* <IoCloseOutline className="text-black w-4 h-4" /> */}
+                              </button>
+                            </div>
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <ScrollBar orientation="vertical" />
+            </ScrollArea>
+          </div>
         </div>
         <div
           className={` ${
@@ -390,10 +780,98 @@ export default function IndividualSignUpForm({
               : " hidden -translate-x-full "
           } hidden transition-all w-full mt-[20px]`}
         >
-          <p>Page 7</p>
+          <div className=" px-[20px] py-[100px]  bg-black w-screen  flex flex-col gap-[19px] fixed left-0 top-0 z-30 h-screen">
+            <div className="">
+              <p className=" text-[32px] font-bold">When’s your birthday?</p>
+              <p className=" w-[70%] text-[18px]">
+                Your birthday won’t be shown publicly.
+              </p>
+              <FormField
+                control={form.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem className="flex w-full flex-col">
+                    <Popover>
+                      <PopoverTrigger className="w-full" asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              " text-[18px] py-[20px] mt-[30px] border-l-0 px-0 border-r-0 border-t-0 w-full rounded-none text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-full p-0 bg-secondary mt-[10px] text-white border-none"
+                        align="center"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          className="w-full bg-black text-white"
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          captionLayout="dropdown"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    {/* <FormDescription>
+                    Your date of birth is used to calculate your age.
+                  </FormDescription> */}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Button className=" w-full rounded-[12px] font-semibold py-[24px]">
+              Finish setup
+            </Button>
+          </div>
         </div>
+        {isBuildingProfile ? (
+          <div className="fixed left-0 top-0 z-30 h-screen">
+            <div className=" relative">
+              <Image
+                src={"/loading-screen.gif"}
+                alt="building"
+                width={"1000"}
+                height={"1000"}
+                className=" h-screen"
+              />
+              <div className=" bg-black/60 flex flex-col items-center justify-center top-0 absolute z-40 w-full h-screen ">
+                <p className=" text-[32px] w-[60%] text-center font-bold">
+                  BUILDING YOUR PROFILE
+                </p>
+                <p className=" text-[18px]">
+                  Sit tight while we work our magic.
+                </p>
+
+                <div className=" absolute  text-center mb-[20px] bottom-0">
+                  <p className=" text-[18px]">Did you know?</p>
+                  <p className=" mx-auto w-[70%] text-[12px]">
+                    You can share your contact information with a tap easy and
+                    fast contactless lifestyle
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className=""></div>
+        )}
         <div className="  absolute bottom-0 mb-[30px] w-full">
-          <p className=" text-center">{userType}</p>
+          {/* <p className=" text-center">{userType}</p> */}
           {isOtpScreen ? (
             <Button
               onClick={handleResendOTP}
@@ -403,6 +881,15 @@ export default function IndividualSignUpForm({
             >
               Resend OTP
             </Button>
+          ) : step === 15 * 5 ? (
+            <Button
+              onClick={handleShowConfirmPasswordScreen}
+              type="button"
+              disabled={loading}
+              className="  w-full rounded-[12px] font-semibold py-[24px] "
+            >
+              Continue
+            </Button>
           ) : (
             <Button
               onClick={handleNextStep}
@@ -410,7 +897,7 @@ export default function IndividualSignUpForm({
               disabled={loading}
               className="  w-full rounded-[12px] font-semibold py-[24px] "
             >
-              Continue
+              {step === 15 * 6 ? "Next" : "Continue"}
             </Button>
           )}
         </div>

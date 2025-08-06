@@ -10,7 +10,7 @@ import { userType } from "@/lib/types/auth";
 import { useState } from "react";
 
 export default function SignUp() {
-  const [step, setStep] = useState(15 * 4);  
+  const [step, setStep] = useState(15 * 6);
   const [business, setBusiness] = useState(false);
   const [individual, setIndividual] = useState(true);
   const [userType, setUserType] = useState<userType>("USER");
@@ -28,7 +28,7 @@ export default function SignUp() {
     setUserType("USER");
   };
 
-  const handleNextStep = async () => {
+  const handleNextStep = () => {
     setStep(step + 15);
     setStepNumber(stepNumber + 1);
   };

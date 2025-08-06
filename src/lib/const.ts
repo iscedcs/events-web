@@ -49,3 +49,26 @@ export const URLS = {
     one: "/attendees/{id}/one",
   },
 };
+
+export const PASSWORDCHECK = [
+  {
+    key: "lowercase",
+    message: "At least one lowercase letter",
+    state: false,
+  },
+  {
+    key: "length",
+    message: "Minimum of 8 characters",
+    state: false,
+  },
+  {
+    key: "uppercase",
+    message: "At least one uppercase letter",
+    state: false,
+  },
+  {
+    key: "number",
+    message: "At least one number",
+    state: false,
+  },
+];

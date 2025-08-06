@@ -14,8 +14,16 @@ export async function POST(req: Request) {
     },
   });
   const data = await res.json();
+  // console.log({ data });
+  if (data.statusCode === 500) {
+    return NextResponse.json(
+      { error: "This email is already being used." },
+      { status: 500 }
+    );
+  }
   if (!res.ok) {
     return NextResponse.json({ error: "Failed to send OTP" }, { status: 400 });
   }
+
   return NextResponse.json(data);
 }

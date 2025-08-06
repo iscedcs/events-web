@@ -13,14 +13,14 @@ export default function AuthLayout({
 }>) {
   return (
     <div className=" w-full">
-      <div className=" bg-secondary w-full fixed z-50 flex gap-2.5 p-2.5 items-center ">
+      <div className=" bg-secondary w-full fixed z-20 flex gap-2.5 p-2.5 items-center ">
         <IoIosInformationCircle className=" w-7 h-7" />
         <p className=" text-[12px]">
           Hang tight, while we take you through our account setup process, this
           will not take up much of your time.
         </p>
       </div>
-      <div className=" p-[20px] w-full h-screen ">{children}</div>
+      <div className=" p-[20px] relative w-full h-screen ">{children}</div>
     </div>
   );
 }

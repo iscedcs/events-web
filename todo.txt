@@ -1,0 +1,5 @@
+Backend Fixes
+- Cover photo
+- business bio
+- Account category 
+- 
