@@ -1,5 +1,5 @@
 Backend Fixes
-- Cover photo
-- business bio
-- Account category 
-- 
+- Cover photo - from UI
+- business bio - from UI
+- Account category  - from UI
+- Verifying email on signup does not set isVerified to true

@@ -24,12 +24,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PASSWORDCHECK } from "@/lib/const";
-import { MOI, signUpForIndividualSchema } from "@/lib/schema/signUpIndividual";
+import { MOI, otpSchema, signUpForIndividualSchema } from "@/lib/schema/signUp";
+import { userType } from "@/lib/types/auth";
 import { cn, startFiveMinuteCountdown } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns/format";
 import { CalendarIcon } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiRename } from "react-icons/bi";
@@ -44,6 +46,9 @@ import { TbNumber123 } from "react-icons/tb";
 import { toast } from "sonner";
 import z from "zod";
 
+export type signUpValues = z.infer<typeof signUpForIndividualSchema>;
+export type otpValue = z.infer<typeof otpSchema>;
+
 export default function IndividualSignUpForm({
   step,
   stepNumber,
@@ -55,8 +60,7 @@ export default function IndividualSignUpForm({
   step: number;
   setStep: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  //   const [step, setStep] = useState(15);
-  const [userType, setUserType] = useState("USER");
+  const userType: userType = "USER";
   const [isOtpScreen, setIsOtpScreen] = useState(false);
   const [isConfirmPasswordScreen, setIsConfirmPasswordScreen] = useState(false);
   const [loading, setIsLoading] = useState(false);
@@ -67,14 +71,11 @@ export default function IndividualSignUpForm({
   const [isBuildingProfile, setIsBuidlingProfile] = useState(false);
 
   //   const [errorCheck, setErrorCheck] = useState(false);
-  console.log({ step });
-
-  type signUpValues = z.infer<typeof signUpForIndividualSchema>;
+  // console.log({ step });
 
   const form = useForm<signUpValues>({
     resolver: zodResolver(signUpForIndividualSchema),
     defaultValues: {
-      otp: "",
       dob: new Date(),
       email: "",
       phoneNumber: "",
@@ -92,9 +93,17 @@ export default function IndividualSignUpForm({
     mode: "all",
   });
 
-  const email = form.getValues("email");
-  const otpWatch = form.watch("otp");
-  const code = form.getValues("otp");
+  const otpForm = useForm<otpValue>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: {
+      otp: "",
+    },
+    mode: "all",
+  });
+
+  const email = form.watch("email");
+  const otpWatch = otpForm.watch("otp");
+  const code = otpForm.getValues("otp");
   const passwordValues = form.watch("passwordObj.password");
   const confirmPasswordValues = form.watch("passwordObj.confirmPassword");
 
@@ -102,6 +111,8 @@ export default function IndividualSignUpForm({
   const hasUppercase = /[A-Z]/.test(passwordValues);
   const hasLowercase = /[a-z]/.test(passwordValues);
   const hasNumber = /[0-9]/.test(passwordValues);
+
+  const router = useRouter();
 
   //   console.log({ hasEightCharacters });
   // console.log({ loading });
@@ -274,7 +285,7 @@ export default function IndividualSignUpForm({
   useEffect(() => {
     const verifyOTP = async () => {
       if (otpWatch.length === 6) {
-        const isValid = await form.trigger("otp");
+        const isValid = await otpForm.trigger("otp");
         if (!isValid) return;
         try {
           setIsLoading(true);
@@ -352,8 +363,66 @@ export default function IndividualSignUpForm({
     form.setValue("profilePhoto", "");
   };
 
-  const handleSubmit = (data: signUpValues) => {
-    console.log(data);
+  const handleSubmit = async (data: signUpValues) => {
+    setIsBuidlingProfile(true);
+    setIsLoading(true);
+
+    const payload = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phoneNumber,
+      email: data.email,
+      displayPicture: data.profilePhoto,
+      idNumber: data.idNumber,
+      identificationType: data.moi,
+      dob: data.dob,
+      address: data.address,
+      password: data.passwordObj.password,
+      confirmpassword: data.passwordObj.confirmPassword,
+      isce_permissions: {
+        connect: true,
+        connect_plus: true,
+        store: true,
+        wallet: true,
+        event: true,
+        access: true,
+      },
+      business_permissions: {
+        invoicing: true,
+        appointment: true,
+        chat: true,
+        analytics: true,
+        services: true,
+      },
+    };
+    try {
+      const res = await fetch(
+        `/api/auth/sign-up?userType=${encodeURIComponent(userType)}`,
+        {
+          body: JSON.stringify(payload),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setIsLoading(false);
+        router.push("/user/events");
+        console.log("ACCOUNT INFORMATION", data);
+        return data;
+      }
+      setIsBuidlingProfile(false);
+      setStep(15);
+      toast.error("Something is wrong", {
+        description:
+          "There was a problem creating your account please try again",
+      });
+      return null;
+    } catch (e) {
+      console.log("Problem creating account", e);
+    }
   };
 
   return (
@@ -445,35 +514,39 @@ export default function IndividualSignUpForm({
             onClick={handlePreviousStep}
             className=" w-[32px] h-[32px]"
           />
-          <FormField
-            name="otp"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <Label className=" mt-[10px] font-extrabold text-[24px]">
-                  Enter OTP code*
-                </Label>
-                <FormControl>
-                  <div className=" relative">
-                    <Input
-                      {...field}
-                      maxLength={6}
-                      // onChange={handleVerifyOTP}
-                      // placeholder="Enter OTP code"
-                      className=" mt-[15px] py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
-                    />
-                    <p className=" right-0 top-1/2 text-[12px] -translate-y-1/2 absolute">
-                      {time}
-                    </p>
-                  </div>
-                </FormControl>
-                <FormDescription className=" text-[12px]">
-                  You only have to enter an OTP code we sent to your email
-                  address - {email}
-                </FormDescription>
-              </FormItem>
-            )}
-          />
+          <Form {...otpForm}>
+            {/* <form> */}
+            <FormField
+              name="otp"
+              control={otpForm.control}
+              render={({ field }) => (
+                <FormItem>
+                  <Label className=" mt-[10px] font-extrabold text-[24px]">
+                    Enter OTP code*
+                  </Label>
+                  <FormControl>
+                    <div className=" relative">
+                      <Input
+                        {...field}
+                        maxLength={6}
+                        // onChange={handleVerifyOTP}
+                        // placeholder="Enter OTP code"
+                        className=" mt-[15px] py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[24px] placeholder:font-extrabold border-r-0 border-t-0 "
+                      />
+                      <p className=" right-0 top-1/2 text-[12px] -translate-y-1/2 absolute">
+                        {time}
+                      </p>
+                    </div>
+                  </FormControl>
+                  <FormDescription className=" text-[12px]">
+                    You only have to enter an OTP code we sent to your email
+                    address - {email}
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+            {/* </form> */}
+          </Form>
         </div>
         <div
           className={` ${
@@ -730,8 +803,8 @@ export default function IndividualSignUpForm({
                                 className=" flex items-center h-full justify-center "
                               >
                                 {field.value ? (
-                                  <div className=" relative h-full">
-                                    <div className=" w-full absolute h-full flex justify-center items-center bg-black/40 ">
+                                  <div className=" w-full relative h-full">
+                                    <div className=" w-full absolute h-full flex justify-center items-center bg-black/60 ">
                                       <PiTrash
                                         onClick={() => {
                                           handleDeleteImage();
@@ -742,9 +815,9 @@ export default function IndividualSignUpForm({
                                     <Image
                                       src={field.value || ""}
                                       alt="profile image"
-                                      width={100}
-                                      height={100}
-                                      className="object-cover h-full w-full rounded-[8px]"
+                                      width={"1000"}
+                                      height={"1000"}
+                                      className=" object-cover h-full w-full rounded-[8px]"
                                     />
                                   </div>
                                 ) : (
@@ -834,7 +907,10 @@ export default function IndividualSignUpForm({
                 )}
               />
             </div>
-            <Button className=" w-full rounded-[12px] font-semibold py-[24px]">
+            <Button
+              type="submit"
+              className=" w-full rounded-[12px] font-semibold py-[24px]"
+            >
               Finish setup
             </Button>
           </div>

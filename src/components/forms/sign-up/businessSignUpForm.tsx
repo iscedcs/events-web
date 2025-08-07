@@ -1,6 +1,7 @@
-import { userType } from "@/lib/types/auth";
-import React from "react";
+import { extendedSignUpSchema } from "@/lib/schema/signUp";
+import z from "zod";
 
+export type businessSignUpValues = z.infer<typeof extendedSignUpSchema>;
 export default function BusinessSignUpForm() {
   return (
     <div>
