@@ -13,8 +13,8 @@ export type CountdownEndCallback = () => void;
 export type userType = "USER" | "BUSINESS_USER";
 
 export type AuthHeaderType = {
+  loading: boolean;
   message: string;
-  link?: string;
   linkText?: string;
-  hasLink: boolean;
+  onClick?: () => void;
 };

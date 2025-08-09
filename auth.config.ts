@@ -1,9 +1,8 @@
+import { signInFormSchema } from "@/lib/schema/signIn";
+import { IAuthResponse } from "@/lib/types/auth";
 import { type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { AUTH_API, URLS } from "./src/lib/const";
-// import { signInFormSchema } from "./src/lib/schema";
-import { IAuthResponse } from "@/lib/types/auth";
-import { signInFormSchema } from "@/lib/schema/signIn";
 
 export default {
   providers: [
@@ -40,7 +39,7 @@ export default {
             //console.log(data);
             const user = data.data;
             const accessToken = user.accessToken;
-            //console.log(user);
+            console.log({ user });
             if (user) {
               return {
                 id: user.id,
