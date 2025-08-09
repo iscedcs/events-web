@@ -24,7 +24,7 @@ import { TbLoader2 } from "react-icons/tb";
 import { toast } from "sonner";
 import z from "zod";
 import { login } from "../../../../actions/auth";
-import { defaultRoute } from "../../../../routes";
+import { defaultUserRoute } from "../../../../routes";
 
 export type signInValues = z.infer<typeof signInFormSchema>;
 
@@ -77,7 +77,7 @@ export default function SignInForm() {
         toast.success("Account Logged In", {
           description: "This account has successfully been logged in",
         });
-        router.push(defaultRoute);
+        router.push(defaultUserRoute);
       } else {
         toast.error("Login failed", {
           description: "Invalid email or password",

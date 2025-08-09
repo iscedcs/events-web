@@ -12,11 +12,12 @@ export const {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.picture = user.image;
         token.email = user.email;
         token.userType = user.userType;
         token.accessToken = user.accessToken;
       }
-      // //console.log("JWT Callback - User:", user, "Token:", token);
+      console.log("JWT Callback - User:", user, "Token:", token);
       return token;
     },
 
@@ -26,6 +27,7 @@ export const {
         session.user.email = token.email as string;
         session.user.userType = token.userType as string;
         session.user.accessToken = token.accessToken as string;
+        session.user.image = token.picture as string;
       }
       // //console.log("Session Callback - Session:", session, "Token:", token);
       return session;

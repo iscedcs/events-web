@@ -46,6 +46,7 @@ export default {
                 email: user.email,
                 userType: user.userType,
                 accessToken: accessToken,
+                image: user.displayPicture,
               };
             }
             return null;

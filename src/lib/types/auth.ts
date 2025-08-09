@@ -4,6 +4,7 @@ export interface IAuthResponse {
     email: string;
     userType: string;
     accessToken: string;
+    displayPicture: string;
   };
 }
 
