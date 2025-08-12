@@ -17,7 +17,7 @@ export const {
         token.userType = user.userType;
         token.accessToken = user.accessToken;
       }
-      console.log("JWT Callback - User:", user, "Token:", token);
+      // console.log("JWT Callback - User:", user, "Token:", token);
       return token;
     },
 

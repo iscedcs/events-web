@@ -28,3 +28,7 @@ export function startFiveMinuteCountdown(
 
   return () => clearInterval(interval);
 }
+
+export function shortenToThree(text: string): string {
+  return text.slice(0, 3);
+}

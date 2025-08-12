@@ -1,0 +1,184 @@
+"use client";
+
+import { shortenToThree } from "@/lib/utils";
+import { useMemo, useState } from "react";
+import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "./dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
+
+export default function EventCalendar() {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1; // 1-12
+  const [year, setYear] = useState(currentYear);
+  const [month, setMonth] = useState(currentMonth);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const years = useMemo(() => {
+    const startYear = currentYear;
+    const endYear = currentYear + 50;
+    return Array.from(
+      { length: endYear - startYear + 1 },
+      (_, i) => startYear + i
+    );
+  }, [currentYear]);
+
+  const calendarMonths = [
+    { month: "January", number: 1 },
+    { month: "February", number: 2 },
+    { month: "March", number: 3 },
+    { month: "April", number: 4 },
+    { month: "May", number: 5 },
+    { month: "June", number: 6 },
+    { month: "July", number: 7 },
+    { month: "August", number: 8 },
+    { month: "September", number: 9 },
+    { month: "October", number: 10 },
+    { month: "November", number: 11 },
+    { month: "December", number: 12 },
+  ];
+
+  function getDaysInMonth(month: number, year: number) {
+    return new Date(year, month, 0).getDate();
+  }
+
+  function getFirstDayOfMonth(month: number, year: number) {
+    return new Date(year, month - 1, 1).getDay();
+  }
+
+  function generateCalendarDays(month: number, year: number) {
+    const daysInMonth = getDaysInMonth(month, year);
+    const firstDay = getFirstDayOfMonth(month, year);
+    const days: (number | null)[] = [];
+
+    for (let i = 0; i < firstDay; i++) days.push(null);
+    for (let d = 1; d <= daysInMonth; d++) days.push(d);
+
+    return days;
+  }
+
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  // Filter months so we start from selected month
+  const filteredMonths = calendarMonths.filter((m) => m.number >= month);
+
+  return (
+    <div className="  w-full">
+      <DropdownMenu
+        onOpenChange={(open) => setOpenDialog(open)}
+        open={openDialog}
+      >
+        <DropdownMenuTrigger
+          onClick={() => {
+            setOpenDialog(!openDialog);
+          }}
+          className=" border rounded-[12px] px-2.5 py-2 flex items-center gap-2"
+        >
+          <p className=" text-[14px]">
+            {shortenToThree(
+              calendarMonths.find((m) => m.number === month)?.month ?? ""
+            )}{" "}
+            {year}{" "}
+          </p>
+          {openDialog ? <PiCaretUpBold /> : <PiCaretDownBold />}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          className=" mt-[20px] pb-[20px] rounded-none border-0 w-screen px-[20px] bg-black text-white"
+          onClick={() => {
+            () => setOpenDialog(false);
+          }}
+        >
+          <div className="">
+            {/* Controls */}
+            <div className=" flex justify-center gap-13">
+              {/* Month select */}
+              <Select onValueChange={(value) => setMonth(Number(value))}>
+                <SelectTrigger className="border-0">
+                  <SelectValue
+                    placeholder={
+                      calendarMonths.find((m) => m.number === month)?.month
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent className="w-[300px] bg-secondary text-white border-0 py-[10px]  rounded-none">
+                  {calendarMonths.map((m) => (
+                    <SelectItem
+                      key={m.number}
+                      className="data-[state=checked]:bg-white data-[state=checked]:rounded-none data-[state=checked]:text-black py-[10px] px-[20px]"
+                      value={m.number.toString()}
+                    >
+                      {m.month}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Year select */}
+              <Select onValueChange={(value) => setYear(Number(value))}>
+                <SelectTrigger className="border-0">
+                  <SelectValue placeholder={year.toString()} />
+                </SelectTrigger>
+                <SelectContent className="w-[300px] bg-secondary text-white border-0 py-[10px]  rounded-none">
+                  {years.map((y) => (
+                    <SelectItem
+                      key={y}
+                      className="data-[state=checked]:bg-white data-[state=checked]:rounded-none data-[state=checked]:text-black py-[10px] px-[20px]"
+                      value={y.toString()}
+                    >
+                      {y}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Calendar display */}
+            <div>
+              {filteredMonths.map((monthObj) => {
+                const days = generateCalendarDays(monthObj.number, year);
+                return (
+                  <div key={monthObj.number} className="mt-6">
+                    <div className="flex items-center gap-2 text-lg">
+                      <p>{monthObj.month}</p>
+                      <p>{year}</p>
+                    </div>
+
+                    <div className="text-[16px] w-full my-3 rounded-[12px] px-4 py-4 bg-secondary">
+                      {/* Days of week */}
+                      <div className="grid grid-cols-7 text-center mb-2">
+                        {daysOfWeek.map((dn, index) => (
+                          <div key={index}>{dn}</div>
+                        ))}
+                      </div>
+
+                      {/* Days */}
+                      <div className="grid grid-cols-7 gap-1 text-center">
+                        {days.map((day, i) => (
+                          <div
+                            key={`${monthObj.number}-${i}`}
+                            className="min-h-[36px] flex items-center justify-center p-3 rounded-md hover:bg-primary hover:text-white transition"
+                          >
+                            {day ?? ""}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}

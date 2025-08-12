@@ -17,7 +17,7 @@ export const getUserByID = async (id: string) => {
     const data = await res.json();
     const success = data.success;
     const user = data.data;
-    console.log({ data });
+    // console.log({ data });
     if (success === true) {
       return user;
     }
