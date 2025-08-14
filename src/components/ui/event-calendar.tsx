@@ -16,12 +16,20 @@ import {
   SelectValue,
 } from "./select";
 
-export default function EventCalendar() {
+type CalendarType = "multiple" | "single";
+
+export default function EventCalendar({
+  type,
+  isOpen,
+}: {
+  type: CalendarType;
+  isOpen?: boolean;
+}) {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1; // 1-12
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialog, setOpenDialog] = useState(isOpen);
 
   const years = useMemo(() => {
     const startYear = currentYear;
@@ -71,6 +79,11 @@ export default function EventCalendar() {
   // Filter months so we start from selected month
   const filteredMonths = calendarMonths.filter((m) => m.number >= month);
 
+  const typeSelect =
+    type === "single"
+      ? calendarMonths.filter((m) => m.number === currentMonth)
+      : filteredMonths;
+
   return (
     <div className="  w-full">
       <DropdownMenu
@@ -92,15 +105,19 @@ export default function EventCalendar() {
           {openDialog ? <PiCaretUpBold /> : <PiCaretDownBold />}
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className=" mt-[20px] pb-[20px] rounded-none border-0 w-screen px-[20px] bg-black text-white"
+          className={`pb-[20px] rounded-none border-0 w-screen px-[20px] bg-black text-white ${
+            type === "multiple" ? " mt-[20px]" : " mt-0"
+          }`}
           onClick={() => {
             () => setOpenDialog(false);
           }}
         >
           <div className="">
-            {/* Controls */}
-            <div className=" flex justify-center gap-13">
-              {/* Month select */}
+            <div
+              className={` flex justify-center gap-13 ${
+                type === "multiple" ? " block" : " hidden"
+              }`}
+            >
               <Select onValueChange={(value) => setMonth(Number(value))}>
                 <SelectTrigger className="border-0">
                   <SelectValue
@@ -122,7 +139,6 @@ export default function EventCalendar() {
                 </SelectContent>
               </Select>
 
-              {/* Year select */}
               <Select onValueChange={(value) => setYear(Number(value))}>
                 <SelectTrigger className="border-0">
                   <SelectValue placeholder={year.toString()} />
@@ -141,9 +157,8 @@ export default function EventCalendar() {
               </Select>
             </div>
 
-            {/* Calendar display */}
             <div>
-              {filteredMonths.map((monthObj) => {
+              {typeSelect.map((monthObj) => {
                 const days = generateCalendarDays(monthObj.number, year);
                 return (
                   <div key={monthObj.number} className="mt-6">
@@ -153,14 +168,12 @@ export default function EventCalendar() {
                     </div>
 
                     <div className="text-[16px] w-full my-3 rounded-[12px] px-4 py-4 bg-secondary">
-                      {/* Days of week */}
                       <div className="grid grid-cols-7 text-center mb-2">
                         {daysOfWeek.map((dn, index) => (
                           <div key={index}>{dn}</div>
                         ))}
                       </div>
 
-                      {/* Days */}
                       <div className="grid grid-cols-7 gap-1 text-center">
                         {days.map((day, i) => (
                           <div

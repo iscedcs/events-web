@@ -16,7 +16,7 @@ export default function Going() {
         </p>
         <Button
           onClick={() => {
-            router.push("/user/events?q=discover");
+            router.push("/user/events?tab=discover");
           }}
           className=" text-[12px] mt-[20px]"
         >

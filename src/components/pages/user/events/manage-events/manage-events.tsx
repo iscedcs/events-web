@@ -1,6 +1,7 @@
 import EventCalendar from "@/components/ui/event-calendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Going from "./going";
+import Going from "./tabcontents/going";
+import Hosting from "./tabcontents/hosting";
 
 export default function ManageEvents() {
   return (
@@ -10,7 +11,7 @@ export default function ManageEvents() {
           <p className=" text-[24px] mt-[15px] font-bold">My Events</p>
         </div>
         <div className="">
-          <EventCalendar />
+          <EventCalendar type="multiple" />
         </div>
       </div>
 
@@ -32,6 +33,15 @@ export default function ManageEvents() {
           </TabsList>
           <TabsContent value="going">
             <Going />
+          </TabsContent>
+          <TabsContent value="hosting">
+            <Hosting />
+          </TabsContent>
+          <TabsContent value="interested">
+            <Hosting />
+          </TabsContent>
+          <TabsContent value="pastEvents">
+            <Hosting />
           </TabsContent>
         </Tabs>
       </div>

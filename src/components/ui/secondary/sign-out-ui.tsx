@@ -16,8 +16,9 @@ export default function SignOutButton() {
     });
   };
   return (
-    <div>
+    <div className=" flex gap-4 items-center">
       <FaPowerOff onClick={handleLogOut} />
+      <p>Sign out</p>
     </div>
   );
 }

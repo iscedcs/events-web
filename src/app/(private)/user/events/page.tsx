@@ -5,7 +5,7 @@ import { auth } from "../../../../../auth";
 
 export const dynamic = "force-dynamic";
 
-type searchParams = { q?: string };
+type searchParams = { tab?: string };
 
 export default async function UserEvents(props: {
   searchParams: searchParams;
@@ -15,7 +15,7 @@ export default async function UserEvents(props: {
   const user = await getUserByID(session?.user.id ?? "");
   const searchParams = await props.searchParams;
 
-  const currentTab = searchParams.q || "manage";
+  const currentTab = searchParams.tab || "manage";
 
   // console.log({ user });
   return (
