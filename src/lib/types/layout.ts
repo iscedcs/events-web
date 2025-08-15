@@ -11,3 +11,8 @@ export interface HeaderItemsTypes {
   path: string;
   icon: React.ReactNode;
 }
+
+export type PaginationType = {
+  limit?: number;
+  page?: number;
+};

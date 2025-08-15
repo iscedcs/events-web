@@ -2,6 +2,7 @@ import { FaRegUser } from "react-icons/fa";
 import { LuMessageSquareText } from "react-icons/lu";
 import { MdEventNote } from "react-icons/md";
 import { HeaderItemsTypes } from "./types/layout";
+import { TrendingEventsProps } from "./types/event";
 
 export const AUTH_API = process.env.NEXT_PUBLIC_LIVE_ISCEAUTH_BACKEND_URL;
 export const EVENTS_API = process.env.NEXT_PUBLIC_LIVE_EVENTS_BACKEND_URL;
@@ -24,7 +25,7 @@ export const URLS = {
   events: {
     new: "/events/create",
     update: "/events/{id}/update",
-    all: "/events/events",
+    all: "/events/all",
     all_events_user: "/events/events",
     one: "/events/one/{id}",
     events_search: "/events/search",
