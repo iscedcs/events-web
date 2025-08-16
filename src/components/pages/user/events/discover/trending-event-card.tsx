@@ -26,9 +26,11 @@ export default function TrendingEventCard({
         />
       </div>
       <div className=" text-[16px]">
-        <p className=" line-clamp-1">{title}</p>
+        <p className=" capitalize line-clamp-1">{title.toLowerCase()}</p>
         <p className=" text-accent">{format(day, "PPP")}</p>
-        <p className=" line-clamp-1 text-accent">{location}</p>
+        <p className=" line-clamp-1 capitalize text-accent">
+          {location.toLowerCase()}
+        </p>
       </div>
     </Link>
   );

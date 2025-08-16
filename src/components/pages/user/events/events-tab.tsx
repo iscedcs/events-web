@@ -18,11 +18,11 @@ export default function EventsTab({ initialTab }: { initialTab: string }) {
     router.push(`?${params.toString()}`, { scroll: false });
   };
   return (
-    <div>
+    <div className=" relative">
       <Tabs
         value={tab}
         onValueChange={handleChange}
-        className=" bg-[#000]  rounded-none"
+        className=" bg-[#000]   rounded-none"
       >
         <TabsList className=" flex w-full border-b-[4px] border-secondary py-[23px] justify-between rounded-none bg-black">
           <TabsTrigger

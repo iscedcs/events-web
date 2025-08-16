@@ -29,8 +29,8 @@ export const URLS = {
     all_events_user: "/events/events",
     one: "/events/one/{id}",
     events_search: "/events/search",
+    category: "/events/categories",
     updelete: "/events/{id}/updelete",
-    gallery: "/gallery/event/{event_id}",
   },
   chat: {
     create: "/chat/create",
@@ -49,6 +49,9 @@ export const URLS = {
     search: "/chat/search",
     delete_message: "/chat/{id}/delete-message",
     harddelete_message: "/chat/{id}/harddelete-message",
+  },
+  gallery: {
+    gallery: "/gallery/event/{event_id}",
   },
   attendees: {
     all: "/attendees/event/{id}",

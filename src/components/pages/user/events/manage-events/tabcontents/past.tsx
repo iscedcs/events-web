@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import EventCalendar from "@/components/ui/event-calendar";
 import { useRouter } from "next/navigation";
 
-export default function Hosting() {
+export default function Past() {
   //   const searchParams = useSearchParams();
 
   const router = useRouter();
@@ -12,8 +12,9 @@ export default function Hosting() {
   return (
     <div className=" text-center  h-[calc(100vh_-(_55px+50px+51px+44px))]  overflow-hidden flex items-center justify-between">
       <div className=" px-[10px] absolute top-0 right-0">
-        <EventCalendar eventType="going" type="multiple" />
+        <EventCalendar eventType="past" type="multiple" />
       </div>
+
       <div className="">
         <p className=" text-accent text-[24px]">
           Host, attend and bookmark events near you to get started

@@ -19,11 +19,14 @@ import {
 } from "./select";
 
 type CalendarType = "multiple" | "single";
+type EventType = "featured" | "going" | "hosting" | "interested" | "past";
 
 export default function EventCalendar({
+  eventType,
   type,
   isOpen,
 }: {
+  eventType: EventType;
   type: CalendarType;
   isOpen?: boolean;
 }) {
@@ -116,7 +119,7 @@ export default function EventCalendar({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           className={`pb-[20px] rounded-none border-0 w-screen px-[20px] bg-black text-white ${
-            type === "multiple" ? "mt-[20px]" : "mt-0"
+            type === "multiple" ? "mt-[10px]" : "mt-0"
           }`}
         >
           <div>

@@ -7,7 +7,7 @@ export default function FeaturedCalendar() {
         <p className="text-[24px]">Featured Calendar</p>
       </div>
       <div className="">
-        <EventCalendar type="single" isOpen={false} />
+        <EventCalendar eventType="featured" type="single" isOpen={false} />
       </div>
     </div>
   );
