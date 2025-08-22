@@ -36,7 +36,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
   const [user, setUser] = useState<UserProps>();
   const [open, setOpen] = useState(false);
   const [event, setEvent] = useState<SingleEventProps>();
-  const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<string>("");
   const [ticketInfo, setTicketInfo] = useState<SingleTicketProps>();
 
   useEffect(() => {
@@ -67,14 +67,25 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
     typeof eventRegistrationFormSchema
   >;
 
+  console.log({ user });
+
   const form = useForm<eventRegistrationFormValues>({
     resolver: zodResolver(eventRegistrationFormSchema),
     defaultValues: {
-      email: "",
-      name: "",
+      email: user?.email ?? "",
+      name: user?.firstName ?? "",
     },
     mode: "all",
   });
+
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        email: user.email ?? "",
+        name: user.firstName ?? "",
+      });
+    }
+  }, [user, form]);
 
   const eventTicket: SingleTicketProps[] = event?.tickets ?? [];
   console.log({ eventTicket });
@@ -137,7 +148,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
                     {eventTicket.map((ticket) => {
                       const handleTicketSelect = () => {
                         setSelectedTicket(
-                          selectedTicket === ticket.id ? null : ticket.id
+                          selectedTicket === ticket.id ? "" : ticket.id
                         );
                         setOpen(false);
                       };

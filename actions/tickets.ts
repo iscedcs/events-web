@@ -3,7 +3,7 @@
 import { EVENTS_API, URLS } from "@/lib/const";
 import { auth } from "../auth";
 
-export const getTicketByID = async (id: string|null) => {
+export const getTicketByID = async (id: string) => {
   const url = `${EVENTS_API}${URLS.tickets.ticket_by_id.replace("{id}", id)}`;
   const session = await auth();
   const BEARER_TOKEN = session?.user.accessToken;

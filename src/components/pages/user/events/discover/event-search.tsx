@@ -1,5 +1,6 @@
 "use client";
 
+import EventSearchList from "@/components/skeletons/event-search-list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
@@ -47,7 +48,7 @@ export default function EventSearch() {
   const eventID =
     events?.find((event) => event.cleanName === searchValue)?.id ?? "";
 
-  const AttendeeImages = events?.map((item  ) => item);
+  const AttendeeImages = events?.map((item) => item);
 
   useEffect(() => {
     const fetchAttendeeImages = async () => {
@@ -67,7 +68,7 @@ export default function EventSearch() {
         className=" text-accent w-[24px] h-[24px]"
       />
       {!closeSearch && (
-        <div className=" -mt-[15px]  absolute top-0 z-30 bg-black w-full left-0">
+        <div className=" fixed mt-[55px] top-0 z-30 h-screen bg-black w-full left-0">
           <div className="  flex pl-3 items-center gap-2  bg-secondary">
             <GoArrowLeft
               onClick={handleSearchToggle}
@@ -89,24 +90,30 @@ export default function EventSearch() {
               </Button>
             </div>
           </div>
-          <div className=" py-[20px] bg-black h-screen flex gap-5 flex-col px-[15px]">
-            {events && events.length > 0 ? (
-              events?.map((item) => (
-                <EventSearchResults
-                  key={item.id}
-                  host={item.host ?? ""}
-                  cleanName={item.cleanName}
-                  location={item.location ?? ""}
-                  image={item.image}
-                  time={item.time}
-                  title={item.title ?? ""}
-                  // attendeeImages={item.a}
-                />
-              ))
+          <div className=" h-screen bg-black  px-[15px] py-[20px]">
+            {loading ? (
+              <EventSearchList />
             ) : (
-              <p className="text-accent text-sm mt-[10px]">No cards to show</p>
-            )}
-            {/* <EventSearchResults
+              <div className="   flex gap-5 flex-col ">
+                {events && events.length > 0 ? (
+                  events?.map((item) => (
+                    <EventSearchResults
+                      key={item.id}
+                      host={item.host ?? ""}
+                      cleanName={item.cleanName}
+                      location={item.location ?? ""}
+                      image={item.image}
+                      time={item.time}
+                      title={item.title ?? ""}
+                      // attendeeImages={item.a}
+                    />
+                  ))
+                ) : (
+                  <p className="text-accent text-sm mt-[10px]">
+                    No cards to show
+                  </p>
+                )}
+                {/* <EventSearchResults
               title="A title that is soo longggggggg sdskdosndsodksdk"
               host="Onyeka Divine"
               cleanName="dwdsd"
@@ -122,6 +129,8 @@ export default function EventSearch() {
               time="2:00PM"
               attendeeNumber="100"
             /> */}
+              </div>
+            )}
           </div>
         </div>
       )}
