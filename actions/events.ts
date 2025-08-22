@@ -109,3 +109,55 @@ export const getEventsForCalendar = async ({ limit, page }: PaginationType) => {
     console.log("Unable to fetch event image, clean name and start date", e);
   }
 };
+
+export const getEventsByCleanName = async (slug: string) => {
+  const url = `${EVENTS_API}${URLS.events.one_slug.replace(
+    "{cleanName}",
+    slug
+  )}`;
+  const session = await auth();
+  const BEARER_TOKEN = session?.user.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    console.log({ data });
+    if (data.success) {
+      // console.log(data.data);
+      return data.data;
+    } else return null;
+  } catch (e: any) {
+    console.log("Unable to fetch Event information by slug", e);
+  }
+};
+
+export const searchForEvents = async (value: string) => {
+  const session = await auth();
+  const BEARER_TOKEN = session?.user.accessToken;
+  const url = `${EVENTS_API}${URLS.events.event_search}?query=${value}`;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    const item: SingleEventProps[] = data.data.events.data;
+    console.log({ item });
+    if (data.success === true) {
+      return item;
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to search for events", e);
+  }
+};

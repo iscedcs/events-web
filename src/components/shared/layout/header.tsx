@@ -1,3 +1,4 @@
+import BackButton from "@/components/ui/secondary/back-button";
 import SignOutButton from "@/components/ui/secondary/sign-out-ui";
 import {
   Sheet,
@@ -11,11 +12,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { GoLinkExternal } from "react-icons/go";
 
-export default function Header({ title, user }: HederType) {
+export default function Header({ title, user, hasBack }: HederType) {
   const fullName = `${user?.firstName} ${user?.lastName}`;
   return (
-    <div className=" flex fixed z-20 w-full left-0 top-0 items-center justify-between px-[20px] py-[10px] bg-secondary">
-      <p className=" text-[12px]">{title}</p>
+    <div className=" flex fixed z-50 w-full left-0 top-0 items-center justify-between px-[20px] py-[10px] bg-secondary">
+      <div className=" flex gap-2 items-center">
+        {hasBack && <BackButton className=" w-[18px] h-[18px]" />}
+        <p className=" capitalize text-[12px]">{title}</p>
+      </div>
+
       <div className=" flex items-center gap-4">
         {/* <SignOutButton />
         <DropdownMenu>
@@ -24,7 +29,7 @@ export default function Header({ title, user }: HederType) {
               <Image
                 src={user?.displayPicture ?? "/no-profile.png"}
                 width={"1000"}
-                height={"1000"}
+                height={"1000"}-6+-+
                 alt="image"
                 className=" w-[35px] h-[35px] object-cover rounded-full"
               />

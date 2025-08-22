@@ -3,3 +3,6 @@ Backend Fixes
 - business bio - from UI
 - Account category  - from UI
 - Verifying email on signup does not set isVerified to true
+
+-Adding registration functionality
+-Add google maps

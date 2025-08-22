@@ -21,7 +21,7 @@ export default async function UserEvents(props: {
   return (
     <div>
       <Header title="Events" user={user} />
-      <div className="   py-[70px]">
+      <div className="py-[70px]">
         <EventsTab initialTab={currentTab} />
       </div>
     </div>

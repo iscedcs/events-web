@@ -3,26 +3,28 @@
 import { EVENTS_API, URLS } from "@/lib/const";
 import { auth } from "../auth";
 
-export const getTicketByID = async (id: string|null) => {
-  const url = `${EVENTS_API}${URLS.tickets.ticket_by_id.replace("{id}", id)}`;
+export const getAttendeeImagesByEventID = async (id: string) => {
   const session = await auth();
   const BEARER_TOKEN = session?.user.accessToken;
+  const url = `${EVENTS_API}${URLS.attendees.all.replace("{id}", id)}`;
 
   try {
     const res = await fetch(url, {
-      method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER_TOKEN}`,
+        "Content-Type": "application/json",
       },
+      method: "GET",
     });
     const data = await res.json();
-
+    console.log("ATTENDEE", data);
     if (res.ok) {
-      return data;
+      return data.data.data;
     }
     return null;
   } catch (e: any) {
-    console.log("Unable to fetch ticket by id", e);
+    console.log("", e);
   }
 };
+
+

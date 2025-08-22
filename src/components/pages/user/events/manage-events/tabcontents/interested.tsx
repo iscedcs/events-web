@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import EventCalendar from "@/components/ui/event-calendar";
+import EventCalendar from "@/components/ui/secondary/event-calendar";
 import { useRouter } from "next/navigation";
 
 export default function Interested() {

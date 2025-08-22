@@ -1,8 +1,8 @@
 import { FaRegUser } from "react-icons/fa";
 import { LuMessageSquareText } from "react-icons/lu";
 import { MdEventNote } from "react-icons/md";
-import { HeaderItemsTypes } from "./types/layout";
 import { TrendingEventsProps } from "./types/event";
+import { HeaderItemsTypes } from "./types/layout";
 
 export const AUTH_API = process.env.NEXT_PUBLIC_LIVE_ISCEAUTH_BACKEND_URL;
 export const EVENTS_API = process.env.NEXT_PUBLIC_LIVE_EVENTS_BACKEND_URL;
@@ -31,6 +31,8 @@ export const URLS = {
     events_search: "/events/search",
     category: "/events/categories",
     updelete: "/events/{id}/updelete",
+    one_slug: "/events/clean-name/{cleanName}",
+    event_search: "/events/search",
   },
   chat: {
     create: "/chat/create",
@@ -56,6 +58,11 @@ export const URLS = {
   attendees: {
     all: "/attendees/event/{id}",
     one: "/attendees/{id}/one",
+    create: "/attendees/create",
+  },
+  tickets: {
+    all_ticket_for_event: "/tickets/event/{eventId}",
+    ticket_by_id: "/tickets/{id}",
   },
 };
 

@@ -49,6 +49,7 @@ export interface SingleTicketProps {
   currency: string;
   createdAt: Date;
   updatedAt: Date;
+  event?: SingleEventProps;
 }
 
 export interface SingleGallaryProps {
@@ -59,4 +60,36 @@ export interface SingleGallaryProps {
   createdAt: Date;
   deletedAt: Date;
   updatedAt: Date;
+}
+
+export interface SingleAttendeeProps {
+  id: string;
+  eventId: string;
+  eventName: string;
+  image: string;
+  name: string;
+  email: string;
+  phone: string;
+  link: string;
+  token: string;
+  thankyouMail: boolean;
+  createdAt: Date;
+  deletedAt: Date;
+  updatedAt: Date;
+  ticketId: string;
+  userId: string;
+  checkedOut: Date;
+  checkedIn: Date;
+  displayPicture: Date;
+}
+
+export interface EventSearchItemProps {
+  time: string;
+  image: string;
+  title: string;
+  host: string;
+  location: string;
+  cleanName: string;
+  attendeeImages?: string[];
+  attendeeNumber?: string;
 }

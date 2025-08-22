@@ -1,4 +1,4 @@
-import EventCalendar from "@/components/ui/event-calendar";
+import EventCalendar from "@/components/ui/secondary/event-calendar";
 
 export default function FeaturedCalendar() {
   return (

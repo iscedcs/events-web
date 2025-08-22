@@ -4,19 +4,19 @@ import { shortenToThree } from "@/lib/utils";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi";
-import { getEventsForCalendar } from "../../../actions/events";
+import { getEventsForCalendar } from "../../../../actions/events";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "./dropdown-menu";
+} from "../dropdown-menu";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./select";
+} from "../select";
 
 type CalendarType = "multiple" | "single";
 type EventType = "featured" | "going" | "hosting" | "interested" | "past";

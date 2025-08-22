@@ -1,3 +1,5 @@
+"use server";
+
 import { AUTH_API, URLS } from "@/lib/const";
 import { auth } from "../auth";
 
