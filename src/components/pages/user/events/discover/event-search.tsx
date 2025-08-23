@@ -3,6 +3,7 @@
 import EventSearchList from "@/components/skeletons/event-search-list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { SingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
 import { useEffect, useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
@@ -94,26 +95,27 @@ export default function EventSearch() {
             {loading ? (
               <EventSearchList />
             ) : (
-              <div className="   flex gap-5 flex-col ">
-                {events && events.length > 0 ? (
-                  events?.map((item) => (
-                    <EventSearchResults
-                      key={item.id}
-                      host={item.host ?? ""}
-                      cleanName={item.cleanName}
-                      location={item.location ?? ""}
-                      image={item.image}
-                      time={item.time}
-                      title={item.title ?? ""}
-                      // attendeeImages={item.a}
-                    />
-                  ))
-                ) : (
-                  <p className="text-accent text-sm mt-[10px]">
-                    No cards to show
-                  </p>
-                )}
-                {/* <EventSearchResults
+              <ScrollArea className=" h-[530px]">
+                <div className="   flex gap-5 flex-col ">
+                  {events && events.length > 0 ? (
+                    events?.map((item) => (
+                      <EventSearchResults
+                        key={item.id}
+                        host={item.host ?? ""}
+                        cleanName={item.cleanName}
+                        location={item.location ?? ""}
+                        image={item.image}
+                        time={item.time}
+                        title={item.title ?? ""}
+                        // attendeeImages={item.a}
+                      />
+                    ))
+                  ) : (
+                    <p className="text-accent text-sm mt-[10px]">
+                      No cards to show
+                    </p>
+                  )}
+                  {/* <EventSearchResults
               title="A title that is soo longggggggg sdskdosndsodksdk"
               host="Onyeka Divine"
               cleanName="dwdsd"
@@ -129,7 +131,8 @@ export default function EventSearch() {
               time="2:00PM"
               attendeeNumber="100"
             /> */}
-              </div>
+                </div>
+              </ScrollArea>
             )}
           </div>
         </div>

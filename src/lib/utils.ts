@@ -32,3 +32,28 @@ export function startFiveMinuteCountdown(
 export function shortenToThree(text: string): string {
   return text.slice(0, 3);
 }
+
+export async function copyToClipboard(text: string): Promise<boolean> {
+  if (!text) return false;
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.select();
+    const successful = document.execCommand("copy");
+    document.body.removeChild(textArea);
+
+    return successful;
+  } catch (error) {
+    console.error("Copy failed", error);
+    return false;
+  }
+}

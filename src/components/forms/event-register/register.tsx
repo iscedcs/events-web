@@ -38,6 +38,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
   const [event, setEvent] = useState<SingleEventProps>();
   const [selectedTicket, setSelectedTicket] = useState<string>("");
   const [ticketInfo, setTicketInfo] = useState<SingleTicketProps>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -45,7 +46,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
       setUser(userData);
     };
     fetchUser();
-  }, [session.data?.user.id]);
+  }, [session]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -189,7 +190,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
                   type="submit"
                   className=" w-full rounded-[12px] font-semibold py-[24px] "
                 >
-                  Continue
+                  Register
                 </Button>
               </div>
             </form>

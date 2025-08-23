@@ -602,3 +602,11 @@ export const DUMMYTRENDINGEVENTS: TrendingEventsProps[] = [
     path: "",
   },
 ];
+
+export const TICKETTANDC = [
+  "Tickets must be purchased from authorized sellers.",
+  "No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
+  "A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
+  "No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
+  "A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
+];

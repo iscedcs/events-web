@@ -18,7 +18,7 @@ export default function Header({ title, user, hasBack }: HederType) {
     <div className=" flex fixed z-50 w-full left-0 top-0 items-center justify-between px-[20px] py-[10px] bg-secondary">
       <div className=" flex gap-2 items-center">
         {hasBack && <BackButton className=" w-[18px] h-[18px]" />}
-        <p className=" capitalize text-[12px]">{title}</p>
+        <p className=" line-clamp-1 capitalize text-[12px]">{title.toLowerCase()}</p>
       </div>
 
       <div className=" flex items-center gap-4">
