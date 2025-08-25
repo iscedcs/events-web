@@ -409,7 +409,7 @@ export default function IndividualSignUpForm({
       const data = await res.json();
       if (res.ok) {
         setIsLoading(false);
-        router.push("/user/events");
+        // router.push("/user/events");
         console.log("ACCOUNT INFORMATION", data);
         return data;
       }

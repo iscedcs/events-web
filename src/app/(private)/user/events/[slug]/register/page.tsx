@@ -3,6 +3,8 @@ import Header from "@/components/shared/layout/header";
 import { SingleEventProps } from "@/lib/types/event";
 import { format } from "date-fns";
 import Image from "next/image";
+import { redirect } from "next/navigation";
+import { checkEventAttendee } from "../../../../../../../actions/attendee";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { getUserByID } from "../../../../../../../actions/user";
 import { auth } from "../../../../../../../auth";
@@ -14,7 +16,11 @@ export default async function Register(props: { params: Params }) {
   const params = await props.params;
   const event: SingleEventProps = await getEventsByCleanName(params.slug ?? "");
   const user = await getUserByID(session?.user.id ?? "");
+  const check = await checkEventAttendee(session?.user.id ?? "", params.slug);
 
+  if (check) {
+    redirect(`/user/events/${params.slug}`);
+  }
   return (
     <div className="">
       <Header hasBack title={event?.title.toLowerCase()} user={user} />

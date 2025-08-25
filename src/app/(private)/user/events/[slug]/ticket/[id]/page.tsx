@@ -2,8 +2,7 @@ import Header from "@/components/shared/layout/header";
 import { Button } from "@/components/ui/button";
 import CopyButton from "@/components/ui/secondary/copy-button";
 import { TICKETTANDC } from "@/lib/const";
-import { SingleTicketProps } from "@/lib/types/event";
-import { copyToClipboard } from "@/lib/utils";
+import { SingleAttendeeProps, SingleTicketProps } from "@/lib/types/event";
 import { format } from "date-fns/format";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,21 +10,35 @@ import { LuTicket } from "react-icons/lu";
 import { MdOutlineMessage } from "react-icons/md";
 import { PiCrownBold } from "react-icons/pi";
 import { RxCaretRight } from "react-icons/rx";
-import { getTicketByID } from "../../../../../../../actions/tickets";
-import { getUserByID } from "../../../../../../../actions/user";
-import { auth } from "../../../../../../../auth";
+import {
+  getAttendeeID,
+  getAttendeesEventID,
+} from "../../../../../../../../actions/attendee";
+import { getTicketByID } from "../../../../../../../../actions/tickets";
+import { getUserByID } from "../../../../../../../../actions/user";
+import { auth } from "../../../../../../../../auth";
 
-export default async function Ticket() {
+type Params = Promise<{ id: string }>;
+
+export default async function Ticket(props: { params: Params }) {
+  const params = await props.params;
+
   const session = await auth();
   const user = await getUserByID(session?.user.id ?? "");
-  const ticket: SingleTicketProps = await getTicketByID(
-    "ab37b92f-3976-45e5-8d98-da8f183022fa"
+  const ticket: SingleTicketProps = await getTicketByID(params.id);
+  const attendees: SingleAttendeeProps[] = await getAttendeesEventID(
+    ticket.event?.id ?? ""
   );
-  const text = "BLK21738745123";
 
-  const handleCopy = async () => {
-    await copyToClipboard(text);
-  };
+  const singleAttendeeID =
+    attendees.find((attendee) => attendee.userId === session?.user.id)?.id ??
+    "";
+
+  const attendee: SingleAttendeeProps = await getAttendeeID(singleAttendeeID);
+
+  console.log({ singleAttendeeID });
+
+  const token = attendee.token;
 
   return (
     <div>
@@ -79,18 +92,23 @@ export default async function Ticket() {
               </div>
               <div className="">
                 <p className=" text-[14px] text-accent">Time</p>
-                <p className="text-[16px]">{ticket.event?.time}</p>
+                <p className="text-[16px]">
+                  {ticket.event?.time ?? "No time provided"}
+                </p>
               </div>
             </div>
             <div className=" flex justify-between items-end mt-[20px]">
               <div className="">
                 <p className=" text-[14px] text-accent">Access Code</p>
                 <div className=" flex gap-2 items-center">
-                  <p>{text}</p>
-                  <CopyButton height="16" width="16" text={text} />
+                  <p>{token}</p>
+                  <CopyButton height="16" width="16" text={token} />
                 </div>
               </div>
-              <Link href="" className=" flex items-center gap-2">
+              <Link
+                href={`/user/events/${ticket.event?.cleanName.toLowerCase()}`}
+                className=" flex items-center gap-2"
+              >
                 <p className=" text-[14px]">View events page</p>
                 <RxCaretRight />
               </Link>

@@ -21,16 +21,22 @@ import { SingleEventProps, SingleTicketProps } from "@/lib/types/event";
 import { UserProps } from "@/lib/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LuTicket } from "react-icons/lu";
 import { PiCrownBold } from "react-icons/pi";
 import { RxCaretRight } from "react-icons/rx";
+import { TbLoader2 } from "react-icons/tb";
+import { toast } from "sonner";
 import z from "zod";
 import { getEventsByCleanName } from "../../../../actions/events";
 import { getTicketByID } from "../../../../actions/tickets";
 import { getUserByID } from "../../../../actions/user";
 
+export type eventRegistrationFormValues = z.infer<
+  typeof eventRegistrationFormSchema
+>;
 export default function EventRegistrationForm({ slug }: { slug: string }) {
   const session = useSession();
   const [user, setUser] = useState<UserProps>();
@@ -39,11 +45,19 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
   const [selectedTicket, setSelectedTicket] = useState<string>("");
   const [ticketInfo, setTicketInfo] = useState<SingleTicketProps>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadUser, setLoadUser] = useState<boolean>(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await getUserByID(session.data?.user.id ?? "");
       setUser(userData);
+      if (userData) {
+        setLoadUser(false);
+      } else {
+        setLoadUser(true);
+      }
     };
     fetchUser();
   }, [session]);
@@ -64,10 +78,6 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
     if (selectedTicket) fetchTicket();
   }, [selectedTicket]);
 
-  type eventRegistrationFormValues = z.infer<
-    typeof eventRegistrationFormSchema
-  >;
-
   console.log({ user });
 
   const form = useForm<eventRegistrationFormValues>({
@@ -75,6 +85,13 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
     defaultValues: {
       email: user?.email ?? "",
       name: user?.firstName ?? "",
+      displayPicture: user?.displayPicture ?? "",
+      eventId: ticketInfo?.event?.id,
+      eventName: ticketInfo?.event?.title ?? "",
+      image: user?.displayPicture ?? "",
+      phone: user?.phone ?? "",
+      ticketId: selectedTicket,
+      userId: session.data?.user.id,
     },
     mode: "all",
   });
@@ -92,8 +109,49 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
   console.log({ eventTicket });
   console.log({ selectedTicket });
 
-  const handleSubmit = (data: eventRegistrationFormValues) => {
-    console.log({ data });
+  const handleSubmit = async (data: eventRegistrationFormValues) => {
+    const payload = {
+      eventId: ticketInfo?.event?.id,
+      eventName: ticketInfo?.event?.title,
+      userId: session.data?.user.id,
+      image: "",
+      name: data.name,
+      email: data.email,
+      phone: user?.phone,
+      ticketId: selectedTicket,
+      displayPicture: user?.displayPicture,
+    };
+    try {
+      setLoading(true);
+      const res = await fetch("/api/attendee/new", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(payload, data);
+      if (res.ok && selectedTicket !== "") {
+        toast.success(`You are now an attendee`, {
+          description: `You have joined ${ticketInfo?.event?.title} successfully`,
+        });
+        setLoading(false);
+        router.push(
+          `/user/events/${ticketInfo?.event?.cleanName.toLowerCase()}/ticket/${selectedTicket}`
+        );
+      } else {
+        toast.error("Unable to register you for this event", {
+          description: `There was a problem registering your for this event`,
+        });
+        form.reset();
+        router.refresh();
+      }
+    } catch (e: any) {
+      form.reset();
+      router.refresh();
+      console.log("Error registering for event", e);
+    }
   };
 
   return (
@@ -102,6 +160,13 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
         <p className=" font-extrabold text-[24px]">
           Provide your info for the event
         </p>
+        {loadUser && (
+          <div className=" flex text-accent gap-2 items-center">
+            <TbLoader2 className=" w-[15px] h-[15px] animate-spin" />
+            <p className=" text-[14px]">Fetching your information</p>
+          </div>
+        )}
+
         <div className=" relative h-[600px] ">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -188,9 +253,17 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
               <div className=" absolute bottom-0 mb-[30px] w-full">
                 <Button
                   type="submit"
+                  disabled={loading || selectedTicket === ""}
                   className=" w-full rounded-[12px] font-semibold py-[24px] "
                 >
-                  Register
+                  {loading ? (
+                    <div className=" flex items-center gap-2">
+                      <TbLoader2 className=" w-[22px] h-[22px] animate-spin" />
+                      Registering
+                    </div>
+                  ) : (
+                    <div className="">Register</div>
+                  )}
                 </Button>
               </div>
             </form>

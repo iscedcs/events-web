@@ -29,12 +29,13 @@ export interface SingleEventProps {
   updatedAt: Date;
   audienceSize: number;
   capacity: number;
-  categories: any[];
+  categories: string[];
   hasFreeTickets: boolean;
   platformLink: string;
   platformName: string;
   galleries: SingleGallaryProps[];
   tickets: SingleTicketProps[];
+  attendees: SingleAttendeeProps[];
 }
 
 export interface SingleTicketProps {

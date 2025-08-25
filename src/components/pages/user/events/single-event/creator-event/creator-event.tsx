@@ -1,6 +1,6 @@
 import { SingleEventProps } from "@/lib/types/event";
-import { getEventsByCleanName } from "../../../../../../actions/events";
 import { format } from "date-fns/format";
+import { getEventsByCleanName } from "../../../../../../../actions/events";
 
 export default async function CreatorEvent({ slug }: { slug: string }) {
   const formattedProps = encodeURIComponent(slug);

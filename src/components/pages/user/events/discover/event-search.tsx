@@ -8,7 +8,6 @@ import { SingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
 import { useEffect, useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { IoSearch } from "react-icons/io5";
-import { getAttendeeImagesByEventID } from "../../../../../../actions/attendee";
 import { searchForEvents } from "../../../../../../actions/events";
 import EventSearchResults from "./event-search-results";
 
@@ -49,15 +48,6 @@ export default function EventSearch() {
   const eventID =
     events?.find((event) => event.cleanName === searchValue)?.id ?? "";
 
-  const AttendeeImages = events?.map((item) => item);
-
-  useEffect(() => {
-    const fetchAttendeeImages = async () => {
-      const results = await getAttendeeImagesByEventID(eventID);
-      setImages(results);
-    };
-    fetchAttendeeImages();
-  }, []);
 
   console.log({ images });
 

@@ -5,4 +5,11 @@ export const eventRegistrationFormSchema = z.object({
   email: z.email({
     message: "Email address is not valid.",
   }),
+  eventId: z.string().optional(),
+  eventName: z.string().optional(),
+  userId: z.string().optional(),
+  image: z.string().optional(),
+  phone: z.string().optional(),
+  ticketId: z.string().optional(),
+  displayPicture: z.string().optional(),
 });

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
 import { SingleEventProps } from "@/lib/types/event";
 import { format } from "date-fns";
@@ -7,22 +6,73 @@ import Link from "next/link";
 import { AiFillInstagram } from "react-icons/ai";
 import { BsGlobe } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
-import { HiTicket } from "react-icons/hi2";
 import { IoLogoLinkedin } from "react-icons/io";
-import { MdOutlineArrowOutward } from "react-icons/md";
+import { MdOutlineArrowOutward, MdOutlineChat } from "react-icons/md";
 import { PiMapPinFill } from "react-icons/pi";
-import { getEventsByCleanName } from "../../../../../../actions/events";
+import { checkEventAttendee } from "../../../../../../../actions/attendee";
+import { getEventsByCleanName } from "../../../../../../../actions/events";
+import { auth } from "../../../../../../../auth";
+import EventRegistrationCTA from "./event-registration-cta";
+import ViewTicket from "./view-ticket";
 
 export default async function EventRegistration({ slug }: { slug: string }) {
   const event: SingleEventProps = await getEventsByCleanName(slug ?? "");
+  const session = await auth();
+  const userId = session?.user.id ?? "";
+
+  console.log({ userId });
+
+  const check = await checkEventAttendee(userId, slug);
+  const ticketId =
+    event.attendees.find((attendee) => attendee.userId === userId)?.ticketId ??
+    "";
+
+  console.log({ ticketId });
+
   return (
-    <div>
-      <div className=" px-[10px] mt-[70px]">
-        {/* <p>{slug}</p> */}
-        <Link className=" text-[12px] flex gap-2 items-center" href={""}>
-          Host your event
-          <MdOutlineArrowOutward />
+    <div className=" ">
+      {check?.check && (
+        <Link
+          href={""}
+          className=" flex gap-4 items-center bg-secondary mt-[56px] py-[10px]  px-[10px] "
+        >
+          <div className="">
+            <Image
+              src={
+                event.image?.startsWith("http") || event.image?.startsWith("/")
+                  ? event.image
+                  : "/no-image.jpg"
+              }
+              alt="image"
+              width={"1000"}
+              height={"1000"}
+              className=" w-[48px] border border-white h-[48px] rounded-full object-cover"
+            />
+          </div>
+          <div className="">
+            <p className=" text-[16px] font-medium">Event Chat</p>
+            <p className=" text-accent text-[12px]">
+              Join others and participate in event discussions.
+            </p>
+          </div>
+          <div className="">
+            <MdOutlineChat className=" w-[20px] h-[20px]" />
+          </div>
         </Link>
+      )}
+      <div className=" px-[10px] ">
+        <div className="  relative">
+          {!check?.check && (
+            <Link
+              className=" text-[12px] mt-[70px] flex gap-2 itesms-center"
+              href={""}
+            >
+              Host your event
+              <MdOutlineArrowOutward />
+            </Link>
+          )}
+        </div>
+
         <div className=" mt-[20px]">
           <Image
             src={
@@ -87,44 +137,11 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                 </p>
               </div>
             </div>
-            <div className=" mt-[30px] rounded-[20px] overflow-hidden  border border-accent  ">
-              <div className=" bg-secondary">
-                <p className=" px-[20px] py-[10px] text-[14px]">
-                  Registration Information
-                </p>
-              </div>
-              <div className="px-[20px] flex items-center gap-2 py-[20px]">
-                <div className=" w-[32px] rounded-[12px] h-[32px] flex items-center justify-center bg-secondary border border-accent">
-                  <HiTicket className=" w-[20px] h-[20px]" />
-                </div>
-                <div className="">
-                  <p className=" text-[14px]">
-                    Event admission is still ongoing
-                  </p>
-                  <p className=" text-[10px]">
-                    If you’d like, you can still register.
-                  </p>
-                </div>
-              </div>
-              <hr className=" h-[0.5px]" />
-
-              <div className=" px-[20px] flex gap-4 flex-col py-[15px]">
-                <p className=" text-[14px]">
-                  Please click on the button below to register for the event.
-                  You will recieve an email notification for your entry
-                </p>
-                <Button
-                  asChild
-                  className=" rounded-[12px] py-[25px] font-semibold text-[16px]"
-                >
-                  <Link
-                    href={`/user/events/${event.cleanName.toLowerCase()}/register`}
-                  >
-                    Register for event
-                  </Link>
-                </Button>
-              </div>
-            </div>
+            {check?.check ? (
+              <ViewTicket slug={slug} ticketId={ticketId} />
+            ) : (
+              <EventRegistrationCTA slug={slug} />
+            )}
             <div className=" mt-[10px]">
               <p className=" py-[20px]">About Event</p>
               <hr className=" h-[0.5px]" />

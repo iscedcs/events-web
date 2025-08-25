@@ -16,36 +16,53 @@ const { auth } = NextAuth(authConfig);
 export default auth(async (req) => {
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   const { nextUrl } = req;
+  const pathname = nextUrl.pathname;
+
   const isLoggedIn = !!req.auth;
+  const isAuth = !!token;
 
   const userRole: userType | undefined = token?.userType as
     | userType
     | undefined;
-  const isApiRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-  const isProtectedRoute = protectedRoutes.includes(nextUrl.pathname);
+
+  const isApiRoute = pathname.startsWith(apiAuthPrefix);
+  const isPublicRoute = publicRoutes.includes(pathname);
+  const isAuthRoute = authRoutes.includes(pathname);
+  const isProtectedRoute = protectedRoutes.includes(pathname);
 
   if (isApiRoute) {
     return;
   }
 
   if (isAuthRoute) {
-    if (isLoggedIn && userRole === "USER") {
-      return Response.redirect(new URL(defaultUserRoute, nextUrl));
-    } else if (isLoggedIn && userRole === "BUSINESS_USER") {
-      return Response.redirect(new URL(defaultBusinessUserRoute, nextUrl));
+    const hasCallbackUrl = nextUrl.searchParams.has("callbackUrl");
+
+    if (isLoggedIn && !hasCallbackUrl) {
+      if (userRole === "USER") {
+        return Response.redirect(new URL(defaultUserRoute, nextUrl));
+      }
+      if (userRole === "BUSINESS_USER") {
+        return Response.redirect(new URL(defaultBusinessUserRoute, nextUrl));
+      }
     }
+
     return;
+  }
+
+  if (!isAuth && !pathname.startsWith("/sign-in")) {
+    const signInUrl = new URL("/sign-in", req.url);
+    signInUrl.searchParams.set("callbackUrl", pathname);
+    return Response.redirect(signInUrl);
   }
 
   if (isLoggedIn && userRole === "USER" && isPublicRoute) {
     return Response.redirect(new URL(defaultUserRoute, nextUrl));
-  } else if (isLoggedIn && userRole === "USER" && isPublicRoute) {
+  }
+  if (isLoggedIn && userRole === "BUSINESS_USER" && isPublicRoute) {
     return Response.redirect(new URL(defaultBusinessUserRoute, nextUrl));
   }
 
-  if (!isLoggedIn && !isPublicRoute) {
+  if (!isLoggedIn && isProtectedRoute) {
     return Response.redirect(new URL("/sign-in", nextUrl));
   }
 });
