@@ -11,7 +11,9 @@ import { MdOutlineArrowOutward, MdOutlineChat } from "react-icons/md";
 import { PiMapPinFill } from "react-icons/pi";
 import { checkEventAttendee } from "../../../../../../../actions/attendee";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
+import { checkWatchList } from "../../../../../../../actions/watchlist";
 import { auth } from "../../../../../../../auth";
+import BookmarkButton from "./bookmark-button";
 import EventRegistrationCTA from "./event-registration-cta";
 import ViewTicket from "./view-ticket";
 
@@ -26,9 +28,13 @@ export default async function EventRegistration({ slug }: { slug: string }) {
   const ticketId =
     event.attendees.find((attendee) => attendee.userId === userId)?.ticketId ??
     "";
+  const watchListCheck: boolean = await checkWatchList(event.id);
 
   console.log({ ticketId });
 
+  console.log({ watchListCheck });
+
+  console.log(event.id);
   return (
     <div className=" ">
       {check?.check && (
@@ -61,15 +67,26 @@ export default async function EventRegistration({ slug }: { slug: string }) {
         </Link>
       )}
       <div className=" px-[10px] ">
-        <div className="  relative">
+        <div className="">
           {!check?.check && (
-            <Link
-              className=" text-[12px] mt-[70px] flex gap-2 itesms-center"
-              href={""}
-            >
-              Host your event
-              <MdOutlineArrowOutward />
-            </Link>
+            <div className=" flex mt-[70px] justify-between flex-row w-full">
+              <div className="">
+                <Link
+                  className=" text-[12px]  flex gap-2 items-center"
+                  href={""}
+                >
+                  Host your event
+                  <MdOutlineArrowOutward />
+                </Link>
+              </div>
+              <div className="">
+                <BookmarkButton
+                  eventDate={event.startDate}
+                  isClicked={watchListCheck ?? false}
+                  eventId={event.id}
+                />
+              </div>
+            </div>
           )}
         </div>
 

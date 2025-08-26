@@ -137,6 +137,33 @@ export const getEventsByCleanName = async (slug: string) => {
   }
 };
 
+export const getEventsWithAttendeesByCleanName = async (slug: string) => {
+  const url = `${EVENTS_API}${URLS.events.all_events_with_attendee.replace(
+    "{cleanName}",
+    slug
+  )}`;
+  const session = await auth();
+  const BEARER_TOKEN = session?.user.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    console.log({ data });
+    if (data.success) {
+      // console.log(data.data);
+      return data.data;
+    } else return null;
+  } catch (e: any) {
+    console.log("Unable to fetch Event information by slug", e);
+  }
+};
+
 export const searchForEvents = async (value: string) => {
   const session = await auth();
   const BEARER_TOKEN = session?.user.accessToken;

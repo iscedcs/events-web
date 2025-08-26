@@ -27,6 +27,7 @@ export const URLS = {
     update: "/events/{id}/update",
     all: "/events/all",
     all_events_user: "/events/events",
+    all_events_with_attendee: "/events/clean-name/attendees/{cleanName}",
     one: "/events/one/{id}",
     events_search: "/events/search",
     category: "/events/categories",
@@ -64,6 +65,13 @@ export const URLS = {
   tickets: {
     all_ticket_for_event: "/tickets/event/{eventId}",
     ticket_by_id: "/tickets/{id}",
+  },
+  watchlist: {
+    add_watchlist: "/watchlist/add",
+    remove_watchlist: "/watchlist/remove",
+    all_watchlist: "/watchlist/my-watchlist",
+    single_watchlist: "/watchlist/item/{eventId}",
+    event_watchlist_check: "/watchlist/check/{eventId}",
   },
 };
 

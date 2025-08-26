@@ -57,3 +57,13 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     return false;
   }
 }
+
+export function isPastDate(pastDateISO: Date): boolean {
+  const today = new Date();
+  const pastDate = new Date(pastDateISO);
+
+  today.setHours(0, 0, 0, 0);
+  pastDate.setHours(0, 0, 0, 0);
+
+  return today > pastDate;
+}

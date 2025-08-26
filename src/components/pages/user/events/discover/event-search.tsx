@@ -4,7 +4,7 @@ import EventSearchList from "@/components/skeletons/event-search-list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { SingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
+import { SingleEventProps } from "@/lib/types/event";
 import { useEffect, useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { IoSearch } from "react-icons/io5";
@@ -16,7 +16,6 @@ export default function EventSearch() {
   const [searchValue, setSearchValue] = useState("");
   const [events, setEvents] = useState<SingleEventProps[]>();
   const [loading, setLoading] = useState(false);
-  const [images, setImages] = useState<SingleAttendeeProps[]>();
 
   const handleSearchToggle = () => {
     setCloseSearch(!closeSearch);
@@ -47,9 +46,6 @@ export default function EventSearch() {
 
   const eventID =
     events?.find((event) => event.cleanName === searchValue)?.id ?? "";
-
-
-  console.log({ images });
 
   // console.log({ searchValue });
   return (
@@ -105,22 +101,6 @@ export default function EventSearch() {
                       No cards to show
                     </p>
                   )}
-                  {/* <EventSearchResults
-              title="A title that is soo longggggggg sdskdosndsodksdk"
-              host="Onyeka Divine"
-              cleanName="dwdsd"
-              image="/no-image.jpg"
-              attendeeImages={[
-                "https://t3.ftcdn.net/jpg/02/99/04/20/360_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",
-                "https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg",
-                "https://marketplace.canva.com/MAC1I53J0Pg/1/thumbnail_large-1/canva-smiling-man-portrait-MAC1I53J0Pg.jpg",
-                "https://marketplace.canva.com/MAC1I53J0Pg/1/thumbnail_large-1/canva-smiling-man-portrait-MAC1I53J0Pg.jpg",
-                "https://marketplace.canva.com/MAC1I53J0Pg/1/thumbnail_large-1/canva-smiling-man-portrait-MAC1I53J0Pg.jpg",
-              ]}
-              location="A place dfindofmnjd fidfndifdf dfindifjdfidjfijd"
-              time="2:00PM"
-              attendeeNumber="100"
-            /> */}
                 </div>
               </ScrollArea>
             )}
