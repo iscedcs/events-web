@@ -51,6 +51,7 @@ export interface SingleTicketProps {
   createdAt: Date;
   updatedAt: Date;
   event?: SingleEventProps;
+  attendee?: SingleAttendeeProps[];
 }
 
 export interface SingleGallaryProps {
@@ -82,6 +83,16 @@ export interface SingleAttendeeProps {
   checkedOut: Date;
   checkedIn: Date;
   displayPicture: Date;
+}
+
+export interface SingleUserWatchlistProps {
+  id: string;
+  userId: string;
+  eventId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+  event: SingleEventProps;
 }
 
 export interface EventSearchItemProps {

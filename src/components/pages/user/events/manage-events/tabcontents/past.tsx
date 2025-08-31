@@ -1,33 +1,63 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import EventCard from "@/components/shared/event/event-card";
+import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
-import { useRouter } from "next/navigation";
+import { SingleTicketProps } from "@/lib/types/event";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { getPastTicketsByUserID } from "../../../../../../../actions/tickets";
+import EmptyState from "../empty-state";
 
 export default function Past() {
-  //   const searchParams = useSearchParams();
+  const [pastTicket, setPastTicket] = useState<SingleTicketProps[]>([]);
+  const [loading, setLoading] = useState(true);
+  const session = useSession();
+  const userID = session.data?.user.id;
 
-  const router = useRouter();
+  useEffect(() => {
+    const fetchPastEvents = async () => {
+      try {
+        const ticketData = await getPastTicketsByUserID(userID ?? "");
+        setPastTicket(ticketData ?? []);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userID) fetchPastEvents();
+  }, [userID]);
+
+  if (!loading && pastTicket.length === 0) {
+    return <EmptyState />;
+  }
 
   return (
-    <div className=" text-center  h-[calc(100vh_-(_55px+50px+51px+44px))]  overflow-hidden flex items-center justify-between">
+    <>
       <div className=" px-[10px] absolute top-0 right-0">
         <EventCalendar eventType="past" type="multiple" />
       </div>
 
-      <div className="">
-        <p className=" text-accent text-[24px]">
-          Host, attend and bookmark events near you to get started
-        </p>
-        <Button
-          onClick={() => {
-            router.push("/user/events?tab=discover");
-          }}
-          className=" text-[12px] mt-[20px]"
-        >
-          Discover events
-        </Button>
-      </div>
-    </div>
+      {loading ? (
+        <div className=" mt-[20px]">
+          <EventCardSkeleton />
+        </div>
+      ) : (
+        <div className=" grid-cols-1 grid gap-[30px] mt-[20px] ">
+          {pastTicket.map((ticket) => (
+            <div key={ticket.id}>
+              <EventCard
+                id={ticket.id}
+                link={`/user/events/${ticket.event?.cleanName.toLowerCase()}/ticket/${
+                  ticket.id
+                }`}
+                cardType="past"
+              />
+              <hr className=" mt-[25px]" />
+            </div>
+          ))}
+        </div>
+      )}
+    </>
   );
 }

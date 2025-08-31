@@ -42,7 +42,7 @@ export default function ManageEvents() {
             <Interested />
           </TabsContent>
           <TabsContent value="pastEvents">
-            <Past />
+            <Past />  
           </TabsContent>
         </Tabs>
       </div>

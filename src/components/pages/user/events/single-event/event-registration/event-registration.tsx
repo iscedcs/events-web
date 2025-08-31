@@ -13,7 +13,7 @@ import { checkEventAttendee } from "../../../../../../../actions/attendee";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { checkWatchList } from "../../../../../../../actions/watchlist";
 import { auth } from "../../../../../../../auth";
-import BookmarkButton from "./bookmark-button";
+import BookmarkButton from "../../../../../ui/secondary/bookmark-button";
 import EventRegistrationCTA from "./event-registration-cta";
 import ViewTicket from "./view-ticket";
 
@@ -25,6 +25,9 @@ export default async function EventRegistration({ slug }: { slug: string }) {
   console.log({ userId });
 
   const check = await checkEventAttendee(userId, slug);
+
+  console.log({ check });
+
   const ticketId =
     event.attendees.find((attendee) => attendee.userId === userId)?.ticketId ??
     "";

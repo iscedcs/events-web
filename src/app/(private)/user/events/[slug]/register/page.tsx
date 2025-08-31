@@ -18,9 +18,10 @@ export default async function Register(props: { params: Params }) {
   const user = await getUserByID(session?.user.id ?? "");
   const check = await checkEventAttendee(session?.user.id ?? "", params.slug);
 
-  if (check) {
+  if (check?.check) {
     redirect(`/user/events/${params.slug}`);
   }
+
   return (
     <div className="">
       <Header hasBack title={event?.title.toLowerCase()} user={user} />

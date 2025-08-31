@@ -1,33 +1,61 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import EventCard from "@/components/shared/event/event-card";
+import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
-import { useRouter } from "next/navigation";
+import { SingleUserWatchlistProps } from "@/lib/types/event";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { getWatchlistUserID } from "../../../../../../../actions/watchlists";
+import EmptyState from "../empty-state";
 
 export default function Interested() {
-  //   const searchParams = useSearchParams();
+  const [watchlists, setWatchlists] = useState<SingleUserWatchlistProps[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const router = useRouter();
+  const session = useSession();
+
+  useEffect(() => {
+    const fetchWatchlists = async () => {
+      try {
+        setLoading(true);
+        const watchlistsData = await getWatchlistUserID();
+        setWatchlists(watchlistsData ?? []);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchWatchlists();
+  }, [session]);
+
+  if (!loading && watchlists.length === 0) {
+    return <EmptyState />;
+  }
 
   return (
-    <div className=" text-center  h-[calc(100vh_-(_55px+50px+51px+44px))]  overflow-hidden flex items-center justify-between">
-      <div className=" px-[10px] absolute top-0 right-0">
+    <>
+      <div className="px-[10px] absolute top-0 right-0">
         <EventCalendar eventType="interested" type="multiple" />
       </div>
 
-      <div className="">
-        <p className=" text-accent text-[24px]">
-          Host, attend and bookmark events near you to get started
-        </p>
-        <Button
-          onClick={() => {
-            router.push("/user/events?tab=discover");
-          }}
-          className=" text-[12px] mt-[20px]"
-        >
-          Discover events
-        </Button>
-      </div>
-    </div>
+      {loading ? (
+        <div className=" mt-[20px]">
+          <EventCardSkeleton />
+        </div>
+      ) : (
+        <div className="grid-cols-1 grid gap-[30px] mt-[20px]">
+          {watchlists.map((watchlist) => (
+            <div key={watchlist.id}>
+              <EventCard
+                id={watchlist.event.id}
+                link={`/user/events/${watchlist.event.cleanName.toLowerCase()}`}
+                cardType="interested"
+              />
+              <hr className="mt-[25px]" />
+            </div>
+          ))}
+        </div>
+      )}
+    </>
   );
 }

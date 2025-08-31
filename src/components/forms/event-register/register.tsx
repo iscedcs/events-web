@@ -84,7 +84,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
     resolver: zodResolver(eventRegistrationFormSchema),
     defaultValues: {
       email: user?.email ?? "",
-      name: user?.firstName ?? "",
+      name: `${user?.firstName ?? ""}${user?.lastName ?? ""}`,
       displayPicture: user?.displayPicture ?? "",
       eventId: ticketInfo?.event?.id,
       eventName: ticketInfo?.event?.title ?? "",
@@ -144,8 +144,9 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
         toast.error("Unable to register you for this event", {
           description: `There was a problem registering your for this event`,
         });
-        form.reset();
-        router.refresh();
+        router.push(
+          `/user/events/${ticketInfo?.event?.cleanName.toLowerCase()}`
+        );
       }
     } catch (e: any) {
       form.reset();

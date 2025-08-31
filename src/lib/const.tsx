@@ -65,6 +65,7 @@ export const URLS = {
   tickets: {
     all_ticket_for_event: "/tickets/event/{eventId}",
     ticket_by_id: "/tickets/{id}",
+    all_ticket_user: "/tickets/user/{userId}",
   },
   watchlist: {
     add_watchlist: "/watchlist/add",

@@ -59,13 +59,14 @@ export default async function Ticket(props: { params: Params }) {
               height={1000}
             />
             <div className=" flex flex-col">
-              <div className={` flex items-center`}>
+              <div className={` flex gap-2 items-center`}>
+                <p className=" text-accent text-[12px]">{ticket.title}</p>
                 {ticket.isFree ? (
                   <div className=" bg-success px-[8px] py-[3px] rounded-[12px]">
                     <LuTicket className="  w-[15px] h-[15px]" />
                   </div>
                 ) : (
-                  <div className="  bg-[#F9AA4B]">
+                  <div className="px-[8px] py-[3px] rounded-[12px]  bg-[#F9AA4B]">
                     <PiCrownBold className=" w-[15px] h-[15px]" />
                   </div>
                 )}

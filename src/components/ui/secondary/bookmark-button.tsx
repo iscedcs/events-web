@@ -67,7 +67,6 @@ export default function BookmarkButton({
       if (data.success) {
         setClicked(false);
         router.refresh();
-
         toast.success("Event removed from your bookmarks");
       } else if (data.status === 401) {
         setClicked(false);
@@ -75,6 +74,7 @@ export default function BookmarkButton({
         toast.error(data.error);
       } else {
         setClicked(true);
+        router.refresh();
         toast.error("Event wasn't added to bookmarks");
       }
     } catch (e: any) {
