@@ -99,430 +99,493 @@ export const PASSWORDCHECK = [
   },
 ];
 
+// export const CATEGORIES = [
+//   {
+//     name: "Featured",
+//     value: "featured",
+//   },
+//   {
+//     name: "Conferences",
+//     value: "conferences",
+//   },
+//   {
+//     name: "Seminars",
+//     value: "seminars",
+//   },
+//   {
+//     name: "Workshops",
+//     value: "workshops",
+//   },
+//   {
+//     name: "Trade Shows",
+//     value: "trade-shows",
+//   },
+//   {
+//     name: "Expos",
+//     value: "expos",
+//   },
+//   {
+//     name: "Product Launches",
+//     value: "product-launches",
+//   },
+//   {
+//     name: "Networking Events",
+//     value: "networking",
+//   },
+//   {
+//     name: "Corporate Retreats",
+//     value: "corporate-retreats",
+//   },
+//   {
+//     name: "Team Building",
+//     value: "team-building",
+//   },
+//   {
+//     name: "Award Ceremonies",
+//     value: "award-ceremonies",
+//   },
+//   {
+//     name: "Board Meetings",
+//     value: "board-meetings",
+//   },
+//   {
+//     name: "Shareholder Meetings",
+//     value: "shareholder-meetings",
+//   },
+//   {
+//     name: "Weddings",
+//     value: "weddings",
+//   },
+//   {
+//     name: "Engagement Parties",
+//     value: "engagement-parties",
+//   },
+//   {
+//     name: "Birthday Parties",
+//     value: "birthday-parties",
+//   },
+//   {
+//     name: "Anniversary Celebrations",
+//     value: "anniversaries",
+//   },
+//   {
+//     name: "Baby Showers",
+//     value: "baby-showers",
+//   },
+//   {
+//     name: "Family Reunions",
+//     value: "family-reunions",
+//   },
+//   {
+//     name: "Graduation Parties",
+//     value: "graduation-parties",
+//   },
+//   {
+//     name: "Memorial Services",
+//     value: "memorial-services",
+//   },
+//   {
+//     name: "Festivals",
+//     value: "festivals",
+//   },
+//   {
+//     name: "Cultural Celebrations",
+//     value: "cultural-celebrations",
+//   },
+//   {
+//     name: "Art Exhibitions",
+//     value: "art-exhibitions",
+//   },
+//   {
+//     name: "Performing Arts",
+//     value: "performing-arts",
+//   },
+//   {
+//     name: "Concerts",
+//     value: "concerts",
+//   },
+//   {
+//     name: "Film Screenings",
+//     value: "film-screenings",
+//   },
+//   {
+//     name: "Theater Performances",
+//     value: "theater-performances",
+//   },
+//   {
+//     name: "Literary Readings",
+//     value: "literary-readings",
+//   },
+//   {
+//     name: "Sporting Events",
+//     value: "sporting-events",
+//   },
+//   {
+//     name: "Marathons",
+//     value: "marathons",
+//   },
+//   {
+//     name: "Fitness Events",
+//     value: "fitness-events",
+//   },
+//   {
+//     name: "E-Sports Tournaments",
+//     value: "e-sports-tournaments",
+//   },
+//   {
+//     name: "Charity Galas",
+//     value: "charity-galas",
+//   },
+//   {
+//     name: "Fundraising Dinners",
+//     value: "fundraising-dinners",
+//   },
+//   {
+//     name: "Benefit Concerts",
+//     value: "benefit-concerts",
+//   },
+//   {
+//     name: "Charity Walks",
+//     value: "charity-walks",
+//   },
+//   {
+//     name: "Volunteer Drives",
+//     value: "volunteer-drives",
+//   },
+//   {
+//     name: "Academic Conferences",
+//     value: "academic-conferences",
+//   },
+//   {
+//     name: "Guest Lectures",
+//     value: "guest-lectures",
+//   },
+//   {
+//     name: "Webinars",
+//     value: "webinars",
+//   },
+//   {
+//     name: "Science Fairs",
+//     value: "science-fairs",
+//   },
+//   {
+//     name: "Career Fairs",
+//     value: "career-fairs",
+//   },
+//   {
+//     name: "Hackathons",
+//     value: "hackathons",
+//   },
+//   {
+//     name: "Research Symposia",
+//     value: "research-symposia",
+//   },
+//   {
+//     name: "Public Holidays",
+//     value: "public-holidays",
+//   },
+//   {
+//     name: "School Holidays",
+//     value: "school-holidays",
+//   },
+//   {
+//     name: "Religious Observances",
+//     value: "religious-observances",
+//   },
+//   {
+//     name: "Seasonal Celebrations",
+//     value: "seasonal-celebrations",
+//   },
+//   {
+//     name: "Political Rallies",
+//     value: "political-rallies",
+//   },
+//   {
+//     name: "Town Hall Meetings",
+//     value: "town-hall-meetings",
+//   },
+//   {
+//     name: "Community Fairs",
+//     value: "community-fairs",
+//   },
+//   {
+//     name: "Parades",
+//     value: "parades",
+//   },
+//   {
+//     name: "Public Lectures",
+//     value: "public-lectures",
+//   },
+//   {
+//     name: "Farmers Markets",
+//     value: "farmers-markets",
+//   },
+//   {
+//     name: "Food Festivals",
+//     value: "food-festivals",
+//   },
+//   {
+//     name: "Virtual Conferences",
+//     value: "virtual-conferences",
+//   },
+//   {
+//     name: "Virtual Trade Shows",
+//     value: "virtual-trade-shows",
+//   },
+//   {
+//     name: "Hybrid Events",
+//     value: "hybrid-events",
+//   },
+//   {
+//     name: "Virtual Reality Events",
+//     value: "virtual-reality-events",
+//   },
+//   {
+//     name: "Live Streams",
+//     value: "live-streams",
+//   },
+//   {
+//     name: "Severe Weather Alerts",
+//     value: "severe-weather",
+//   },
+//   {
+//     name: "Disaster Response",
+//     value: "disasters",
+//   },
+//   {
+//     name: "Health Warnings",
+//     value: "health-warnings",
+//   },
+//   {
+//     name: "Protests",
+//     value: "protests",
+//   },
+//   {
+//     name: "Live TV Events",
+//     value: "live-tv-events",
+//   },
+//   {
+//     name: "Fashion Shows",
+//     value: "fashion-shows",
+//   },
+//   {
+//     name: "Tech Summits",
+//     value: "tech-summits",
+//   },
+//   {
+//     name: "Startup Pitches",
+//     value: "startup-pitches",
+//   },
+//   {
+//     name: "Book Launches",
+//     value: "book-launches",
+//   },
+//   {
+//     name: "Pop-Up Shops",
+//     value: "pop-up-shops",
+//   },
+//   {
+//     name: "Craft Fairs",
+//     value: "craft-fairs",
+//   },
+//   {
+//     name: "Gaming Conventions",
+//     value: "gaming-conventions",
+//   },
+//   {
+//     name: "Car Shows",
+//     value: "car-shows",
+//   },
+//   {
+//     name: "Pet Adoption Events",
+//     value: "pet-adoption",
+//   },
+//   {
+//     name: "Environmental Cleanups",
+//     value: "environmental-cleanups",
+//   },
+//   {
+//     name: "Tree Planting Events",
+//     value: "tree-planting",
+//   },
+//   {
+//     name: "Health and Wellness Retreats",
+//     value: "health-wellness-retreats",
+//   },
+//   {
+//     name: "Meditation and Yoga Events",
+//     value: "meditation-yoga",
+//   },
+//   {
+//     name: "International Summits",
+//     value: "international-summits",
+//   },
+//   {
+//     name: "Diplomatic Events",
+//     value: "diplomatic-events",
+//   },
+//   {
+//     name: "Historical Reenactments",
+//     value: "historical-reenactments",
+//   },
+//   {
+//     name: "Science and Technology Exhibitions",
+//     value: "science-tech-exhibitions",
+//   },
+//   {
+//     name: "Agricultural Shows",
+//     value: "agricultural-shows",
+//   },
+//   {
+//     name: "Home and Garden Shows",
+//     value: "home-garden-shows",
+//   },
+//   {
+//     name: "Travel and Adventure Expos",
+//     value: "travel-adventure-expos",
+//   },
+//   {
+//     name: "Wine and Food Tastings",
+//     value: "wine-food-tastings",
+//   },
+//   {
+//     name: "Street Performances",
+//     value: "street-performances",
+//   },
+//   {
+//     name: "Flash Mobs",
+//     value: "flash-mobs",
+//   },
+//   {
+//     name: "Silent Discos",
+//     value: "silent-discos",
+//   },
+//   {
+//     name: "Escape Room Events",
+//     value: "escape-room-events",
+//   },
+//   {
+//     name: "Trivia Nights",
+//     value: "trivia-nights",
+//   },
+//   {
+//     name: "Open Mic Nights",
+//     value: "open-mic-nights",
+//   },
+//   {
+//     name: "Karaoke Nights",
+//     value: "karaoke-nights",
+//   },
+//   {
+//     name: "Astronomy Events",
+//     value: "astronomy-events",
+//   },
+//   {
+//     name: "Community Service Days",
+//     value: "community-service-days",
+//   },
+//   {
+//     name: "Cultural Exchange Events",
+//     value: "cultural-exchange",
+//   },
+//   {
+//     name: "Makerspaces and DIY Workshops",
+//     value: "makerspaces-diy",
+//   },
+//   {
+//     name: "Parenting Workshops",
+//     value: "parenting-workshops",
+//   },
+//   {
+//     name: "Youth Camps",
+//     value: "youth-camps",
+//   },
+//   {
+//     name: "Senior Citizen Events",
+//     value: "senior-citizen-events",
+//   },
+//   {
+//     name: "LGBTQ+ Pride Events",
+//     value: "lgbtq-pride",
+//   },
+//   {
+//     name: "Indigenous Cultural Events",
+//     value: "indigenous-cultural",
+//   },
+//   {
+//     name: "Accessibility-Focused Events",
+//     value: "accessibility-focused",
+//   },
+//   {
+//     name: "Mental Health Awareness Events",
+//     value: "mental-health-awareness",
+//   },
+//   {
+//     name: "Grassroots Campaigns",
+//     value: "grassroots-campaigns",
+//   },
+// ];
+
 export const CATEGORIES = [
   {
     name: "Featured",
     value: "featured",
   },
   {
-    name: "Conferences",
-    value: "conferences",
-  },
-  {
-    name: "Seminars",
-    value: "seminars",
+    name: "Concerts",
+    value: "concerts",
   },
   {
     name: "Workshops",
     value: "workshops",
   },
   {
-    name: "Trade Shows",
-    value: "trade-shows",
-  },
-  {
-    name: "Expos",
-    value: "expos",
-  },
-  {
-    name: "Product Launches",
-    value: "product-launches",
-  },
-  {
-    name: "Networking Events",
-    value: "networking",
-  },
-  {
-    name: "Corporate Retreats",
-    value: "corporate-retreats",
-  },
-  {
-    name: "Team Building",
-    value: "team-building",
-  },
-  {
-    name: "Award Ceremonies",
-    value: "award-ceremonies",
-  },
-  {
-    name: "Board Meetings",
-    value: "board-meetings",
-  },
-  {
-    name: "Shareholder Meetings",
-    value: "shareholder-meetings",
-  },
-  {
-    name: "Weddings",
-    value: "weddings",
-  },
-  {
-    name: "Engagement Parties",
-    value: "engagement-parties",
-  },
-  {
-    name: "Birthday Parties",
-    value: "birthday-parties",
-  },
-  {
-    name: "Anniversary Celebrations",
-    value: "anniversaries",
-  },
-  {
-    name: "Baby Showers",
-    value: "baby-showers",
-  },
-  {
-    name: "Family Reunions",
-    value: "family-reunions",
-  },
-  {
-    name: "Graduation Parties",
-    value: "graduation-parties",
-  },
-  {
-    name: "Memorial Services",
-    value: "memorial-services",
-  },
-  {
     name: "Festivals",
     value: "festivals",
   },
   {
-    name: "Cultural Celebrations",
-    value: "cultural-celebrations",
+    name: "Exhibitions",
+    value: "exhibitions",
   },
   {
-    name: "Art Exhibitions",
-    value: "art-exhibitions",
+    name: "Conferences",
+    value: "conferences",
   },
   {
-    name: "Performing Arts",
-    value: "performing-arts",
+    name: "Sports",
+    value: "sports",
   },
   {
-    name: "Concerts",
-    value: "concerts",
+    name: "Networking",
+    value: "networking",
   },
   {
-    name: "Film Screenings",
-    value: "film-screenings",
+    name: "Theater",
+    value: "theater",
   },
   {
-    name: "Theater Performances",
-    value: "theater-performances",
+    name: "Wellness",
+    value: "wellness",
   },
   {
-    name: "Literary Readings",
-    value: "literary-readings",
+    name: "Charity",
+    value: "charity",
   },
   {
-    name: "Sporting Events",
-    value: "sporting-events",
+    name: "Parties",
+    value: "parties",
   },
   {
-    name: "Marathons",
-    value: "marathons",
+    name: "Seminars",
+    value: "seminars",
   },
   {
-    name: "Fitness Events",
-    value: "fitness-events",
+    name: "Markets",
+    value: "markets",
   },
   {
-    name: "E-Sports Tournaments",
-    value: "e-sports-tournaments",
-  },
-  {
-    name: "Charity Galas",
-    value: "charity-galas",
-  },
-  {
-    name: "Fundraising Dinners",
-    value: "fundraising-dinners",
-  },
-  {
-    name: "Benefit Concerts",
-    value: "benefit-concerts",
-  },
-  {
-    name: "Charity Walks",
-    value: "charity-walks",
-  },
-  {
-    name: "Volunteer Drives",
-    value: "volunteer-drives",
-  },
-  {
-    name: "Academic Conferences",
-    value: "academic-conferences",
-  },
-  {
-    name: "Guest Lectures",
-    value: "guest-lectures",
-  },
-  {
-    name: "Webinars",
-    value: "webinars",
-  },
-  {
-    name: "Science Fairs",
-    value: "science-fairs",
-  },
-  {
-    name: "Career Fairs",
-    value: "career-fairs",
-  },
-  {
-    name: "Hackathons",
-    value: "hackathons",
-  },
-  {
-    name: "Research Symposia",
-    value: "research-symposia",
-  },
-  {
-    name: "Public Holidays",
-    value: "public-holidays",
-  },
-  {
-    name: "School Holidays",
-    value: "school-holidays",
-  },
-  {
-    name: "Religious Observances",
-    value: "religious-observances",
-  },
-  {
-    name: "Seasonal Celebrations",
-    value: "seasonal-celebrations",
-  },
-  {
-    name: "Political Rallies",
-    value: "political-rallies",
-  },
-  {
-    name: "Town Hall Meetings",
-    value: "town-hall-meetings",
-  },
-  {
-    name: "Community Fairs",
-    value: "community-fairs",
-  },
-  {
-    name: "Parades",
-    value: "parades",
-  },
-  {
-    name: "Public Lectures",
-    value: "public-lectures",
-  },
-  {
-    name: "Farmers Markets",
-    value: "farmers-markets",
-  },
-  {
-    name: "Food Festivals",
-    value: "food-festivals",
-  },
-  {
-    name: "Virtual Conferences",
-    value: "virtual-conferences",
-  },
-  {
-    name: "Virtual Trade Shows",
-    value: "virtual-trade-shows",
-  },
-  {
-    name: "Hybrid Events",
-    value: "hybrid-events",
-  },
-  {
-    name: "Virtual Reality Events",
-    value: "virtual-reality-events",
-  },
-  {
-    name: "Live Streams",
-    value: "live-streams",
-  },
-  {
-    name: "Severe Weather Alerts",
-    value: "severe-weather",
-  },
-  {
-    name: "Disaster Response",
-    value: "disasters",
-  },
-  {
-    name: "Health Warnings",
-    value: "health-warnings",
-  },
-  {
-    name: "Protests",
-    value: "protests",
-  },
-  {
-    name: "Live TV Events",
-    value: "live-tv-events",
-  },
-  {
-    name: "Fashion Shows",
-    value: "fashion-shows",
-  },
-  {
-    name: "Tech Summits",
-    value: "tech-summits",
-  },
-  {
-    name: "Startup Pitches",
-    value: "startup-pitches",
-  },
-  {
-    name: "Book Launches",
-    value: "book-launches",
-  },
-  {
-    name: "Pop-Up Shops",
-    value: "pop-up-shops",
-  },
-  {
-    name: "Craft Fairs",
-    value: "craft-fairs",
-  },
-  {
-    name: "Gaming Conventions",
-    value: "gaming-conventions",
-  },
-  {
-    name: "Car Shows",
-    value: "car-shows",
-  },
-  {
-    name: "Pet Adoption Events",
-    value: "pet-adoption",
-  },
-  {
-    name: "Environmental Cleanups",
-    value: "environmental-cleanups",
-  },
-  {
-    name: "Tree Planting Events",
-    value: "tree-planting",
-  },
-  {
-    name: "Health and Wellness Retreats",
-    value: "health-wellness-retreats",
-  },
-  {
-    name: "Meditation and Yoga Events",
-    value: "meditation-yoga",
-  },
-  {
-    name: "International Summits",
-    value: "international-summits",
-  },
-  {
-    name: "Diplomatic Events",
-    value: "diplomatic-events",
-  },
-  {
-    name: "Historical Reenactments",
-    value: "historical-reenactments",
-  },
-  {
-    name: "Science and Technology Exhibitions",
-    value: "science-tech-exhibitions",
-  },
-  {
-    name: "Agricultural Shows",
-    value: "agricultural-shows",
-  },
-  {
-    name: "Home and Garden Shows",
-    value: "home-garden-shows",
-  },
-  {
-    name: "Travel and Adventure Expos",
-    value: "travel-adventure-expos",
-  },
-  {
-    name: "Wine and Food Tastings",
-    value: "wine-food-tastings",
-  },
-  {
-    name: "Street Performances",
-    value: "street-performances",
-  },
-  {
-    name: "Flash Mobs",
-    value: "flash-mobs",
-  },
-  {
-    name: "Silent Discos",
-    value: "silent-discos",
-  },
-  {
-    name: "Escape Room Events",
-    value: "escape-room-events",
-  },
-  {
-    name: "Trivia Nights",
-    value: "trivia-nights",
-  },
-  {
-    name: "Open Mic Nights",
-    value: "open-mic-nights",
-  },
-  {
-    name: "Karaoke Nights",
-    value: "karaoke-nights",
-  },
-  {
-    name: "Astronomy Events",
-    value: "astronomy-events",
-  },
-  {
-    name: "Community Service Days",
-    value: "community-service-days",
-  },
-  {
-    name: "Cultural Exchange Events",
-    value: "cultural-exchange",
-  },
-  {
-    name: "Makerspaces and DIY Workshops",
-    value: "makerspaces-diy",
-  },
-  {
-    name: "Parenting Workshops",
-    value: "parenting-workshops",
-  },
-  {
-    name: "Youth Camps",
-    value: "youth-camps",
-  },
-  {
-    name: "Senior Citizen Events",
-    value: "senior-citizen-events",
-  },
-  {
-    name: "LGBTQ+ Pride Events",
-    value: "lgbtq-pride",
-  },
-  {
-    name: "Indigenous Cultural Events",
-    value: "indigenous-cultural",
-  },
-  {
-    name: "Accessibility-Focused Events",
-    value: "accessibility-focused",
-  },
-  {
-    name: "Mental Health Awareness Events",
-    value: "mental-health-awareness",
-  },
-  {
-    name: "Grassroots Campaigns",
-    value: "grassroots-campaigns",
+    name: "Tours",
+    value: "tours",
   },
 ];
 

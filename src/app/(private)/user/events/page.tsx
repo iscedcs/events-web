@@ -5,19 +5,19 @@ import { auth } from "../../../../../auth";
 
 export const dynamic = "force-dynamic";
 
-type searchParams = { tab?: string };
-
-export default async function UserEvents(props: {
-  searchParams: searchParams;
+export default async function UserEvents({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] };
 }) {
   const session = await auth();
-
   const user = await getUserByID(session?.user.id ?? "");
-  const searchParams = await props.searchParams;
 
-  const currentTab = searchParams.tab || "manage";
+  const tabParam = searchParams?.tab;
+  const currentTab = Array.isArray(tabParam)
+    ? tabParam[0]
+    : tabParam || "manage";
 
-  // console.log({ user });
   return (
     <div>
       <Header title="Events" user={user} />

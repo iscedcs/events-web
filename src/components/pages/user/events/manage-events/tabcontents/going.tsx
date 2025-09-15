@@ -29,6 +29,7 @@ export default function Going() {
     if (userID) fetchEvents();
   }, [userID]);
 
+  console.log({ tickets });
 
   if (!loading && tickets.length === 0) {
     return <EmptyState />;

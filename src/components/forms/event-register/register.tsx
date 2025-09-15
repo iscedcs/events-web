@@ -84,7 +84,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
     resolver: zodResolver(eventRegistrationFormSchema),
     defaultValues: {
       email: user?.email ?? "",
-      name: `${user?.firstName ?? ""}${user?.lastName ?? ""}`,
+      name: `${user?.firstName ?? ""} ${user?.lastName ?? ""}`,
       displayPicture: user?.displayPicture ?? "",
       eventId: ticketInfo?.event?.id,
       eventName: ticketInfo?.event?.title ?? "",
@@ -100,7 +100,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
     if (user) {
       form.reset({
         email: user.email ?? "",
-        name: user.firstName ?? "",
+        name: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
       });
     }
   }, [user, form]);

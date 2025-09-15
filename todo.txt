@@ -1,8 +1,10 @@
 Backend Fixes
-- Cover photo - from UI
-- business bio - from UI
-- Account category  - from UI
+- Cover photo
+- business bio
+- Account category 
 - Verifying email on signup does not set isVerified to true
+- End time
+- Timezone
 
 -Adding registration functionality
 -Add google maps
