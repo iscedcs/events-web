@@ -37,7 +37,7 @@ export default auth(async (req) => {
   if (isAuthRoute) {
     const hasCallbackUrl = nextUrl.searchParams.has("callbackUrl");
 
-    if (isLoggedIn && !hasCallbackUrl) {
+    if (isLoggedIn) {
       if (userRole === "USER") {
         return Response.redirect(new URL(defaultUserRoute, nextUrl));
       }

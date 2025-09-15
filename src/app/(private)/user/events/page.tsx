@@ -1,19 +1,21 @@
 import EventsTab from "@/components/pages/user/events/events-tab";
 import Header from "@/components/shared/layout/header";
+import { type NextPage } from "next";
 import { getUserByID } from "../../../../../actions/user";
 import { auth } from "../../../../../auth";
 
 export const dynamic = "force-dynamic";
 
-export default async function UserEvents({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] };
-}) {
+type UserEventsProps = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+const UserEvents: NextPage<UserEventsProps> = async ({ searchParams }) => {
   const session = await auth();
   const user = await getUserByID(session?.user.id ?? "");
 
-  const tabParam = searchParams?.tab;
+  const resolvedSearchParams = await searchParams;
+  const tabParam = resolvedSearchParams?.tab;
   const currentTab = Array.isArray(tabParam)
     ? tabParam[0]
     : tabParam || "manage";
@@ -26,4 +28,6 @@ export default async function UserEvents({
       </div>
     </div>
   );
-}
+};
+
+export default UserEvents;
