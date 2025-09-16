@@ -19,7 +19,6 @@ export default auth(async (req) => {
   const pathname = nextUrl.pathname;
 
   const isLoggedIn = !!req.auth;
-  const isAuth = !!token;
 
   const userRole: userType | undefined = token?.userType as
     | userType
@@ -45,11 +44,6 @@ export default auth(async (req) => {
     }
 
     return;
-  }
-
-  if (!isAuth && !pathname.startsWith("/sign-in")) {
-    const signInUrl = new URL("/sign-in", req.url);
-    return Response.redirect(signInUrl);
   }
 
   if (isLoggedIn && userRole === "USER" && isPublicRoute) {
