@@ -17,7 +17,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaRegEye } from "react-icons/fa";
-import { GoArrowLeft } from "react-icons/go";
 import { LuEyeClosed } from "react-icons/lu";
 import { MdEmail, MdOutlinePassword } from "react-icons/md";
 import { TbLoader2 } from "react-icons/tb";
@@ -57,6 +56,10 @@ export default function SignInForm() {
     router.push("/forgot-password");
   };
 
+  const handleRedirectCreateAccount = () => {
+    router.push("/sign-up");
+  };
+
   const handleDisplayPassword = () => {
     setPassword(!password);
   };
@@ -91,6 +94,14 @@ export default function SignInForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <div className=" left-0 absolute top-0 w-screen">
+          <AuthHeader
+            message="Don't have an account?"
+            loading={false}
+            onClick={handleRedirectCreateAccount}
+            linkText="Create account"
+          />
+        </div>
         <div className=" left-0 absolute top-0 w-screen ">
           {step === 2 ? (
             <AuthHeader
@@ -103,7 +114,7 @@ export default function SignInForm() {
         </div>
         <div className=" h-screen relative pt-[30px] ">
           <div className=" mt-[10px] flex gap-3 items-center">
-            <GoArrowLeft className=" w-[32px] h-[32px]" />
+            {/* <GoArrowLeft className=" w-[32px] h-[32px]" /> */}
             <p className=" text-[24px]  font-bold">Sign in to your account</p>
           </div>
 
