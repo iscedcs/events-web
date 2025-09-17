@@ -11,7 +11,7 @@ import { MdOutlineArrowOutward, MdOutlineChat } from "react-icons/md";
 import { PiMapPinFill } from "react-icons/pi";
 import { checkEventAttendee } from "../../../../../../../actions/attendee";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
-import { checkWatchList } from "../../../../../../../actions/watchlist";
+import { checkWatchList } from "../../../../../../../actions/watchlists";
 import { auth } from "../../../../../../../auth";
 import BookmarkButton from "../../../../../ui/secondary/bookmark-button";
 import EventRegistrationCTA from "./event-registration-cta";

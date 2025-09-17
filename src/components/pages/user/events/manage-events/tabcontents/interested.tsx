@@ -13,20 +13,29 @@ export default function Interested() {
   const [watchlists, setWatchlists] = useState<SingleUserWatchlistProps[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const session = useSession();
+  const { data: session } = useSession();
 
   useEffect(() => {
+    if (!session?.user?.id) return;
+
+    let cancelled = false;
+
     const fetchWatchlists = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
         const watchlistsData = await getWatchlistUserID();
-        setWatchlists(watchlistsData ?? []);
+        if (!cancelled) setWatchlists(watchlistsData ?? []);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
+
     fetchWatchlists();
-  }, [session]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.user?.id]);
 
   if (!loading && watchlists.length === 0) {
     return <EmptyState />;

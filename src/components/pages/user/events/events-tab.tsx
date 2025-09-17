@@ -13,7 +13,7 @@ export default function EventsTab({ initialTab }: { initialTab: string }) {
   const tab = searchParams.get("tab") || initialTab;
 
   const handleChange = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString()); // ✅ clone properly
+    const params = new URLSearchParams(searchParams.toString()); // 
     params.set("tab", value);
     router.push(`?${params.toString()}`, { scroll: false });
   };

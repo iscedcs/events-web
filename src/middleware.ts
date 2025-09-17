@@ -27,7 +27,9 @@ export default auth(async (req) => {
   const isApiRoute = pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(pathname);
   const isAuthRoute = authRoutes.includes(pathname);
-  const isProtectedRoute = protectedRoutes.includes(pathname);
+  const isProtectedRoute = protectedRoutes.some((path) =>
+    pathname.startsWith(path)
+  );
 
   if (isApiRoute) {
     return;
