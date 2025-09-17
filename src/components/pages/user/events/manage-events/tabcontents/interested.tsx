@@ -24,7 +24,6 @@ export default function Interested() {
       setLoading(true);
       try {
         const watchlistsData = await getWatchlistUserID();
-        console.log({ watchlistsData });
         if (!cancelled) setWatchlists(watchlistsData ?? []);
       } finally {
         if (!cancelled) setLoading(false);
