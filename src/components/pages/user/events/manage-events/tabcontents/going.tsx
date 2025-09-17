@@ -37,7 +37,6 @@ export default function Going() {
     };
   }, [userID]);
 
-  console.log({ tickets });
 
   if (!loading && tickets.length === 0) {
     return <EmptyState />;
