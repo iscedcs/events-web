@@ -16,6 +16,8 @@ export const getTicketByID = async (id: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER_TOKEN}`,
       },
+      cache: "force-cache",
+      next: { revalidate: 60 },
     });
     const data = await res.json();
 
@@ -43,6 +45,8 @@ export const getTicketByUserID = async (id: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER_TOKEN}`,
       },
+      cache: "force-cache",
+      next: { revalidate: 60 },
     });
     const data = await res.json();
     const tickets: SingleTicketProps[] = data.data;
@@ -71,6 +75,8 @@ export const getPastTicketsByUserID = async (id: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER_TOKEN}`,
       },
+      cache: "force-cache",
+      next: { revalidate: 60 },
     });
 
     const data = await res.json();

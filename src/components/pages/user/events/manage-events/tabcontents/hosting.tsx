@@ -1,5 +1,5 @@
-import EventCard from "@/components/shared/event/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
+import EmptyState from "../empty-state";
 
 export default function Hosting() {
   return (
@@ -8,7 +8,8 @@ export default function Hosting() {
         <EventCalendar eventType="hosting" type="multiple" />
       </div>
       <div className=" mt-[20px] ">
-        <EventCard id="" link="" cardType="hosting" />
+        <EmptyState />
+        {/* <EventCard id="" link="" cardType="hosting" /> */}
       </div>
     </>
   );

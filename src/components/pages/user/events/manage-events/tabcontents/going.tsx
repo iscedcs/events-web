@@ -16,17 +16,25 @@ export default function Going() {
   const userID = session.data?.user.id;
 
   useEffect(() => {
+    if (!userID) return;
+
+    let cancelled = false;
+
     const fetchEvents = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const ticketsData = await getTicketByUserID(userID ?? "");
-        setTickets(ticketsData ?? []);
+        const ticketsData = await getTicketByUserID(userID);
+        if (!cancelled) setTickets(ticketsData ?? []);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
-    if (userID) fetchEvents();
+    fetchEvents();
+
+    return () => {
+      cancelled = true;
+    };
   }, [userID]);
 
   console.log({ tickets });

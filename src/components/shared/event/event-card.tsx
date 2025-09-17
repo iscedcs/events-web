@@ -25,52 +25,35 @@ export default function EventCard({
   cardType: "going" | "hosting" | "interested" | "past";
 }) {
   const [ticket, setTicket] = useState<SingleTicketProps>();
-  const [pastTicket, setPastTicket] = useState<SingleTicketProps>();
+  // const [pastTicket, setPastTicket] = useState<SingleTicketProps>();
   const [event, setEvent] = useState<SingleEventProps>();
-  const [loadingTicket, setLoadingTicket] = useState(true);
-  const [loadingPastTicket, setLoadingPastTicket] = useState(true);
-  const [loadingEvent, setLoadingEvent] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTicket = async () => {
+    let cancelled = false;
+
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        setLoadingTicket(true);
-        const ticketData = await getTicketByID(id);
-        setTicket(ticketData);
+        if (cardType === "going" || cardType === "past") {
+          const ticketData = await getTicketByID(id);
+          if (!cancelled) setTicket(ticketData);
+        } else {
+          const eventData = await getEventsByID(id);
+          if (!cancelled) setEvent(eventData);
+        }
       } finally {
-        setLoadingTicket(false);
+        if (!cancelled) setLoading(false);
       }
     };
-    fetchTicket();
-  }, [id]);
 
-  useEffect(() => {
-    const fetchPastTicket = async () => {
-      try {
-        setLoadingPastTicket(true);
-        const ticketData = await getTicketByID(id);
-        setPastTicket(ticketData);
-      } finally {
-        setLoadingPastTicket(false);
-      }
+    fetchData();
+    return () => {
+      cancelled = true;
     };
-    fetchPastTicket();
-  }, [id]);
+  }, [id, cardType]);
 
-  useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        setLoadingEvent(true);
-        const eventData = await getEventsByID(id);
-        setEvent(eventData);
-      } finally {
-        setLoadingEvent(false);
-      }
-    };
-    fetchEvent();
-  }, [id]);
-
-  const loading = loadingTicket || loadingEvent || loadingPastTicket;
+  if (loading) return <EventCardSkeleton />;
 
   const startDate =
     cardType === "going" || cardType === "past"

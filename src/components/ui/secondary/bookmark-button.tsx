@@ -1,7 +1,7 @@
 "use client";
 
 import { isPastDate } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { MdOutlineBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ export default function BookmarkButton({
   const router = useRouter();
   const today = new Date().toISOString();
   const isoToday = new Date(today);
+  const pathname = usePathname();
 
   const handleAdd = async () => {
     setClicked(false);
@@ -34,6 +35,7 @@ export default function BookmarkButton({
 
       if (data.success) {
         setClicked(true);
+        router.refresh();
         toast.success("Event added to your bookmarks");
         return;
       }
@@ -67,6 +69,7 @@ export default function BookmarkButton({
       if (data.success) {
         setClicked(false);
         router.refresh();
+        router.push(pathname);
         toast.success("Event removed from your bookmarks");
       } else if (data.status === 401) {
         setClicked(false);

@@ -19,6 +19,8 @@ export const getAllEvents = async ({ limit, page }: PaginationType) => {
         Authorization: `Bearer ${BEARER_TOKEN}`,
         "Content-Type": "application/json",
       },
+      cache: "force-cache",
+      next: { revalidate: 60 },
     });
     const data = await res.json();
     const events: SingleEventProps[] = data.data.events;
