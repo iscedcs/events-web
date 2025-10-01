@@ -47,6 +47,11 @@ export default function Past() {
           {pastTicket.map((ticket) => (
             <div key={ticket.id}>
               <EventCard
+                host={ticket.event?.host ?? ""}
+                image={ticket.event?.image ?? ""}
+                startDate={ticket.event?.startDate ?? new Date()}
+                time={ticket.event?.time ?? ""}
+                title={ticket.event?.title ?? ""}
                 id={ticket.id}
                 link={`/user/events/${ticket.event?.cleanName.toLowerCase()}/ticket/${
                   ticket.id

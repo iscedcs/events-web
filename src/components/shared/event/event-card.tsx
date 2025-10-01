@@ -1,73 +1,26 @@
 "use client";
 
-import EventCardSkeleton from "@/components/skeletons/event-card";
 import { Button } from "@/components/ui/button";
 import BookmarkButton from "@/components/ui/secondary/bookmark-button";
-import { SingleEventProps, SingleTicketProps } from "@/lib/types/event";
-import { format, isValid } from "date-fns";
+import { EventCardProps } from "@/lib/types/event";
+import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { AiFillInstagram } from "react-icons/ai";
 import { BsGlobe } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { IoLogoLinkedin } from "react-icons/io";
-import { getEventsByID } from "../../../../actions/events";
-import { getTicketByID } from "../../../../actions/tickets";
 
 export default function EventCard({
   id,
   cardType,
   link,
-}: {
-  link: string;
-  id: string;
-  cardType: "going" | "hosting" | "interested" | "past";
-}) {
-  const [ticket, setTicket] = useState<SingleTicketProps>();
-  // const [pastTicket, setPastTicket] = useState<SingleTicketProps>();
-  const [event, setEvent] = useState<SingleEventProps>();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        if (cardType === "going" || cardType === "past") {
-          const ticketData = await getTicketByID(id);
-          if (!cancelled) setTicket(ticketData);
-        } else {
-          const eventData = await getEventsByID(id);
-          if (!cancelled) setEvent(eventData);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    fetchData();
-    return () => {
-      cancelled = true;
-    };
-  }, [id, cardType]);
-
-  if (loading) return <EventCardSkeleton />;
-
-  const startDate =
-    cardType === "going" || cardType === "past"
-      ? ticket?.event?.startDate
-        ? new Date(ticket.event.startDate)
-        : ""
-      : cardType === "interested"
-      ? event?.startDate
-        ? new Date(event?.startDate)
-        : ""
-      : "";
-
-  if (loading) return <EventCardSkeleton />;
-
+  title,
+  image,
+  time,
+  host,
+  startDate,
+}: EventCardProps) {
   return (
     <>
       <div className="">
@@ -75,23 +28,16 @@ export default function EventCard({
           <div className=" flex flex-col">
             <div className=" flex gap-2 items-start">
               <p className="text-[48px] leading-[35px] font-extrabold">
-                {startDate && isValid(startDate)
-                  ? format(startDate, "d")
-                  : "No date"}
+                {format(startDate, "d")}
               </p>
-              <p className=" text-[14px]">
-                {" "}
-                {startDate && isValid(startDate)
-                  ? format(startDate, "LLL")
-                  : "No date"}
-              </p>
+              <p className=" text-[14px]"> {format(startDate, "LLL")}</p>
             </div>
-            {(ticket?.event?.time || event?.time) && (
+            {(time || time) && (
               <p className=" mt-[10px] text-[18px]">
                 {cardType === "going" || cardType === "past"
-                  ? ticket?.event?.time
+                  ? time
                   : cardType === "interested"
-                  ? event?.time
+                  ? time
                   : null}{" "}
                 WAT
               </p>
@@ -121,14 +67,12 @@ export default function EventCard({
           <Image
             src={
               cardType === "going" || cardType === "past"
-                ? ticket?.event?.image?.startsWith("http") ||
-                  ticket?.event?.image?.startsWith("/")
-                  ? ticket?.event?.image
+                ? image?.startsWith("http") || image?.startsWith("/")
+                  ? image
                   : "/no-image.jpg"
                 : cardType === "interested"
-                ? event?.image?.startsWith("http") ||
-                  event?.image?.startsWith("/")
-                  ? event?.image
+                ? image?.startsWith("http") || image?.startsWith("/")
+                  ? image
                   : "/no-image.jpg"
                 : ""
             }
@@ -141,7 +85,7 @@ export default function EventCard({
             <div className=" p-[10px] rounded-full bg-[#0000008f] right-0 bottom-0 mr-[20px] mb-[20px] absolute">
               <BookmarkButton
                 eventDate={new Date(startDate)}
-                eventId={event?.id ?? ""}
+                eventId={id ?? ""}
                 isClicked
               />
             </div>
@@ -162,9 +106,9 @@ export default function EventCard({
         <div className=" mt-[10px]">
           <p className=" capitalize text-[24px]">
             {cardType === "going" || cardType === "past"
-              ? ticket?.event?.title.toLowerCase()
+              ? title.toLowerCase()
               : cardType === "interested"
-              ? event?.title.toLowerCase()
+              ? title.toLowerCase()
               : ""}
           </p>
         </div>
@@ -175,9 +119,9 @@ export default function EventCard({
               <p className=" text-[10px] text-accent">Presented by</p>
               <p className=" text-[14px]">
                 {cardType === "going" || cardType === "past"
-                  ? ticket?.event?.host ?? "No host name"
+                  ? host ?? "No host name"
                   : cardType === "interested"
-                  ? event?.host ?? "No host name"
+                  ? host ?? "No host name"
                   : null}
               </p>
             </div>

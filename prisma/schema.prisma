@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  // output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -33,7 +32,7 @@ model Attendee {
   ChatRoom_ChatRoom_participantAToAttendee ChatRoom[]    @relation("ChatRoom_participantAToAttendee")
   ChatRoom_ChatRoom_participantBToAttendee ChatRoom[]    @relation("ChatRoom_participantBToAttendee")
   ChatRoom_AttendeeToChatRoom              ChatRoom[]    @relation("AttendeeToChatRoom")
-  Invitation                               Invitation[]
+  Invitation                               Invitation[]  @relation("AttendeeToInvitation")
 
   @@unique([eventId, email])
   @@unique([eventId, phone])
@@ -52,6 +51,7 @@ model ChatMessage {
   deletedAt     DateTime?
   isFromCreator Boolean   @default(false)
   creator_id    String?
+  payload       Json?
   Attendee      Attendee? @relation(fields: [attendee_id], references: [id])
   ChatRoom      ChatRoom  @relation(fields: [chat_room_id], references: [id], onDelete: Cascade)
 }
@@ -106,6 +106,7 @@ model Event {
   Gallery        Gallery[]
   Invitation     Invitation[]
   Ticket         Ticket[]
+  Watchlist      Watchlist[]
 }
 
 model EventUrl {
@@ -149,7 +150,7 @@ model Invitation {
   Event           Event      @relation(fields: [event_id], references: [id], onDelete: Cascade)
   Ticket          Ticket?    @relation(fields: [ticketId], references: [id])
   Payment         Payment[]
-  Attendee        Attendee[]
+  Attendee        Attendee[] @relation("AttendeeToInvitation")
 
   @@index([ticketId])
 }
@@ -201,6 +202,20 @@ model Token {
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime
+}
+
+model Watchlist {
+  id        String    @id
+  userId    String
+  eventId   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  deletedAt DateTime?
+  Event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@index([eventId])
+  @@index([userId])
 }
 
 enum PaymentStatus {
