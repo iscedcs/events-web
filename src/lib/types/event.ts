@@ -105,3 +105,12 @@ export interface EventSearchItemProps {
   attendeeImages?: string[];
   attendeeNumber?: string;
 }
+
+export interface EventCardProps
+  extends Pick<
+    SingleEventProps,
+    "id" | "title" | "startDate" | "time" | "image" | "host"
+  > {
+  cardType: "going" | "hosting" | "interested" | "past";
+  link: string;
+}
