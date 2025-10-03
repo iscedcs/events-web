@@ -24,6 +24,7 @@ export default function Interested() {
       setLoading(true);
       try {
         const watchlistsData = await getWatchlistUserID();
+        // console.log({ watchlistsData });
         if (!cancelled) setWatchlists(watchlistsData ?? []);
       } finally {
         if (!cancelled) setLoading(false);
@@ -56,6 +57,11 @@ export default function Interested() {
           {watchlists.map((watchlist) => (
             <div key={watchlist.id}>
               <EventCard
+                host={watchlist.event.host}
+                image={watchlist.event.image}
+                startDate={watchlist.event.startDate}
+                time={watchlist.event.time}
+                title={watchlist.event.title}
                 id={watchlist.event.id}
                 link={`/user/events/${watchlist.event.cleanName.toLowerCase()}`}
                 cardType="interested"

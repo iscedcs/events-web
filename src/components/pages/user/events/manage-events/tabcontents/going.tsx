@@ -37,6 +37,7 @@ export default function Going() {
     };
   }, [userID]);
 
+  // console.log({ tickets });
 
   if (!loading && tickets.length === 0) {
     return <EmptyState />;
@@ -57,8 +58,13 @@ export default function Going() {
           {tickets.map((ticket) => (
             <div key={ticket.id}>
               <EventCard
+                title={ticket.event?.title ?? ""}
+                image={ticket.event?.image ?? ""}
+                time={ticket.event?.time ?? ""}
+                host={ticket.event?.host ?? ""}
+                startDate={ticket.event?.startDate ?? new Date()}
                 id={ticket.id}
-                link={`/user/events/${ticket.event?.cleanName.toLowerCase()}/ticket/${
+                link={`/user/events/${ticket.event?.cleanName.toLowerCase()}/ticket/{
                   ticket.id
                 }`}
                 cardType="going"
