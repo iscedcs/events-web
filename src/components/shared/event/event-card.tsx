@@ -16,6 +16,7 @@ export default function EventCard({
   cardType,
   link,
   title,
+  isClicked,
   image,
   time,
   host,
@@ -55,7 +56,13 @@ export default function EventCard({
                 <Link href={link}>My event</Link>
               </Button>
             </div>
-          ) : cardType === "interested" ? null : cardType === "past" ? (
+          ) : cardType === "interested" ? (
+            <div className="">
+              <Button asChild>
+                <Link href={link}>Event Details</Link>
+              </Button>
+            </div>
+          ) : cardType === "past" ? (
             <div className="">
               <Link className=" text-[14px] underline" href={link}>
                 Past events
@@ -86,7 +93,7 @@ export default function EventCard({
               <BookmarkButton
                 eventDate={new Date(startDate)}
                 eventId={id ?? ""}
-                isClicked
+                isClicked={isClicked ?? false}
               />
             </div>
           )}
@@ -94,12 +101,14 @@ export default function EventCard({
         <div className=" mt-[10px] flex items-center gap-2">
           <div className=" animate-caret-blink w-[8px] h-[8px] bg-white"></div>
           <p className=" text-[10px]">
-            {cardType === "going" || cardType === "interested"
+            {cardType === "going"
               ? "Going for this event"
               : cardType === "hosting"
               ? "You are hosting this event"
               : cardType === "past"
               ? "You already attended this event."
+              : cardType === "interested"
+              ? "Bookmarked this event"
               : ""}
           </p>
         </div>

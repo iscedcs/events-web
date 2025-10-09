@@ -113,4 +113,29 @@ export interface EventCardProps
   > {
   cardType: "going" | "hosting" | "interested" | "past";
   link: string;
+  isClicked?: boolean;
+}
+
+export interface ExternalFieldsProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
+export interface LocationFieldsProps
+  extends Omit<ExternalFieldsProps, "onChange"> {
+  onChange: (value: string, lat?: number, lng?: number) => void;
+}
+
+export interface DateTimeFieldsProps
+  extends Omit<ExternalFieldsProps, "onChange" | "value"> {
+  onChange: (value: string, startDate: Date, endDate: Date) => void;
+  startDateProps: {
+    startDate: Date | undefined;
+    setStartDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  };
+  endDateProps: {
+    endDate: Date | undefined;
+    setEndDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  };
 }

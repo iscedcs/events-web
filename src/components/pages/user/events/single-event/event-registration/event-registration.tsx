@@ -43,7 +43,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
       {check?.check && (
         <Link
           href={""}
-          className=" flex gap-4 items-center bg-secondary mt-[56px] py-[10px]  px-[10px] "
+          className=" flex gap-4 items-center justify-between bg-secondary mt-[56px] py-[10px]  px-[10px] "
         >
           <div className="">
             <Image

@@ -25,7 +25,7 @@ const UserEvents: NextPage<UserEventsProps> = async ({ searchParams }) => {
       <Header title="Events" user={user} />
       <div className="py-[70px]">
         <EventsTab initialTab={currentTab} />
-      </div>
+      </div>  
     </div>
   );
 };
