@@ -20,6 +20,7 @@ export default function EventCard({
   image,
   time,
   host,
+  showBookmarkButton,
   startDate,
 }: EventCardProps) {
   return (
@@ -73,22 +74,16 @@ export default function EventCard({
         <div className=" relative mt-[10px]">
           <Image
             src={
-              cardType === "going" || cardType === "past"
-                ? image?.startsWith("http") || image?.startsWith("/")
-                  ? image
-                  : "/no-image.jpg"
-                : cardType === "interested"
-                ? image?.startsWith("http") || image?.startsWith("/")
-                  ? image
-                  : "/no-image.jpg"
-                : ""
+              image?.startsWith("http") || image?.startsWith("/")
+                ? image
+                : "/no-image.jpg"
             }
             alt="image"
             width={"1000"}
             height={"1000"}
             className=" w-full h-[300px] rounded-[24px] object-cover "
           />
-          {cardType === "interested" && (
+          {cardType === "interested" && showBookmarkButton && (
             <div className=" p-[10px] rounded-full bg-[#0000008f] right-0 bottom-0 mr-[20px] mb-[20px] absolute">
               <BookmarkButton
                 eventDate={new Date(startDate)}

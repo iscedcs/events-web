@@ -30,8 +30,22 @@ export default auth(async (req) => {
   const isProtectedRoute = protectedRoutes.some((path) =>
     pathname.startsWith(path)
   );
+  const prompt = nextUrl.searchParams.get("prompt");
+  const hasReturnParam =
+    nextUrl.searchParams.has("redirect") ||
+    nextUrl.searchParams.has("redirect_uri") ||
+    nextUrl.searchParams.has("callbackUrl");
+
+  const forceLogin = prompt === "login";
 
   if (isApiRoute) {
+    return;
+  }
+
+  if (isAuthRoute) {
+    if (isLoggedIn && !forceLogin && !hasReturnParam) {
+      return Response.redirect(new URL("/dashboard", nextUrl));
+    }
     return;
   }
 
@@ -56,7 +70,9 @@ export default auth(async (req) => {
   }
 
   if (!isLoggedIn && isProtectedRoute) {
-    return Response.redirect(new URL("/sign-in", nextUrl));
+    const signIn = new URL("/sign-in", nextUrl);
+    signIn.searchParams.set("redirect", nextUrl.pathname + nextUrl.search);
+    return Response.redirect(signIn);
   }
 });
 

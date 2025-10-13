@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogContent,
@@ -10,11 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -27,8 +21,6 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { eventCreationSchema } from "@/lib/schema/event-creation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -39,11 +31,15 @@ import { FaCircleUser } from "react-icons/fa6";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { LuArrowUpToLine, LuTicket } from "react-icons/lu";
-import { MdAccessTime, MdOutlineMessage } from "react-icons/md";
+import { MdOutlineMessage } from "react-icons/md";
 import z from "zod";
+import DateTimeField from "./form-controller/date-time-field";
 import ImageField from "./form-controller/image-field";
 import LocationField from "./form-controller/location-field";
 import TitleField from "./form-controller/title-field";
+import HostNameField from "./form-controller/host-name";
+import EventDescriptionField from "./form-controller/event-description-field";
+import TicketTypeField from "./form-controller/ticket-type-field";
 
 export type eventCreationFormValues = z.infer<typeof eventCreationSchema>;
 export default function EventCreationForm() {
@@ -56,6 +52,7 @@ export default function EventCreationForm() {
   const form = useForm<eventCreationFormValues>({
     defaultValues: {
       location: "",
+      host: "",
     },
     resolver: zodResolver(eventCreationSchema),
     mode: "all",
@@ -136,7 +133,7 @@ export default function EventCreationForm() {
           )}
         />
 
-     
+        <DateTimeField />
 
         <Controller
           name="location"
@@ -150,81 +147,34 @@ export default function EventCreationForm() {
           )}
         />
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <div className=" mt-[20px]">
-              <div className=" bg-secondary rounded-[12px] py-[20px] px-[15px]">
-                <div className=" flex items-center gap-3  ">
-                  <FaCircleUser className=" text-accent w-[20px] h-[20px]" />
-                  <div className="">
-                    <p>Host Name</p>
-                    <p className=" text-accent">John Doe</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </DialogTrigger>
-          <DialogContent className=" border-0 bg-secondary">
-            <DialogTitle hidden>Content</DialogTitle>
-            <div className="">
-              <p>Event Host Name</p>
-              <Input
-                className="bg-[#151515] mt-[10px] rounded-[8px] px-[20px]"
-                placeholder="John Doe"
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Controller
+          control={form.control}
+          name="host"
+          render={({ field }) => (
+            <HostNameField
+              onChange={field.onChange}
+              value={field.value}
+              placeholder="John Doe"
+            />
+          )}
+        />
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <div className=" mt-[20px]">
-              <div className=" bg-secondary rounded-[12px] py-[20px] px-[15px]">
-                <div className=" flex items-center gap-3  ">
-                  <HiOutlineDocumentText className=" text-accent w-[20px] h-[20px]" />
-                  <div className="">
-                    <p>Add Description</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </DialogTrigger>
-          <DialogContent className=" w-full border-0 bg-secondary">
-            <DialogTitle hidden>Content</DialogTitle>
-            <div className=" w-full">
-              <p>Event Description</p>
-              <Textarea
-                placeholder="What’s the event about?"
-                className="focus-visible:ring-0 border-1 rounded-[8px] h-[100px] mt-[10px] w-full break-all bg-[#151515] resize-none"
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Controller
+          control={form.control}
+          name="host"
+          render={({ field }) => (
+            <EventDescriptionField
+              onChange={field.onChange}
+              value={field.value}
+              placeholder="What’s the event about?"
+            />
+          )}
+        />
 
         <div className=" mt-[20px]">
           <p>Event Options</p>
           <div className=" mt-[20px] text-accent rounded-[12px] py-[15px] px-[20px] bg-secondary">
-            <div className="">
-              <div className=" flex items-center justify-between">
-                <div className=" flex items-center gap-2">
-                  <LuTicket />
-                  <p className=" text-white">Tickets</p>
-                </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <div className=" flex items-center gap-2">
-                      <p>Free</p>
-                      <AiOutlineEdit />
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent className=" bg-secondary border-0">
-                    <DialogTitle hidden>Content</DialogTitle>
-                    <p>Content</p>
-                  </DialogContent>
-                </Dialog>
-              </div>
-              <hr className=" mt-[10px] border-accent" />
-            </div>
+            <TicketTypeField />
             <div className="">
               <div className=" mt-[10px] flex items-center justify-between">
                 <div className=" flex items-center gap-2">

@@ -8,21 +8,24 @@ export default async function AvailableEvents() {
     page: 1,
   });
 
-  console.log({ events });
+  // console.log({ events });
   return (
-    <div>
+    <div className=" grid grid-cols-1 gap-6 p-3">
       {events?.map((event) => (
-        <EventCard
-          key={event.id}
-          cardType="interested"
-          host={event.host}
-          id={event.id}
-          image={event.image}
-          link={`/user/events/${event.cleanName.toLowerCase()}`}
-          startDate={event.startDate}
-          time={event.time}
-          title={event.title}
-        />
+        <div className=" flex flex-col gap-4" key={event.id}>
+          <EventCard
+            cardType="interested"
+            host={event.host}
+            id={event.id}
+            image={event.image}
+            link={`/user/events/${event.cleanName.toLowerCase()}`}
+            startDate={event.startDate}
+            time={event.time}
+            title={event.title}
+            showBookmarkButton={false}
+          />
+          <hr />
+        </div>
       ))}
     </div>
   );

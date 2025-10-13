@@ -114,6 +114,7 @@ export interface EventCardProps
   cardType: "going" | "hosting" | "interested" | "past";
   link: string;
   isClicked?: boolean;
+  showBookmarkButton?: boolean;
 }
 
 export interface ExternalFieldsProps {

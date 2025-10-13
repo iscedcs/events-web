@@ -4,4 +4,5 @@ export const eventCreationSchema = z.object({
   location: z.string(),
   image: z.string(),
   title: z.string(),
+  host: z.string(),
 });

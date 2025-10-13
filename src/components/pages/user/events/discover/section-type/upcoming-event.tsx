@@ -56,7 +56,12 @@ export default function UpcomingEvent() {
               >
                 <Image
                   alt="image"
-                  src={event?.image ?? "/no-image.jpg"}
+                  src={
+                    event?.image?.startsWith("http") ||
+                    event?.image?.startsWith("/")
+                      ? event?.image
+                      : "/no-image.jpg"
+                  }
                   width={"1000"}
                   height={"1000"}
                   className=" w-[90px] h-[90px]  object-cover rounded-[20px]"
