@@ -4,7 +4,6 @@ import EventCard from "@/components/shared/event/event-card";
 import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
 import { SingleUserWatchlistProps } from "@/lib/types/event";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -13,22 +12,24 @@ import {
 } from "../../../../../../../actions/watchlists";
 import EmptyState from "../empty-state";
 
-export default function Interested() {
+export default function Interested({ userId }: { userId?: string }) {
   const [watchlists, setWatchlists] = useState<SingleUserWatchlistProps[]>([]);
   const [clicked, setClicked] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
 
-  const { data: session } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!session?.user?.id) return;
     let cancelled = false;
 
     const fetchWatchlists = async () => {
       setLoading(true);
       try {
-        const watchlistsData = await getWatchlistUserID();
+        if (!userId) {
+          if (!cancelled) setWatchlists([]);
+          return;
+        }
+        const watchlistsData = await getWatchlistUserID(userId!);
         console.log({ watchlistsData });
         if (!cancelled) setWatchlists(watchlistsData ?? []);
       } finally {

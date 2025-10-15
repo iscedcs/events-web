@@ -16,23 +16,22 @@ import {
 } from "../../../../../../../../actions/attendee";
 import { getTicketByID } from "../../../../../../../../actions/tickets";
 import { getUserByID } from "../../../../../../../../actions/user";
-import { auth } from "../../../../../../../../auth";
+import { getCurrentUser } from "../../../../../../../../actions/auth";
 
 type Params = Promise<{ id: string }>;
 
 export default async function Ticket(props: { params: Params }) {
   const params = await props.params;
 
-  const session = await auth();
-  const user = await getUserByID(session?.user.id ?? "");
+  const me = await getCurrentUser();
+  const user = me ? await getUserByID(me.id!) : "";
   const ticket: SingleTicketProps = await getTicketByID(params.id);
   const attendees: SingleAttendeeProps[] = await getAttendeesEventID(
     ticket.event?.id ?? ""
   );
 
   const singleAttendeeID =
-    attendees.find((attendee) => attendee.userId === session?.user.id)?.id ??
-    "";
+    attendees.find((attendee) => attendee.userId === me?.id)?.id ?? "";
 
   const attendee: SingleAttendeeProps = await getAttendeeID(singleAttendeeID);
 
@@ -108,8 +107,7 @@ export default async function Ticket(props: { params: Params }) {
               </div>
               <Link
                 href={`/user/events/${ticket.event?.cleanName.toLowerCase()}`}
-                className=" flex items-center gap-2"
-              >
+                className=" flex items-center gap-2">
                 <p className=" text-[14px]">View events page</p>
                 <RxCaretRight />
               </Link>

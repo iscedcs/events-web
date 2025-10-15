@@ -1,7 +1,6 @@
 import DesktopView from "@/components/shared/layout/desktop-view";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
-import { SessionProvider } from "next-auth/react";
 import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 
@@ -26,16 +25,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${interTight.className} antialiased`}>
         <Toaster richColors />
-        <SessionProvider>
-          <div className="">
-            <div className="hidden lg:inline xl:inline 2xl:inline">
-              <DesktopView />
-            </div>
-            <div className=" md:hidden lg:hidden xl:hidden 2xl:hidden">
-              {children}
-            </div>
+        <div className="">
+          <div className="hidden lg:inline xl:inline 2xl:inline">
+            <DesktopView />
           </div>
-        </SessionProvider>
+          <div className=" md:hidden lg:hidden xl:hidden 2xl:hidden">
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   );
