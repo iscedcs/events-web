@@ -6,10 +6,13 @@ import { revalidatePath } from "next/cache";
 import { getAuthInfo } from "./auth";
 
 export const getWatchlistUserID = async (userId: string) => {
+  if (!userId) return [];
+
   const url = `${EVENTS_API}${URLS.watchlist.all_watchlist.replace(
     "{userId}",
     userId
-  )}}`;
+  )}`;
+
   const auth = await getAuthInfo();
   const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
@@ -19,10 +22,15 @@ export const getWatchlistUserID = async (userId: string) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${BEARER}`,
+        ...(BEARER ? { Authorization: `Bearer ${BEARER}` } : {}),
       },
-      // next: { revalidate: 60 },
+      cache: "no-store",
     });
+
+    if (!res.ok) {
+      console.log("watchlist fetch failed", res.status, await res.text());
+      return [];
+    }
 
     const data = await res.json();
     const watchlist: SingleUserWatchlistProps[] = data.data.watchlist;
