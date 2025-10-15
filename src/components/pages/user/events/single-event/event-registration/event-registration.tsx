@@ -12,15 +12,15 @@ import { PiMapPinFill } from "react-icons/pi";
 import { checkEventAttendee } from "../../../../../../../actions/attendee";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { checkWatchList } from "../../../../../../../actions/watchlists";
-import { auth } from "../../../../../../../auth";
 import BookmarkButton from "../../../../../ui/secondary/bookmark-button";
 import EventRegistrationCTA from "./event-registration-cta";
 import ViewTicket from "./view-ticket";
+import { getCurrentUser } from "../../../../../../../actions/auth";
 
 export default async function EventRegistration({ slug }: { slug: string }) {
   const event: SingleEventProps = await getEventsByCleanName(slug ?? "");
-  const session = await auth();
-  const userId = session?.user.id ?? "";
+  const me = await getCurrentUser();
+  const userId = me?.id ?? "";
 
   console.log({ userId });
 
@@ -43,8 +43,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
       {check?.check && (
         <Link
           href={""}
-          className=" flex gap-4 items-center justify-between bg-secondary mt-[56px] py-[10px]  px-[10px] "
-        >
+          className=" flex gap-4 items-center justify-between bg-secondary mt-[56px] py-[10px]  px-[10px] ">
           <div className="">
             <Image
               src={
@@ -76,8 +75,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
               <div className="">
                 <Link
                   className=" text-[12px]  flex gap-2 items-center"
-                  href={""}
-                >
+                  href={""}>
                   Host your event
                   <MdOutlineArrowOutward />
                 </Link>

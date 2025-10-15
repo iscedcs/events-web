@@ -3,7 +3,6 @@
 import UpcomingEventSkeleton from "@/components/skeletons/upcoming-event";
 import { Button } from "@/components/ui/button";
 import { SingleEventProps } from "@/lib/types/event";
-// import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -12,7 +11,6 @@ import { getMostRecentEvent } from "../../../../../../../actions/events";
 export default function UpcomingEvent() {
   const [event, setEvent] = useState<SingleEventProps>();
   const [loading, setIsLoading] = useState(true);
-  // const session = useSession();
 
   useEffect(() => {
     // setIsLoading(true);
@@ -52,8 +50,7 @@ export default function UpcomingEvent() {
             ) : (
               <Link
                 href={`/user/events/${event?.cleanName.toLowerCase()}`}
-                className=""
-              >
+                className="">
                 <Image
                   alt="image"
                   src={

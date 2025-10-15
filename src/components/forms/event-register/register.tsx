@@ -22,7 +22,7 @@ import { UserProps } from "@/lib/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { LuTicket } from "react-icons/lu";
 import { PiCrownBold } from "react-icons/pi";
@@ -37,9 +37,13 @@ import { getUserByID } from "../../../../actions/user";
 export type eventRegistrationFormValues = z.infer<
   typeof eventRegistrationFormSchema
 >;
-export default function EventRegistrationForm({ slug }: { slug: string }) {
-  const session = useSession();
-  const [user, setUser] = useState<UserProps>();
+export default function EventRegistrationForm({
+  slug,
+  user,
+}: {
+  slug: string;
+  user?: UserProps;
+}) {
   const [open, setOpen] = useState(false);
   const [event, setEvent] = useState<SingleEventProps>();
   const [selectedTicket, setSelectedTicket] = useState<string>("");
@@ -50,24 +54,8 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
   const router = useRouter();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await getUserByID(session.data?.user.id ?? "");
-      setUser(userData);
-      if (userData) {
-        setLoadUser(false);
-      } else {
-        setLoadUser(true);
-      }
-    };
-    fetchUser();
-  }, [session]);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const eventData = await getEventsByCleanName(slug);
-      setEvent(eventData);
-    };
-    if (slug) fetchEvents();
+    const fetchEvent = async () => setEvent(await getEventsByCleanName(slug));
+    if (slug) fetchEvent();
   }, [slug]);
 
   useEffect(() => {
@@ -78,20 +66,24 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
     if (selectedTicket) fetchTicket();
   }, [selectedTicket]);
 
+  const defaultName = useMemo(
+    () => `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(),
+    [user?.firstName, user?.lastName]
+  );
   console.log({ user });
 
   const form = useForm<eventRegistrationFormValues>({
     resolver: zodResolver(eventRegistrationFormSchema),
     defaultValues: {
       email: user?.email ?? "",
-      name: `${user?.firstName ?? ""} ${user?.lastName ?? ""}`,
+      name: defaultName,
       displayPicture: user?.displayPicture ?? "",
       eventId: ticketInfo?.event?.id,
       eventName: ticketInfo?.event?.title ?? "",
       image: user?.displayPicture ?? "",
       phone: user?.phone ?? "",
       ticketId: selectedTicket,
-      userId: session.data?.user.id,
+      userId: user?.id ?? "",
     },
     mode: "all",
   });
@@ -100,7 +92,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
     if (user) {
       form.reset({
         email: user.email ?? "",
-        name: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
+        name: defaultName,
       });
     }
   }, [user, form]);
@@ -113,7 +105,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
     const payload = {
       eventId: ticketInfo?.event?.id,
       eventName: ticketInfo?.event?.title,
-      userId: session.data?.user.id,
+      userId: user?.id,
       image: "",
       name: data.name,
       email: data.email,
@@ -224,8 +216,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
                         <div
                           onClick={handleTicketSelect}
                           key={ticket.id}
-                          className=" flex justify-between items-center"
-                        >
+                          className=" flex justify-between items-center">
                           <div className=" flex gap-3 items-center">
                             {ticket.isFree ? (
                               <LuTicket className=" w-[24px] h-[24px]" />
@@ -255,8 +246,7 @@ export default function EventRegistrationForm({ slug }: { slug: string }) {
                 <Button
                   type="submit"
                   disabled={loading || selectedTicket === ""}
-                  className=" w-full rounded-[12px] font-semibold py-[24px] "
-                >
+                  className=" w-full rounded-[12px] font-semibold py-[24px] ">
                   {loading ? (
                     <div className=" flex items-center gap-2">
                       <TbLoader2 className=" w-[22px] h-[22px] animate-spin" />

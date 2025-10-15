@@ -1,82 +1,82 @@
-'use server';
+"use server";
 
-import { EVENTS_API, URLS } from '@/lib/const';
-import { auth } from '../auth';
+import { EVENTS_API, URLS } from "@/lib/const";
+import { getAuthInfo } from "./auth";
 
 export const getAttendeesEventID = async (id: string) => {
-	const session = await auth();
-	const BEARER_TOKEN = session?.user.accessToken;
-	const url = `${EVENTS_API}${URLS.attendees.all.replace('{id}', id)}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+  const url = `${EVENTS_API}${URLS.attendees.all.replace("{id}", id)}`;
 
-	try {
-		const res = await fetch(url, {
-			headers: {
-				Authorization: `Bearer ${BEARER_TOKEN}`,
-				'Content-Type': 'application/json',
-			},
-			method: 'GET',
-			next: { revalidate: 60 },
-		});
-		const data = await res.json();
-		if (res.ok) {
-			return data.data.data;
-		}
-		return null;
-	} catch (e: any) {
-		console.log('Unable to fetch event attendees', e);
-	}
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    if (res.ok) {
+      return data.data.data;
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to fetch event attendees", e);
+  }
 };
 
 export const getAttendeeID = async (id: string) => {
-	const session = await auth();
-	const BEARER_TOKEN = session?.user.accessToken;
-	const url = `${EVENTS_API}${URLS.attendees.one.replace('{id}', id)}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+  const url = `${EVENTS_API}${URLS.attendees.one.replace("{id}", id)}`;
 
-	try {
-		const res = await fetch(url, {
-			headers: {
-				Authorization: `Bearer ${BEARER_TOKEN}`,
-				'Content-Type': 'application/json',
-			},
-			method: 'GET',
-			next: { revalidate: 60 },
-		});
-		const data = await res.json();
-		if (res.ok) {
-			return data.data.data;
-		}
-		return null;
-	} catch (e: any) {
-		console.log('Unable to fetch attendee', e);
-	}
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    if (res.ok) {
+      return data.data.data;
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to fetch attendee", e);
+  }
 };
 
 export const checkEventAttendee = async (id: string, slug: string) => {
-	const session = await auth();
-	const BEARER_TOKEN = session?.user.accessToken;
-	const url = `${EVENTS_API}${URLS.attendees.attendee_check.replace(
-		'{cleanName}',
-		slug
-	)}?userId=${id}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+  const url = `${EVENTS_API}${URLS.attendees.attendee_check.replace(
+    "{cleanName}",
+    slug
+  )}?userId=${id}`;
 
-	try {
-		const res = await fetch(url, {
-			headers: {
-				Authorization: `Bearer ${BEARER_TOKEN}`,
-				'Content-Type': 'application/json',
-			},
-			method: 'GET',
-			next: { revalidate: 60 },
-		});
-		const data = await res.json();
-		if (data.success === true) {
-			return {
-				attendees: data.data.event.attendees,
-				check: data.data.isAttendee,
-			};
-		}
-		return null;
-	} catch (e: any) {
-		console.log('Unable to check if user is an attendee', e);
-	}
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    if (data.success === true) {
+      return {
+        attendees: data.data.event.attendees,
+        check: data.data.isAttendee,
+      };
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to check if user is an attendee", e);
+  }
 };

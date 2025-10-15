@@ -3,20 +3,20 @@
 import { EVENTS_API, URLS } from "@/lib/const";
 import { SingleEventProps } from "@/lib/types/event";
 import { PaginationType } from "@/lib/types/layout";
-import { auth } from "../auth";
+import { getAuthInfo } from "./auth";
 
 const today = new Date();
 
 export const getAllEvents = async ({ limit, page }: PaginationType) => {
   const url = `${EVENTS_API}${URLS.events.all}?page=${page}&limit=${limit}`;
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
   try {
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       next: { revalidate: 60 },
@@ -41,14 +41,14 @@ export const getAllEvents = async ({ limit, page }: PaginationType) => {
 
 export const getMostRecentEvent = async ({ limit, page }: PaginationType) => {
   const url = `${EVENTS_API}${URLS.events.all}?page=${page}&limit=${limit}`;
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
   try {
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       next: { revalidate: 60 },
@@ -76,14 +76,14 @@ export const getMostRecentEvent = async ({ limit, page }: PaginationType) => {
 
 export const getEventsForCalendar = async ({ limit, page }: PaginationType) => {
   const url = `${EVENTS_API}${URLS.events.all}?page=${page}&limit=${limit}`;
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
   try {
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       next: { revalidate: 60 },
@@ -119,14 +119,14 @@ export const getEventsByCleanName = async (slug: string) => {
     "{cleanName}",
     slug
   )}`;
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
   try {
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       next: { revalidate: 60 },
@@ -144,14 +144,14 @@ export const getEventsByCleanName = async (slug: string) => {
 
 export const getEventsByID = async (id: string) => {
   const url = `${EVENTS_API}${URLS.events.one.replace("{id}", id)}`;
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
   try {
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       next: { revalidate: 60 },
@@ -172,14 +172,14 @@ export const getEventsWithAttendeesByCleanName = async (slug: string) => {
     "{cleanName}",
     slug
   )}`;
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
   try {
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       next: { revalidate: 60 },
@@ -196,15 +196,15 @@ export const getEventsWithAttendeesByCleanName = async (slug: string) => {
 };
 
 export const searchForEvents = async (value: string) => {
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
   const url = `${EVENTS_API}${URLS.events.event_search}?query=${value}`;
 
   try {
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       next: { revalidate: 60 },

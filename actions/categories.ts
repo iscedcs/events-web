@@ -1,28 +1,28 @@
-'use server';
+"use server";
 
-import { EVENTS_API, URLS } from '@/lib/const';
-import { auth } from '../auth';
+import { EVENTS_API, URLS } from "@/lib/const";
+import { getAuthInfo } from "./auth";
 
 export const getUniqueCategories = async () => {
-	const url = `${EVENTS_API}${URLS.events.category}`;
-	const session = await auth();
-	const BEARER_TOKEN = session?.user.accessToken;
+  const url = `${EVENTS_API}${URLS.events.category}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
-	try {
-		const res = await fetch(url, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${BEARER_TOKEN}`,
-				'Content-Type': 'application/json',
-			},
-			next: { revalidate: 60 },
-		});
-		const data = await res.json();
-		if (data.success === true) {
-			return data.data;
-		}
-		return null;
-	} catch (e: any) {
-		console.log('Unable to fetch categories', e);
-	}
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    if (data.success === true) {
+      return data.data;
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to fetch categories", e);
+  }
 };

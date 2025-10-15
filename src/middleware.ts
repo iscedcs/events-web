@@ -1,80 +1,110 @@
-import NextAuth from "next-auth";
-import { getToken } from "next-auth/jwt";
-import authConfig from "../auth.config";
+import { NextResponse, NextRequest } from "next/server";
+
+import { buildAuthLoginUrl } from "./lib/auth-urls";
 import {
-  apiAuthPrefix,
   authRoutes,
   defaultBusinessUserRoute,
   defaultUserRoute,
   protectedRoutes,
   publicRoutes,
 } from "../routes";
-import { userType } from "./lib/types/auth";
 
-const { auth } = NextAuth(authConfig);
-
-export default auth(async (req) => {
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
-  const { nextUrl } = req;
-  const pathname = nextUrl.pathname;
-
-  const isLoggedIn = !!req.auth;
-
-  const userRole: userType | undefined = token?.userType as
-    | userType
-    | undefined;
-
-  const isApiRoute = pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(pathname);
-  const isAuthRoute = authRoutes.includes(pathname);
-  const isProtectedRoute = protectedRoutes.some((path) =>
-    pathname.startsWith(path)
+function isProtectedPath(pathname: string) {
+  return protectedRoutes.some(
+    (p) => pathname === p || pathname.startsWith(p + "/")
   );
-  const prompt = nextUrl.searchParams.get("prompt");
-  const hasReturnParam =
-    nextUrl.searchParams.has("redirect") ||
-    nextUrl.searchParams.has("redirect_uri") ||
-    nextUrl.searchParams.has("callbackUrl");
+}
 
-  const forceLogin = prompt === "login";
+function hasNextAuthSessionCookie(req: NextRequest) {
+  return (
+    req.cookies.get("__Secure-next-auth.session-token")?.value ||
+    req.cookies.get("next-auth.session-token")?.value
+  );
+}
 
-  if (isApiRoute) {
-    return;
+function decodeUserTypeFromJWT(
+  jwt?: string
+): "USER" | "BUSINESS_USER" | undefined {
+  if (!jwt) return undefined;
+  try {
+    const payload = JSON.parse(
+      Buffer.from(jwt.split(".")[1], "base64").toString("utf-8")
+    );
+    return payload?.userType;
+  } catch {
+    return undefined;
   }
+}
 
+function isExpired(jwt?: string) {
+  if (!jwt) return true;
+  try {
+    const payload = JSON.parse(
+      Buffer.from(jwt.split(".")[1], "base64").toString("utf-8")
+    );
+    const now = Math.floor(Date.now() / 1000);
+    return typeof payload.exp === "number" ? payload.exp <= now : true;
+  } catch {
+    return true;
+  }
+}
+
+export function middleware(req: NextRequest) {
+  const { nextUrl, cookies } = req;
+  const { pathname, search } = nextUrl;
+
+  // Always allow static & api
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/robots.txt") ||
+    pathname.startsWith("/sitemap.xml") ||
+    pathname.startsWith("/api")
+  )
+    return NextResponse.next();
+
+  const token = cookies.get("accessToken")?.value;
+  const hasValidAccessToken = !!token && !isExpired(token);
+  const hasNextAuthCookie = !!hasNextAuthSessionCookie(req);
+  const isLoggedIn = hasValidAccessToken || hasNextAuthCookie;
+
+  const isPublic = publicRoutes.includes(pathname);
+  const isAuthRoute = authRoutes.includes(pathname);
+  const isProtected = isProtectedPath(pathname);
+
+  // Auth routes: if already logged in, route by role unless prompt=login or explicit return is present
   if (isAuthRoute) {
-    if (isLoggedIn && !forceLogin && !hasReturnParam) {
-      return Response.redirect(new URL("/dashboard", nextUrl));
+    const prompt = nextUrl.searchParams.get("prompt");
+    const hasReturnParam =
+      nextUrl.searchParams.has("redirect") ||
+      nextUrl.searchParams.has("redirect_uri") ||
+      nextUrl.searchParams.has("callbackUrl");
+
+    if (isLoggedIn && prompt !== "login" && !hasReturnParam) {
+      const role = decodeUserTypeFromJWT(token);
+      const target =
+        role === "BUSINESS_USER" ? defaultBusinessUserRoute : defaultUserRoute;
+      return NextResponse.redirect(new URL(target, nextUrl));
     }
-    return;
+    return NextResponse.next();
   }
 
-  if (isAuthRoute) {
-    if (isLoggedIn) {
-      if (userRole === "USER") {
-        return Response.redirect(new URL(defaultUserRoute, nextUrl));
-      }
-      if (userRole === "BUSINESS_USER") {
-        return Response.redirect(new URL(defaultBusinessUserRoute, nextUrl));
-      }
-    }
-
-    return;
+  // Public routes: if logged-in, push to their default dashboards
+  if (isPublic && isLoggedIn) {
+    const role = decodeUserTypeFromJWT(token);
+    const target =
+      role === "BUSINESS_USER" ? defaultBusinessUserRoute : defaultUserRoute;
+    return NextResponse.redirect(new URL(target, nextUrl));
   }
 
-  if (isLoggedIn && userRole === "USER" && isPublicRoute) {
-    return Response.redirect(new URL(defaultUserRoute, nextUrl));
-  }
-  if (isLoggedIn && userRole === "BUSINESS_USER" && isPublicRoute) {
-    return Response.redirect(new URL(defaultBusinessUserRoute, nextUrl));
+  // Protected routes: require login → bounce to Auth with returnTo
+  if (isProtected && !isLoggedIn) {
+    const back = nextUrl.origin + pathname + (search || "");
+    return NextResponse.redirect(buildAuthLoginUrl(back));
   }
 
-  if (!isLoggedIn && isProtectedRoute) {
-    const signIn = new URL("/sign-in", nextUrl);
-    signIn.searchParams.set("redirect", nextUrl.pathname + nextUrl.search);
-    return Response.redirect(signIn);
-  }
-});
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
