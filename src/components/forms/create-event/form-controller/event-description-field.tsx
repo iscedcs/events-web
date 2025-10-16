@@ -22,8 +22,10 @@ export default function EventDescriptionField({
             <div className=" bg-secondary rounded-[12px] py-[20px] px-[15px]">
               <div className=" flex items-center gap-3  ">
                 <HiOutlineDocumentText className=" text-accent w-[20px] h-[20px]" />
-                <div className="">
-                  <p>Add Description</p>
+                <div className=" w-[250px]">
+                  <p className=" truncate">
+                    {value ? value : "Add Description"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -37,7 +39,7 @@ export default function EventDescriptionField({
               value={value || ""}
               onChange={(e) => onChange(e.target.value)}
               placeholder={placeholder}
-              className="focus-visible:ring-0 border-1 rounded-[8px] h-[100px] mt-[10px] w-full break-all bg-[#151515] resize-none"
+              className="focus-visible:ring-0 border border-[#2a2a2a] rounded-[8px] h-[100px] mt-[10px] w-full break-all bg-[#151515] resize-none overflow-hidden"
             />
           </div>
         </DialogContent>

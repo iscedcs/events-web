@@ -1,3 +1,6 @@
+import React from "react";
+import { SingleTicketProps } from "./ticket";
+
 export interface TrendingEventsProps {
   image: string;
   title: string;
@@ -36,22 +39,6 @@ export interface SingleEventProps {
   galleries: SingleGallaryProps[];
   tickets: SingleTicketProps[];
   attendees: SingleAttendeeProps[];
-}
-
-export interface SingleTicketProps {
-  id: string;
-  title: string;
-  eventId: string;
-  quantity: number;
-  available: boolean; //confirm this
-  ticketStatus: string; //confirm this
-  isFree: boolean;
-  amount: number;
-  currency: string;
-  createdAt: Date;
-  updatedAt: Date;
-  event?: SingleEventProps;
-  attendee?: SingleAttendeeProps[];
 }
 
 export interface SingleGallaryProps {
@@ -118,14 +105,14 @@ export interface EventCardProps
 }
 
 export interface ExternalFieldsProps {
-  value: string;
-  onChange: (value: string) => void;
+  value?: string | number | undefined | boolean;
+  onChange: (value: string | number) => void;
   placeholder?: string;
 }
 
 export interface LocationFieldsProps
   extends Omit<ExternalFieldsProps, "onChange"> {
-  onChange: (value: string, lat?: number, lng?: number) => void;
+  onChange: (value: string, town: string, lat?: number, lng?: number) => void;
 }
 
 export interface DateTimeFieldsProps

@@ -24,7 +24,7 @@ export default function HostNameField({
                 <FaCircleUser className=" text-accent w-[20px] h-[20px]" />
                 <div className="">
                   <p>Host Name</p>
-                  <p className=" text-accent">John Doe</p>
+                  <p className=" text-accent">{value ? value : "John Doe"}</p>
                 </div>
               </div>
             </div>
@@ -35,7 +35,7 @@ export default function HostNameField({
           <div className="">
             <p>Event Host Name</p>
             <Input
-              value={value || ""}
+              value={String(value)}
               onChange={(e) => onChange(e.target.value)}
               placeholder={placeholder}
               className="bg-[#151515] mt-[10px] rounded-[8px] px-[20px]"

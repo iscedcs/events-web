@@ -1,15 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -17,52 +9,64 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { eventCreationSchema } from "@/lib/schema/event-creation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AiOutlineEdit } from "react-icons/ai";
-import { BiCategory } from "react-icons/bi";
-import { BsGlobe } from "react-icons/bs";
 import { FaCalendarDay } from "react-icons/fa";
-import { FaCircleUser } from "react-icons/fa6";
-import { HiOutlineDocumentText } from "react-icons/hi";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import { LuArrowUpToLine, LuTicket } from "react-icons/lu";
-import { MdOutlineMessage } from "react-icons/md";
 import z from "zod";
+import AudienceCapacity from "./form-controller/audience-capacity";
+import CategoriesField from "./form-controller/categories-field";
+import ChatEnableField from "./form-controller/chat-enable-field";
 import DateTimeField from "./form-controller/date-time-field";
+import EventDescriptionField from "./form-controller/event-description-field";
+import HostNameField from "./form-controller/host-name";
 import ImageField from "./form-controller/image-field";
 import LocationField from "./form-controller/location-field";
-import TitleField from "./form-controller/title-field";
-import HostNameField from "./form-controller/host-name";
-import EventDescriptionField from "./form-controller/event-description-field";
 import TicketTypeField from "./form-controller/ticket-type-field";
+import TitleField from "./form-controller/title-field";
+import VisibilityField from "./form-controller/visibility-field";
 
-export type eventCreationFormValues = z.infer<typeof eventCreationSchema>;
+export type EventCreationFormValues = z.infer<typeof eventCreationSchema>;
 export default function EventCreationForm() {
-  const [startOpen, setStartOpen] = useState(false);
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-
-  const [endOpen, setEndOpen] = useState(false);
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-
-  const form = useForm<eventCreationFormValues>({
+  const form = useForm<EventCreationFormValues>({
     defaultValues: {
+      title: "",
+      description: "",
       location: "",
+      latitude: 0,
+      longitude: 0,
+      town: "",
+      image: "",
+      startDate: "",
+      endDate: "",
+      isPublic: true,
+      time: "",
       host: "",
+      categories: [],
+      audienceSize: 0,
+      tickets: [],
     },
     resolver: zodResolver(eventCreationSchema),
     mode: "all",
   });
 
-  const handleSubmit = () => {};
+  const handleSubmit = (data: EventCreationFormValues) => {
+    console.log("Form submitted", data);
+  };
+
+  const checkValidity = async () => {
+    const isValid = await form.trigger();
+    console.log("Form is valid?", isValid);
+
+    if (!isValid) {
+      console.log("There are validation errors:", form.formState.errors);
+    }
+  };
 
   return (
     <Form {...form}>
-      <form className="mt-[20px]">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-[20px]">
         <Controller
           name="image"
           control={form.control}
@@ -95,30 +99,18 @@ export default function EventCreationForm() {
               </div>
             </SelectContent>
           </Select>
-          <Select>
-            <SelectTrigger className="bg-secondary border-0 text-white px-[10px] py-[20px] rounded-[12px] flex items-center gap-2">
-              <BsGlobe className="w-[18px] h-[18px]" />
-              <SelectValue placeholder="Visibility" />
-            </SelectTrigger>
-            <SelectContent className="w-[80%] rounded-[20px] px-[15px] py-[10px] text-white border-0 bg-secondary">
-              <div className=" flex gap-1 flex-col">
-                <SelectItem className=" pl-0 text-[16px]" value="private">
-                  Private
-                </SelectItem>
-                <p className=" text-[13px] text-accent">
-                  Shown on your calendar and eligible to be featured
-                </p>
-              </div>
-              <div className=" flex gap-1 mt-[20px] flex-col">
-                <SelectItem className=" pl-0 text-[16px]" value="public">
-                  Public
-                </SelectItem>
-                <p className=" text-[13px] text-accent">
-                  Shown on your calendar and eligible to be featured
-                </p>
-              </div>
-            </SelectContent>
-          </Select>
+
+          <Controller
+            name="isPublic"
+            control={form.control}
+            render={({ field }) => (
+              <VisibilityField
+                onChange={field.onChange}
+                value={field.value}
+                placeholder="Visibility"
+              />
+            )}
+          />
         </div>
 
         <Controller
@@ -142,7 +134,12 @@ export default function EventCreationForm() {
             <LocationField
               value={field.value}
               placeholder="Start typing to view locations"
-              onChange={field.onChange}
+              onChange={({ address, town, lat, lng }) => {
+                field.onChange(address);
+                form.setValue("town", town ?? "");
+                form.setValue("latitude", Number(lat));
+                form.setValue("longitude", Number(lng));
+              }}
             />
           )}
         />
@@ -161,7 +158,7 @@ export default function EventCreationForm() {
 
         <Controller
           control={form.control}
-          name="host"
+          name="description"
           render={({ field }) => (
             <EventDescriptionField
               onChange={field.onChange}
@@ -175,94 +172,32 @@ export default function EventCreationForm() {
           <p>Event Options</p>
           <div className=" mt-[20px] text-accent rounded-[12px] py-[15px] px-[20px] bg-secondary">
             <TicketTypeField />
-            <div className="">
-              <div className=" mt-[10px] flex items-center justify-between">
-                <div className=" flex items-center gap-2">
-                  <LuArrowUpToLine />
-                  <p className=" text-white">Capacity</p>
-                </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <div className=" flex items-center gap-2">
-                      <p>Unlimited</p>
-                      <AiOutlineEdit />
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent className=" bg-secondary border-0">
-                    <DialogTitle hidden>Content</DialogTitle>
-                    <p>Max Capacity</p>
-                    <p className=" text-accent">
-                      Auto-close registration when the capacity is reached. Only
-                      approved guests count toward the cap.
-                    </p>
-                    <div className="">
-                      <p>Capacity</p>
-                      <Input
-                        type="number"
-                        className=" rounded-[8px] px-[10px] mt-[10px] bg-[#151515]"
-                      />
-                    </div>
-                    <div className=" flex justify-between items-center">
-                      <p>Over-Capacity Waitlist</p>
-                      <Switch />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
-              <hr className=" mt-[10px] border-accent" />
-            </div>
-            <div className="">
-              <div className=" mt-[10px] flex items-center justify-between">
-                <div className=" flex items-center gap-2">
-                  <BiCategory />
-                  <p className=" text-white">Category</p>
-                </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <div className=" flex items-center gap-2">
-                      <p>Select Category</p>
-                      <AiOutlineEdit />
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent className=" bg-secondary border-0">
-                    <DialogTitle hidden>Content</DialogTitle>
-                    <div className="">
-                      <p className=" text-accent">
-                        Choose the category of the event:
-                      </p>
-                      <div className="">
-                        <ScrollArea></ScrollArea>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
-              <hr className=" mt-[10px] border-accent" />
-            </div>
-            <div className="">
-              <div className=" mt-[10px] flex items-center justify-between">
-                <div className=" flex items-center gap-2">
-                  <MdOutlineMessage />
-                  <p className=" text-white">Event chat</p>
-                </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <div className=" flex items-center gap-2">
-                      <p>Enabled</p>
-                      <AiOutlineEdit />
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent className=" bg-secondary border-0">
-                    <DialogTitle hidden>Content</DialogTitle>
-                    <p>Content</p>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </div>
+
+            <Controller
+              control={form.control}
+              name="audienceSize"
+              render={({ field }) => (
+                <AudienceCapacity
+                  onChange={field.onChange}
+                  value={Number(field.value) ?? 0}
+                  placeholder="0"
+                />
+              )}
+            />
+
+            <CategoriesField />
+
+            <ChatEnableField />
           </div>
         </div>
+        <Button type="button" onClick={checkValidity} className="mt-4">
+          Check Validity
+        </Button>
 
-        <Button className=" mt-[30px] w-full rounded-[12px] font-semibold py-[24px]">
+        <Button
+          type="submit"
+          className=" mt-[30px] w-full rounded-[12px] font-semibold py-[24px]"
+        >
           Create Event
         </Button>
       </form>
