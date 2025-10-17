@@ -37,7 +37,12 @@ export default function TicketTypeField() {
   );
   const [isEditing, setIsEditing] = useState(false);
 
-  const { control, watch } = useFormContext<{
+  const {
+    control,
+    trigger,
+    watch,
+    formState: { errors },
+  } = useFormContext<{
     tickets: CreateTicketProps[];
   }>();
 
@@ -347,7 +352,7 @@ export default function TicketTypeField() {
                     </div>
 
                     <div className="flex flex-col gap-3">
-                      <Label className="text-accent">Price</Label>
+                      <Label className="text-accent">Price (₦)</Label>
                       <Input
                         type="number"
                         placeholder="0"
@@ -429,13 +434,25 @@ export default function TicketTypeField() {
                                 What should we call this ticket?
                               </Label>
                               <Input
+                                {...field}
                                 type="text"
                                 disabled={!customTicket || isEditing}
-                                {...field}
-                                // value={(item.title || field.value) ?? ""}
-                                value={ticketInfo.title}
-                                className="bg-[#151515] rounded-[8px] px-[15px]"
+                                value={field.value ?? ""}
+                                className={`bg-[#151515] rounded-[8px] px-[15px] ${
+                                  errors.tickets?.[selectedTicketIndex]?.title
+                                    ? "border-red-500 focus-visible:ring-red-500"
+                                    : ""
+                                }`}
                               />
+                              {errors.tickets?.[selectedTicketIndex]?.title
+                                ?.message && (
+                                <p className="text-error text-sm">
+                                  {
+                                    errors.tickets[selectedTicketIndex]?.title
+                                      ?.message
+                                  }
+                                </p>
+                              )}
                             </div>
                           )}
                         />
@@ -444,16 +461,28 @@ export default function TicketTypeField() {
                           control={control}
                           name={`tickets.${selectedTicketIndex}.amount`}
                           render={({ field }) => (
-                            <div className="flex gap-3 flex-col">
-                              <Label className="text-accent">Price</Label>
+                            <div className="flex flex-col gap-2">
+                              <Label className="text-accent">Price (₦)</Label>
                               <Input
+                                {...field}
                                 type="number"
                                 disabled={freeTicket || isEditing}
-                                {...field}
-                                // value={item.amount?.toString() ?? ""}
                                 value={field.value ?? ""}
-                                className="bg-[#151515] rounded-[8px] px-[15px]"
+                                className={`bg-[#151515] rounded-[8px] px-[15px] ${
+                                  errors.tickets?.[selectedTicketIndex]?.amount
+                                    ? "border-red-500 focus-visible:ring-red-500"
+                                    : ""
+                                }`}
                               />
+                              {errors.tickets?.[selectedTicketIndex]?.amount
+                                ?.message && (
+                                <p className="text-error text-sm">
+                                  {
+                                    errors.tickets[selectedTicketIndex]?.amount
+                                      ?.message
+                                  }
+                                </p>
+                              )}
                             </div>
                           )}
                         />
@@ -462,16 +491,29 @@ export default function TicketTypeField() {
                           control={control}
                           name={`tickets.${selectedTicketIndex}.quantity`}
                           render={({ field }) => (
-                            <div className="flex gap-3 flex-col">
+                            <div className="flex flex-col gap-2">
                               <Label className="text-accent">Quantity</Label>
                               <Input
+                                {...field}
                                 type="number"
                                 disabled={freeTicket || isEditing}
-                                {...field}
-                                // value={item.quantity?.toString() ?? ""}
                                 value={field.value ?? ""}
-                                className="bg-[#151515] rounded-[8px] px-[15px]"
+                                className={`bg-[#151515] rounded-[8px] px-[15px] ${
+                                  errors.tickets?.[selectedTicketIndex]
+                                    ?.quantity
+                                    ? "border-red-500 focus-visible:ring-red-500"
+                                    : ""
+                                }`}
                               />
+                              {errors.tickets?.[selectedTicketIndex]?.quantity
+                                ?.message && (
+                                <p className="text-error text-sm">
+                                  {
+                                    errors.tickets[selectedTicketIndex]
+                                      ?.quantity?.message
+                                  }
+                                </p>
+                              )}
                             </div>
                           )}
                         />
@@ -480,16 +522,29 @@ export default function TicketTypeField() {
                           control={control}
                           name={`tickets.${selectedTicketIndex}.currency`}
                           render={({ field }) => (
-                            <div className="flex gap-3 flex-col">
+                            <div className="flex flex-col gap-2">
                               <Label className="text-accent">Currency</Label>
                               <Input
+                                {...field}
                                 type="text"
                                 disabled
-                                {...field}
-                                // value={item.currency ?? ""}
                                 value={field.value ?? ""}
-                                className="bg-[#151515] rounded-[8px] px-[15px]"
+                                className={`bg-[#151515] rounded-[8px] px-[15px] ${
+                                  errors.tickets?.[selectedTicketIndex]
+                                    ?.currency
+                                    ? "border-red-500 focus-visible:ring-red-500"
+                                    : ""
+                                }`}
                               />
+                              {errors.tickets?.[selectedTicketIndex]?.currency
+                                ?.message && (
+                                <p className="text-error text-sm">
+                                  {
+                                    errors.tickets[selectedTicketIndex]
+                                      ?.currency?.message
+                                  }
+                                </p>
+                              )}
                             </div>
                           )}
                         />
@@ -639,8 +694,8 @@ export default function TicketTypeField() {
                 ) : (
                   <Button
                     disabled={fields.length === 0 && step === 1}
-                    onClick={() => {
-                      // CASE 1: custom ticket being created
+                    onClick={async () => {
+                      // CASE 1: Custom ticket being created
                       if (customTicket && step === 2) {
                         if (customTicketData.title.trim() === "") return;
 
@@ -674,6 +729,14 @@ export default function TicketTypeField() {
 
                       // CASE 4: Step 2 → 3 (if not custom ticket)
                       if (step === 2 && !customTicket) {
+                        // 🔥 Validate the "tickets" field before moving forward
+                        const isValid = await trigger("tickets");
+
+                        if (!isValid) {
+                          console.log("Ticket validation failed");
+                          return; // stops progression if invalid
+                        }
+
                         setStep(3);
                         return;
                       }
@@ -681,9 +744,9 @@ export default function TicketTypeField() {
                       // CASE 5: Default fallback (if something unexpected)
                       setStep((prev) => prev + 1);
                     }}
-                    className={` ${
-                      step === 0 ? " w-[100%]" : " w-[50%]"
-                    }  w-full rounded-[12px] font-semibold py-[24px]`}
+                    className={`${
+                      step === 0 ? "w-[100%]" : "w-[50%]"
+                    } w-full rounded-[12px] font-semibold py-[24px]`}
                   >
                     Next
                   </Button>

@@ -3,7 +3,7 @@
 import EventCard from "@/components/shared/event/event-card";
 import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
-import { SingleTicketProps } from "@/lib/types/event";
+import { SingleTicketProps } from "@/lib/types/ticket";
 import { useEffect, useState } from "react";
 import { getTicketByUserID } from "../../../../../../../actions/tickets";
 import EmptyState from "../empty-state";

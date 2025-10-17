@@ -10,7 +10,7 @@ export default function TitleField({
     <div className=" mt-[20px]">
       <Input
         className=" text-[32px] border-0 rounded-none"
-        value={value || ""}
+        value={value?.toString() || ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
       />

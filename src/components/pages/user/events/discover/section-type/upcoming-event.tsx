@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getMostRecentEvent } from "../../../../../../../actions/events";
+import { formatWithCommas } from "@/lib/utils";
 
 export default function UpcomingEvent() {
   const [event, setEvent] = useState<SingleEventProps>();
@@ -50,7 +51,8 @@ export default function UpcomingEvent() {
             ) : (
               <Link
                 href={`/user/events/${event?.cleanName.toLowerCase()}`}
-                className="">
+                className=""
+              >
                 <Image
                   alt="image"
                   src={
@@ -69,7 +71,7 @@ export default function UpcomingEvent() {
                     <p>
                       {event?.tickets[0].isFree === true
                         ? "FREE"
-                        : event?.tickets[0].amount}
+                        : formatWithCommas(event?.tickets[0].amount ?? 0)}
                     </p>
                   </span>
 

@@ -3,10 +3,10 @@
 import EventCard from "@/components/shared/event/event-card";
 import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
-import { SingleTicketProps } from "@/lib/types/event";
 import { useEffect, useState } from "react";
 import { getPastTicketsByUserID } from "../../../../../../../actions/tickets";
 import EmptyState from "../empty-state";
+import { SingleTicketProps } from "@/lib/types/ticket";
 
 export default function Past({ userId }: { userId?: string }) {
   const [pastTicket, setPastTicket] = useState<SingleTicketProps[]>([]);

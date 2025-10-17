@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import { Form, FormMessage } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -26,10 +26,17 @@ import LocationField from "./form-controller/location-field";
 import TicketTypeField from "./form-controller/ticket-type-field";
 import TitleField from "./form-controller/title-field";
 import VisibilityField from "./form-controller/visibility-field";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
+import { SingleEventProps } from "@/lib/types/event";
 
-export type EventCreationFormValues = z.infer<typeof eventCreationSchema>;
+export type eventCreationFormValues = z.infer<typeof eventCreationSchema>;
 export default function EventCreationForm() {
-  const form = useForm<EventCreationFormValues>({
+  const [loading, setIsLoading] = useState(false);
+
+  const form = useForm<eventCreationFormValues>({
     defaultValues: {
       title: "",
       description: "",
@@ -44,6 +51,7 @@ export default function EventCreationForm() {
       time: "",
       host: "",
       categories: [],
+      hasFreeTickets: true,
       audienceSize: 0,
       tickets: [],
     },
@@ -51,8 +59,58 @@ export default function EventCreationForm() {
     mode: "all",
   });
 
-  const handleSubmit = (data: EventCreationFormValues) => {
-    console.log("Form submitted", data);
+  const router = useRouter();
+
+  const handleSubmit = async (data: eventCreationFormValues) => {
+    setIsLoading(true);
+    // console.log("Form submitted", data);
+    const payload: eventCreationFormValues = {
+      audienceSize: data.audienceSize,
+      categories: data.categories,
+      description: data.description,
+      endDate: data.endDate,
+      host: data.host,
+      isPublic: data.isPublic,
+      latitude: data.latitude,
+      location: data.location,
+      longitude: data.longitude,
+      startDate: data.startDate,
+      time: data.time,
+      title: data.title,
+      town: data.town,
+      image: data.image,
+      tickets: data.tickets,
+      hasFreeTickets: true,
+    };
+
+    try {
+      const response = await fetch("/api/event/new", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      const event: SingleEventProps = data.data;
+
+      if (response.ok) {
+        setIsLoading(false);
+        toast.success("Your event was created successfully");
+        form.reset();
+        router.push(`/user/events/${event.cleanName.toLowerCase()}`);
+      } else {
+        setIsLoading(false);
+        toast.error("Something went wrong with creating your event");
+        form.reset();
+        router.refresh();
+      }
+    } catch (e: any) {
+      setIsLoading(false);
+      toast.error("Something went wrong");
+      form.reset();
+      console.log("Event not created successfully", e);
+    }
   };
 
   const checkValidity = async () => {
@@ -113,60 +171,93 @@ export default function EventCreationForm() {
           />
         </div>
 
-        <Controller
-          name="title"
-          control={form.control}
-          render={({ field }) => (
-            <TitleField
-              onChange={field.onChange}
-              value={field.value}
-              placeholder="Event Name"
-            />
-          )}
-        />
+        <div className="">
+          <Controller
+            name="title"
+            control={form.control}
+            render={({ field }) => (
+              <TitleField
+                onChange={field.onChange}
+                value={field.value}
+                placeholder="Event Name"
+              />
+            )}
+          />
+          <p className=" text-error text-[12px] mt-[10px]">
+            {form.formState.errors.title?.message}
+          </p>
+        </div>
 
-        <DateTimeField />
+        <div className="">
+          <DateTimeField />
+          {form.formState.errors.startDate?.message &&
+            form.formState.errors.endDate?.message &&
+            form.formState.errors.time?.message && (
+              <p className=" text-error text-[12px] mt-[10px]">
+                {form.formState.errors.startDate?.message},{" "}
+                {form.formState.errors.endDate?.message},{" "}
+                {form.formState.errors.time?.message}
+              </p>
+            )}
+        </div>
 
-        <Controller
-          name="location"
-          control={form.control}
-          render={({ field }) => (
-            <LocationField
-              value={field.value}
-              placeholder="Start typing to view locations"
-              onChange={({ address, town, lat, lng }) => {
-                field.onChange(address);
-                form.setValue("town", town ?? "");
-                form.setValue("latitude", Number(lat));
-                form.setValue("longitude", Number(lng));
-              }}
-            />
-          )}
-        />
+        <div className="">
+          <Controller
+            name="location"
+            control={form.control}
+            render={({ field }) => (
+              <LocationField
+                value={field.value}
+                placeholder="Start typing to view locations"
+                onChange={({ address, town, lat, lng }) => {
+                  field.onChange(address);
+                  form.setValue("town", town ?? "");
+                  const parsedLat = parseFloat(lat?.toString() ?? "0");
+                  const parsedLng = parseFloat(lng?.toString() ?? "0");
+                  form.setValue("latitude", !isNaN(parsedLat) ? parsedLat : 0);
+                  form.setValue("longitude", !isNaN(parsedLng) ? parsedLng : 0);
+                }}
+              />
+            )}
+          />
+          <p className=" text-error text-[12px] mt-[10px]">
+            {form.formState.errors.location?.message}
+          </p>
+        </div>
 
-        <Controller
-          control={form.control}
-          name="host"
-          render={({ field }) => (
-            <HostNameField
-              onChange={field.onChange}
-              value={field.value}
-              placeholder="John Doe"
-            />
-          )}
-        />
+        <div className="">
+          <Controller
+            control={form.control}
+            name="host"
+            render={({ field }) => (
+              <HostNameField
+                onChange={field.onChange}
+                value={field.value}
+                placeholder="John Doe"
+              />
+            )}
+          />
+          <p className=" text-error text-[12px] mt-[10px]">
+            {form.formState.errors.host?.message}
+          </p>
+        </div>
 
-        <Controller
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <EventDescriptionField
-              onChange={field.onChange}
-              value={field.value}
-              placeholder="What’s the event about?"
-            />
-          )}
-        />
+        <div className="">
+          <Controller
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <EventDescriptionField
+                onChange={field.onChange}
+                value={field.value}
+                placeholder="What’s the event about?"
+              />
+            )}
+          />
+          <p className=" text-error text-[12px] mt-[10px]">
+            {form.formState.errors.description?.message}
+          </p>
+        </div>
 
         <div className=" mt-[20px]">
           <p>Event Options</p>
@@ -190,15 +281,21 @@ export default function EventCreationForm() {
             <ChatEnableField />
           </div>
         </div>
-        <Button type="button" onClick={checkValidity} className="mt-4">
+        {/* <Button type="button" onClick={checkValidity} className="mt-4">
           Check Validity
-        </Button>
+        </Button> */}
 
         <Button
           type="submit"
-          className=" mt-[30px] w-full rounded-[12px] font-semibold py-[24px]"
+          disabled={loading}
+          className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
         >
-          Create Event
+          {loading && (
+            <span className=" animate-spin">
+              <LoaderCircle />
+            </span>
+          )}
+          {loading ? "Creating Event" : "Create Event"}
         </Button>
       </form>
     </Form>

@@ -2,7 +2,8 @@ import Header from "@/components/shared/layout/header";
 import { Button } from "@/components/ui/button";
 import CopyButton from "@/components/ui/secondary/copy-button";
 import { TICKETTANDC } from "@/lib/const";
-import { SingleAttendeeProps, SingleTicketProps } from "@/lib/types/event";
+import { SingleAttendeeProps } from "@/lib/types/event";
+import { SingleTicketProps } from "@/lib/types/ticket";
 import { format } from "date-fns/format";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,9 +15,9 @@ import {
   getAttendeeID,
   getAttendeesEventID,
 } from "../../../../../../../../actions/attendee";
+import { getCurrentUser } from "../../../../../../../../actions/auth";
 import { getTicketByID } from "../../../../../../../../actions/tickets";
 import { getUserByID } from "../../../../../../../../actions/user";
-import { getCurrentUser } from "../../../../../../../../actions/auth";
 
 type Params = Promise<{ id: string }>;
 
@@ -107,7 +108,8 @@ export default async function Ticket(props: { params: Params }) {
               </div>
               <Link
                 href={`/user/events/${ticket.event?.cleanName.toLowerCase()}`}
-                className=" flex items-center gap-2">
+                className=" flex items-center gap-2"
+              >
                 <p className=" text-[14px]">View events page</p>
                 <RxCaretRight />
               </Link>
@@ -125,7 +127,9 @@ export default async function Ticket(props: { params: Params }) {
             </div>
             <div className="">
               <Button className=" text-white bg-[#6600FF]" asChild>
-                <Link href={""}>
+                <Link
+                  href={`/user/events/${ticket.event?.cleanName.toLowerCase()}/chat`}
+                >
                   Join chat
                   <MdOutlineMessage />
                 </Link>

@@ -704,3 +704,18 @@ export const INITIALTICKETS: InitialTicketProps[] = [
     quantity: 0,
   },
 ];
+
+export const DUMMYATTENDEES = [
+  {
+    image: "/no-profile.png",
+    name: "John Doe",
+  },
+  {
+    image: "/no-profile.png",
+    name: "John Doe 1",
+  },
+  {
+    image: "/no-profile.png",
+    name: "John Doe 2",
+  },
+];

@@ -17,10 +17,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { eventRegistrationFormSchema } from "@/lib/schema/event-registration";
-import { SingleEventProps, SingleTicketProps } from "@/lib/types/event";
+import { SingleEventProps } from "@/lib/types/event";
+import { SingleTicketProps } from "@/lib/types/ticket";
 import { UserProps } from "@/lib/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -32,7 +32,6 @@ import { toast } from "sonner";
 import z from "zod";
 import { getEventsByCleanName } from "../../../../actions/events";
 import { getTicketByID } from "../../../../actions/tickets";
-import { getUserByID } from "../../../../actions/user";
 
 export type eventRegistrationFormValues = z.infer<
   typeof eventRegistrationFormSchema
@@ -216,7 +215,8 @@ export default function EventRegistrationForm({
                         <div
                           onClick={handleTicketSelect}
                           key={ticket.id}
-                          className=" flex justify-between items-center">
+                          className=" flex justify-between items-center"
+                        >
                           <div className=" flex gap-3 items-center">
                             {ticket.isFree ? (
                               <LuTicket className=" w-[24px] h-[24px]" />
@@ -246,7 +246,8 @@ export default function EventRegistrationForm({
                 <Button
                   type="submit"
                   disabled={loading || selectedTicket === ""}
-                  className=" w-full rounded-[12px] font-semibold py-[24px] ">
+                  className=" w-full rounded-[12px] font-semibold py-[24px] "
+                >
                   {loading ? (
                     <div className=" flex items-center gap-2">
                       <TbLoader2 className=" w-[22px] h-[22px] animate-spin" />

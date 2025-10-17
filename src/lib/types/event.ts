@@ -26,6 +26,7 @@ export interface SingleEventProps {
   userId: string;
   qrCode: string;
   qrCodeUrl: string;
+  isPublic: boolean;
   galleryLink: string;
   createdAt: Date;
   deletedAt: Date;
@@ -69,8 +70,13 @@ export interface SingleAttendeeProps {
   userId: string;
   checkedOut: Date;
   checkedIn: Date;
-  displayPicture: Date;
+  displayPicture: string;
 }
+
+export type MiniSingleAttendeeProps = Pick<
+  SingleAttendeeProps,
+  "name" | "displayPicture"
+>;
 
 export interface SingleUserWatchlistProps {
   id: string;

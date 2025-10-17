@@ -3,7 +3,7 @@ import { SingleEventProps } from "@/lib/types/event";
 import { getAllEvents } from "../../../../actions/events";
 
 export default async function AvailableEvents() {
-  const events: SingleEventProps[] | undefined | null = await getAllEvents({
+  const events = await getAllEvents({
     limit: 5,
     page: 1,
   });
@@ -11,7 +11,7 @@ export default async function AvailableEvents() {
   // console.log({ events });
   return (
     <div className=" grid grid-cols-1 gap-6 p-3">
-      {events?.map((event) => (
+      {events?.event?.map((event) => (
         <div className=" flex flex-col gap-4" key={event.id}>
           <EventCard
             cardType="interested"

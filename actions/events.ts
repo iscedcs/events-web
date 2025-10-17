@@ -1,7 +1,7 @@
 "use server";
 
 import { EVENTS_API, URLS } from "@/lib/const";
-import { SingleEventProps } from "@/lib/types/event";
+import { MiniSingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
 import { PaginationType } from "@/lib/types/layout";
 import { getAuthInfo } from "./auth";
 
@@ -28,10 +28,62 @@ export const getAllEvents = async ({ limit, page }: PaginationType) => {
 
     const sortedEvents = [...events].sort(
       (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    const totalRecords = data.data.total;
+    const currentPage = data.data.currentPage;
+    const totalPages = data.data.totalPages;
+    if (data.success === true) {
+      return {
+        event: sortedEvents,
+        totalPages: totalPages,
+        currentPage: currentPage,
+        totalRecords: totalRecords,
+      };
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to fetch events", e);
+  }
+};
+
+export const getTrendingEvents = async () => {
+  //TODO: GET TRENDING EVENTS WHERE THERE ARE ATTENDEES, MOMENTS, FEEDS
+  const url = `${EVENTS_API}${URLS.events.all}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    console.log({ data });
+    const events: SingleEventProps[] = data.data.events;
+    // console.log(data.data.events);
+
+    const sortedEvents = [...events].sort(
+      (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
+
+    const slicedEvents = sortedEvents.slice(1, 10);
+
+    const totalRecords = data.data.total;
+    const currentPage = data.data.currentPage;
+    const totalPages = data.data.totalPages;
     if (data.success === true) {
-      return sortedEvents;
+      return {
+        event: slicedEvents,
+        totalPages: totalPages,
+        currentPage: currentPage,
+        totalRecords: totalRecords,
+      };
     }
     return null;
   } catch (e: any) {
@@ -136,6 +188,40 @@ export const getEventsByCleanName = async (slug: string) => {
     if (data.success) {
       // console.log(data.data);
       return data.data;
+    } else return null;
+  } catch (e: any) {
+    console.log("Unable to fetch Event information by slug", e);
+  }
+};
+
+export const getEventWithTenAttendeesByCleanName = async (slug: string) => {
+  const url = `${EVENTS_API}${URLS.events.all_events_with_attendee.replace(
+    "{cleanName}",
+    slug
+  )}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    console.log({ data });
+    const event = data.event;
+    const attendees: MiniSingleAttendeeProps[] = data.attendees;
+    const totalAttendees = data.totalAttendees;
+    if (data.success) {
+      // console.log(data.data);
+      return {
+        event: event,
+        attendees: attendees,
+      };
     } else return null;
   } catch (e: any) {
     console.log("Unable to fetch Event information by slug", e);

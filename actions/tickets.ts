@@ -1,8 +1,8 @@
 "use server";
 
 import { EVENTS_API, URLS } from "@/lib/const";
-import { SingleTicketProps } from "@/lib/types/event";
 import { getAuthInfo } from "./auth";
+import { SingleTicketProps } from "@/lib/types/ticket";
 
 export const getTicketByID = async (id: string) => {
   const url = `${EVENTS_API}${URLS.tickets.ticket_by_id.replace("{id}", id)}`;
