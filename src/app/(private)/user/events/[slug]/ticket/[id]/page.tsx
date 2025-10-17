@@ -40,6 +40,10 @@ export default async function Ticket(props: { params: Params }) {
 
   const token = attendee.token;
 
+  const now = new Date();
+  const startDate = new Date(ticket?.event?.startDate ?? now);
+  const endDate = new Date(ticket?.event?.endDate ?? now);
+
   return (
     <div>
       <Header hasBack title={`Ticket: ${ticket.event?.title}`} user={user} />
@@ -125,16 +129,18 @@ export default async function Ticket(props: { params: Params }) {
                 className=" w-[100px] h-[100px] object-cover"
               />
             </div>
-            <div className="">
-              <Button className=" text-white bg-[#6600FF]" asChild>
-                <Link
-                  href={`/user/events/${ticket.event?.cleanName.toLowerCase()}/chat`}
-                >
-                  Join chat
-                  <MdOutlineMessage />
-                </Link>
-              </Button>
-            </div>
+            {startDate <= now || endDate <= now ? null : (
+              <div className="">
+                <Button className=" text-white bg-[#6600FF]" asChild>
+                  <Link
+                    href={`/user/events/${ticket.event?.cleanName.toLowerCase()}/chat`}
+                  >
+                    Join chat
+                    <MdOutlineMessage />
+                  </Link>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className="relative p-[20px] bg-secondary rounded-[24px]">

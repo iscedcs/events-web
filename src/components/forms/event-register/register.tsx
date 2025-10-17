@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import z from "zod";
 import { getEventsByCleanName } from "../../../../actions/events";
 import { getTicketByID } from "../../../../actions/tickets";
+import { formatWithCommas } from "@/lib/utils";
 
 export type eventRegistrationFormValues = z.infer<
   typeof eventRegistrationFormSchema
@@ -89,6 +90,7 @@ export default function EventRegistrationForm({
 
   useEffect(() => {
     if (user) {
+      setLoadUser(false);
       form.reset({
         email: user.email ?? "",
         name: defaultName,
@@ -226,7 +228,7 @@ export default function EventRegistrationForm({
                             <div className="">
                               <p className=" text-[16px]">{ticket.title}</p>
                               <p className=" text-accent text-[16px]">
-                                ₦{ticket.amount}
+                                {formatWithCommas(ticket.amount)}
                               </p>
                             </div>
                           </div>

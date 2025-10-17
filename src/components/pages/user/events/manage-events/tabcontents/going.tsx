@@ -5,7 +5,10 @@ import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
 import { SingleTicketProps } from "@/lib/types/ticket";
 import { useEffect, useState } from "react";
-import { getTicketByUserID } from "../../../../../../../actions/tickets";
+import {
+  getFutureTicketsByUserId,
+  getTicketsByUserID,
+} from "../../../../../../../actions/tickets";
 import EmptyState from "../empty-state";
 
 export default function Going({ userId }: { userId?: string }) {
@@ -20,7 +23,7 @@ export default function Going({ userId }: { userId?: string }) {
     const fetchEvents = async () => {
       setLoading(true);
       try {
-        const ticketsData = await getTicketByUserID(userId);
+        const ticketsData = await getFutureTicketsByUserId(userId);
         if (!cancelled) setTickets(ticketsData ?? []);
       } finally {
         if (!cancelled) setLoading(false);

@@ -16,13 +16,12 @@ export const getWatchlistUserID = async (userId: string) => {
   const auth = await getAuthInfo();
   const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
-  revalidatePath("/user/events", "page");
   try {
     const res = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...(BEARER ? { Authorization: `Bearer ${BEARER}` } : {}),
+        Authorization: `Bearer ${BEARER}`,
       },
       cache: "no-store",
     });
