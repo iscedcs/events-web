@@ -2,7 +2,8 @@ import Header from "@/components/shared/layout/header";
 import { Button } from "@/components/ui/button";
 import CopyButton from "@/components/ui/secondary/copy-button";
 import { TICKETTANDC } from "@/lib/const";
-import { SingleAttendeeProps, SingleTicketProps } from "@/lib/types/event";
+import { SingleAttendeeProps } from "@/lib/types/event";
+import { SingleTicketProps } from "@/lib/types/ticket";
 import { format } from "date-fns/format";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,25 +15,24 @@ import {
   getAttendeeID,
   getAttendeesEventID,
 } from "../../../../../../../../actions/attendee";
+import { getCurrentUser } from "../../../../../../../../actions/auth";
 import { getTicketByID } from "../../../../../../../../actions/tickets";
 import { getUserByID } from "../../../../../../../../actions/user";
-import { auth } from "../../../../../../../../auth";
 
 type Params = Promise<{ id: string }>;
 
 export default async function Ticket(props: { params: Params }) {
   const params = await props.params;
 
-  const session = await auth();
-  const user = await getUserByID(session?.user.id ?? "");
+  const me = await getCurrentUser();
+  const user = me ? await getUserByID(me.id!) : "";
   const ticket: SingleTicketProps = await getTicketByID(params.id);
   const attendees: SingleAttendeeProps[] = await getAttendeesEventID(
     ticket.event?.id ?? ""
   );
 
   const singleAttendeeID =
-    attendees.find((attendee) => attendee.userId === session?.user.id)?.id ??
-    "";
+    attendees.find((attendee) => attendee.userId === me?.id)?.id ?? "";
 
   const attendee: SingleAttendeeProps = await getAttendeeID(singleAttendeeID);
 
@@ -127,7 +127,9 @@ export default async function Ticket(props: { params: Params }) {
             </div>
             <div className="">
               <Button className=" text-white bg-[#6600FF]" asChild>
-                <Link href={""}>
+                <Link
+                  href={`/user/events/${ticket.event?.cleanName.toLowerCase()}/chat`}
+                >
                   Join chat
                   <MdOutlineMessage />
                 </Link>

@@ -6,7 +6,10 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { SingleEventProps } from "@/lib/types/event";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getAllEvents } from "../../../../../../../actions/events";
+import {
+  getAllEvents,
+  getTrendingEvents,
+} from "../../../../../../../actions/events";
 import TrendingEventCard from "../trending-event-card";
 
 export default function TrendingEvents() {
@@ -17,11 +20,8 @@ export default function TrendingEvents() {
 
   useEffect(() => {
     const fetchEvent = async () => {
-      const event: SingleEventProps[] | undefined | null = await getAllEvents({
-        limit: 9,
-        page: 1,
-      });
-      setEvent(event ?? []);
+      const event = await getTrendingEvents();
+      setEvent(event?.event ?? []);
       setIsLoading(false);
       if (event === undefined || event === null) {
         setIsLoading(true);

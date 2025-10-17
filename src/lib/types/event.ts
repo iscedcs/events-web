@@ -1,3 +1,6 @@
+import React from "react";
+import { SingleTicketProps } from "./ticket";
+
 export interface TrendingEventsProps {
   image: string;
   title: string;
@@ -23,6 +26,7 @@ export interface SingleEventProps {
   userId: string;
   qrCode: string;
   qrCodeUrl: string;
+  isPublic: boolean;
   galleryLink: string;
   createdAt: Date;
   deletedAt: Date;
@@ -36,22 +40,6 @@ export interface SingleEventProps {
   galleries: SingleGallaryProps[];
   tickets: SingleTicketProps[];
   attendees: SingleAttendeeProps[];
-}
-
-export interface SingleTicketProps {
-  id: string;
-  title: string;
-  eventId: string;
-  quantity: number;
-  available: boolean; //confirm this
-  ticketStatus: string; //confirm this
-  isFree: boolean;
-  amount: number;
-  currency: string;
-  createdAt: Date;
-  updatedAt: Date;
-  event?: SingleEventProps;
-  attendee?: SingleAttendeeProps[];
 }
 
 export interface SingleGallaryProps {
@@ -82,8 +70,13 @@ export interface SingleAttendeeProps {
   userId: string;
   checkedOut: Date;
   checkedIn: Date;
-  displayPicture: Date;
+  displayPicture: string;
 }
+
+export type MiniSingleAttendeeProps = Pick<
+  SingleAttendeeProps,
+  "name" | "displayPicture"
+>;
 
 export interface SingleUserWatchlistProps {
   id: string;
@@ -113,4 +106,30 @@ export interface EventCardProps
   > {
   cardType: "going" | "hosting" | "interested" | "past";
   link: string;
+  isClicked?: boolean;
+  showBookmarkButton?: boolean;
+}
+
+export interface ExternalFieldsProps {
+  value?: string | number | undefined | boolean;
+  onChange: (value: string | number) => void;
+  placeholder?: string;
+}
+
+export interface LocationFieldsProps
+  extends Omit<ExternalFieldsProps, "onChange"> {
+  onChange: (value: string, town: string, lat?: number, lng?: number) => void;
+}
+
+export interface DateTimeFieldsProps
+  extends Omit<ExternalFieldsProps, "onChange" | "value"> {
+  onChange: (value: string, startDate: Date, endDate: Date) => void;
+  startDateProps: {
+    startDate: Date | undefined;
+    setStartDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  };
+  endDateProps: {
+    endDate: Date | undefined;
+    setEndDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  };
 }

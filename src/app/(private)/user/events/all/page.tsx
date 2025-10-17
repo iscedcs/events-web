@@ -1,10 +1,10 @@
 import Header from "@/components/shared/layout/header";
 import { getUserByID } from "../../../../../../actions/user";
-import { auth } from "../../../../../../auth";
+import { getCurrentUser } from "../../../../../../actions/auth";
 
 export default async function AllEvents() {
-  const session = await auth();
-  const user = await getUserByID(session?.user.id ?? "");
+  const me = await getCurrentUser();
+  const user = me ? await getUserByID(me.id!) : "";
 
   return (
     <div>

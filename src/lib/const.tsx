@@ -1,8 +1,10 @@
+import { Crown, Ticket, Trash } from "lucide-react";
 import { FaRegUser } from "react-icons/fa";
 import { LuMessageSquareText } from "react-icons/lu";
 import { MdEventNote } from "react-icons/md";
 import { TrendingEventsProps } from "./types/event";
 import { HeaderItemsTypes } from "./types/layout";
+import { InitialTicketProps } from "./types/ticket";
 
 export const AUTH_API = process.env.NEXT_PUBLIC_LIVE_ISCEAUTH_BACKEND_URL;
 export const EVENTS_API = process.env.NEXT_PUBLIC_LIVE_EVENTS_BACKEND_URL;
@@ -682,4 +684,38 @@ export const TICKETTANDC = [
   "A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
   "No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
   "A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
+];
+
+export const INITIALTICKETS: InitialTicketProps[] = [
+  {
+    icon: <Ticket className=" w-5 h-5" />,
+    amount: 0,
+    currency: "NGN",
+    isFree: true,
+    title: "Regular Ticket",
+    quantity: 0,
+  },
+  {
+    icon: <Crown className=" w-5 h-5" />,
+    amount: 0,
+    currency: "NGN",
+    isFree: true,
+    title: "VIP Ticket",
+    quantity: 0,
+  },
+];
+
+export const DUMMYATTENDEES = [
+  {
+    image: "/no-profile.png",
+    name: "John Doe",
+  },
+  {
+    image: "/no-profile.png",
+    name: "John Doe 1",
+  },
+  {
+    image: "/no-profile.png",
+    name: "John Doe 2",
+  },
 ];

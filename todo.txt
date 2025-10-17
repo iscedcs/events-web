@@ -8,3 +8,4 @@ Backend Fixes
 
 -Adding registration functionality
 -Add google maps
+-Fix the events displayy order

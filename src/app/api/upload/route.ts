@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     };
 
     await s3Client.send(new PutObjectCommand(uploadParams));
-    const endpointHost = new URL(process.env.S3_ENDPOINT!).host; // Should be fra1.digitaloceanspaces.com
+    const endpointHost = new URL(process.env.S3_ENDPOINT!).host;
     if (!endpointHost) {
       throw new Error("Failed to parse S3_ENDPOINT host");
     }

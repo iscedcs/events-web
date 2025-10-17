@@ -3,30 +3,27 @@
 import EventCard from "@/components/shared/event/event-card";
 import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
-import { SingleTicketProps } from "@/lib/types/event";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getPastTicketsByUserID } from "../../../../../../../actions/tickets";
 import EmptyState from "../empty-state";
+import { SingleTicketProps } from "@/lib/types/ticket";
 
-export default function Past() {
+export default function Past({ userId }: { userId?: string }) {
   const [pastTicket, setPastTicket] = useState<SingleTicketProps[]>([]);
   const [loading, setLoading] = useState(true);
-  const session = useSession();
-  const userID = session.data?.user.id;
 
   useEffect(() => {
     const fetchPastEvents = async () => {
       try {
-        const ticketData = await getPastTicketsByUserID(userID ?? "");
+        const ticketData = await getPastTicketsByUserID(userId!);
         setPastTicket(ticketData ?? []);
       } finally {
         setLoading(false);
       }
     };
 
-    if (userID) fetchPastEvents();
-  }, [userID]);
+    fetchPastEvents();
+  }, [userId]);
 
   if (!loading && pastTicket.length === 0) {
     return <EmptyState />;

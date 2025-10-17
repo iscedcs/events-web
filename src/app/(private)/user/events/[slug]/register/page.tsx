@@ -7,16 +7,18 @@ import { redirect } from "next/navigation";
 import { checkEventAttendee } from "../../../../../../../actions/attendee";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { getUserByID } from "../../../../../../../actions/user";
-import { auth } from "../../../../../../../auth";
+import { getCurrentUser } from "../../../../../../../actions/auth";
 
 type Params = Promise<{ slug: string }>;
 
 export default async function Register(props: { params: Params }) {
-  const session = await auth();
   const params = await props.params;
+
+  const me = await getCurrentUser(); // null if not logged in
+  const user = me ? await getUserByID(me.id!) : "";
+
   const event: SingleEventProps = await getEventsByCleanName(params.slug ?? "");
-  const user = await getUserByID(session?.user.id ?? "");
-  const check = await checkEventAttendee(session?.user.id ?? "", params.slug);
+  const check = await checkEventAttendee(me?.id ?? "", params.slug);
 
   if (check?.check) {
     redirect(`/user/events/${params.slug}`);
@@ -51,7 +53,7 @@ export default async function Register(props: { params: Params }) {
           </div>
         </div>
         <div className=" px-[15px]">
-          <EventRegistrationForm slug={params.slug ?? ""} />
+          <EventRegistrationForm slug={params.slug ?? ""} user={user ?? " "} />
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { CountdownCallback, CountdownEndCallback } from "./types/auth";
+import { getAuthInfo } from "../../actions/auth";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -66,4 +67,19 @@ export function isPastDate(pastDateISO: Date): boolean {
   pastDate.setHours(0, 0, 0, 0);
 
   return today > pastDate;
+}
+
+export async function clientSession() {
+  const auth = await getAuthInfo();
+  return auth;
+}
+
+export function formatWithCommas(value: number | string): string {
+  const numStr = value.toString();
+
+  const [integerPart, decimalPart] = numStr.split(".");
+
+  const formattedInt = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  return decimalPart ? `₦ ${formattedInt}.${decimalPart}` : `₦ ${formattedInt}`;
 }
