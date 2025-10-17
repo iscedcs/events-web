@@ -18,6 +18,7 @@ import ViewTicket from "./view-ticket";
 import { getCurrentUser } from "../../../../../../../actions/auth";
 import EventChatButton from "@/components/shared/event/event-chat-button";
 import ClosedRegistration from "./closed-registration";
+import EventMapLocation from "./event-map-location";
 
 export default async function EventRegistration({ slug }: { slug: string }) {
   const event: SingleEventProps = await getEventsByCleanName(slug ?? "");
@@ -173,13 +174,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                   {event.town.toLowerCase()}
                 </p>
                 <div className=" mt-[10px]">
-                  <Image
-                    src={"/dummy-images/map.png"}
-                    alt="map"
-                    width={"1000"}
-                    height={"1000"}
-                    className=" rounded-[12px]"
-                  />
+                  <EventMapLocation event={event} />
                 </div>
                 <div className=" mt-[30px]">
                   <Link href={""} className=" underline">
