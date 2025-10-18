@@ -59,7 +59,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
               <div className="">
                 <Link
                   className=" text-[12px]  flex gap-2 items-center"
-                  href={""}
+                  href={"/user/events?tab=create"}
                 >
                   Host your event
                   <MdOutlineArrowOutward />

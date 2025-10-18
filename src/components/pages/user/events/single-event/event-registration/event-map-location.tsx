@@ -51,7 +51,7 @@ const EventMapLocation: React.FC<EventMapLocationProps> = React.memo(
       return (
         <div className=" flex items-center  gap-3 text-accent justify-center">
           <Ban />
-          <p>No Map to Display</p>
+          <p>No map to display</p>
         </div>
       );
     }
