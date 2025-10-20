@@ -6,13 +6,20 @@ import CreateEvent from "./create-events/create-events";
 import Discover from "./discover/discover";
 import ManageEvents from "./manage-events/manage-events";
 
-export default function EventsTab({ initialTab }: { initialTab: string }) {
+export default function EventsTab({
+  initialTab,
+  userId,
+}: {
+  initialTab: string;
+  userId: string;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const tab = searchParams.get("tab") || initialTab;
 
   const handleChange = (value: string) => {
+    if (value === tab) return;
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", value);
     router.push(`?${params.toString()}`, { scroll: false });
@@ -47,7 +54,7 @@ export default function EventsTab({ initialTab }: { initialTab: string }) {
         </TabsList>
 
         <TabsContent value="manage">
-          <ManageEvents />
+          <ManageEvents userId={userId} />
         </TabsContent>
         <TabsContent value="discover">
           <Discover />

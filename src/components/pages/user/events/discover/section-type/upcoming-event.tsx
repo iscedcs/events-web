@@ -3,16 +3,15 @@
 import UpcomingEventSkeleton from "@/components/skeletons/upcoming-event";
 import { Button } from "@/components/ui/button";
 import { SingleEventProps } from "@/lib/types/event";
-// import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getMostRecentEvent } from "../../../../../../../actions/events";
+import { formatWithCommas } from "@/lib/utils";
 
 export default function UpcomingEvent() {
   const [event, setEvent] = useState<SingleEventProps>();
   const [loading, setIsLoading] = useState(true);
-  // const session = useSession();
 
   useEffect(() => {
     // setIsLoading(true);
@@ -56,7 +55,12 @@ export default function UpcomingEvent() {
               >
                 <Image
                   alt="image"
-                  src={event?.image ?? "/no-image.jpg"}
+                  src={
+                    event?.image?.startsWith("http") ||
+                    event?.image?.startsWith("/")
+                      ? event?.image
+                      : "/no-image.jpg"
+                  }
                   width={"1000"}
                   height={"1000"}
                   className=" w-[90px] h-[90px]  object-cover rounded-[20px]"
@@ -67,7 +71,7 @@ export default function UpcomingEvent() {
                     <p>
                       {event?.tickets[0].isFree === true
                         ? "FREE"
-                        : event?.tickets[0].amount}
+                        : formatWithCommas(event?.tickets[0].amount ?? 0)}
                     </p>
                   </span>
 

@@ -2,11 +2,12 @@
 
 import { EVENTS_API, URLS } from "@/lib/const";
 import { NextResponse } from "next/server";
-import { auth } from "../../../../../auth";
+import { getAuthInfo } from "../../../../../actions/auth";
 
 export async function POST(req: Request) {
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER_TOKEN =
+    "error" in auth || auth.isExpired ? null : auth.accessToken;
   const url = `${EVENTS_API}${URLS.watchlist.add_watchlist}`;
   const request = await req.json();
   const payload = {
@@ -41,8 +42,9 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER_TOKEN =
+    "error" in auth || auth.isExpired ? null : auth.accessToken;
   const url = `${EVENTS_API}${URLS.watchlist.remove_watchlist}`;
   const request = await req.json();
   const payload = {

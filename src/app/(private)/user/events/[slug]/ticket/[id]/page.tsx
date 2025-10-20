@@ -2,7 +2,8 @@ import Header from "@/components/shared/layout/header";
 import { Button } from "@/components/ui/button";
 import CopyButton from "@/components/ui/secondary/copy-button";
 import { TICKETTANDC } from "@/lib/const";
-import { SingleAttendeeProps, SingleTicketProps } from "@/lib/types/event";
+import { SingleAttendeeProps } from "@/lib/types/event";
+import { SingleTicketProps } from "@/lib/types/ticket";
 import { format } from "date-fns/format";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,31 +15,34 @@ import {
   getAttendeeID,
   getAttendeesEventID,
 } from "../../../../../../../../actions/attendee";
+import { getCurrentUser } from "../../../../../../../../actions/auth";
 import { getTicketByID } from "../../../../../../../../actions/tickets";
 import { getUserByID } from "../../../../../../../../actions/user";
-import { auth } from "../../../../../../../../auth";
 
 type Params = Promise<{ id: string }>;
 
 export default async function Ticket(props: { params: Params }) {
   const params = await props.params;
 
-  const session = await auth();
-  const user = await getUserByID(session?.user.id ?? "");
+  const me = await getCurrentUser();
+  const user = me ? await getUserByID(me.id!) : "";
   const ticket: SingleTicketProps = await getTicketByID(params.id);
   const attendees: SingleAttendeeProps[] = await getAttendeesEventID(
     ticket.event?.id ?? ""
   );
 
   const singleAttendeeID =
-    attendees.find((attendee) => attendee.userId === session?.user.id)?.id ??
-    "";
+    attendees.find((attendee) => attendee.userId === me?.id)?.id ?? "";
 
   const attendee: SingleAttendeeProps = await getAttendeeID(singleAttendeeID);
 
   console.log({ singleAttendeeID });
 
   const token = attendee.token;
+
+  const now = new Date();
+  const startDate = new Date(ticket?.event?.startDate ?? now);
+  const endDate = new Date(ticket?.event?.endDate ?? now);
 
   return (
     <div>
@@ -125,14 +129,18 @@ export default async function Ticket(props: { params: Params }) {
                 className=" w-[100px] h-[100px] object-cover"
               />
             </div>
-            <div className="">
-              <Button className=" text-white bg-[#6600FF]" asChild>
-                <Link href={""}>
-                  Join chat
-                  <MdOutlineMessage />
-                </Link>
-              </Button>
-            </div>
+            {startDate <= now || endDate <= now ? null : (
+              <div className="">
+                <Button className=" text-white bg-[#6600FF]" asChild>
+                  <Link
+                    href={`/user/events/${ticket.event?.cleanName.toLowerCase()}/chat`}
+                  >
+                    Join chat
+                    <MdOutlineMessage />
+                  </Link>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className="relative p-[20px] bg-secondary rounded-[24px]">

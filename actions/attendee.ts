@@ -1,20 +1,21 @@
 "use server";
 
 import { EVENTS_API, URLS } from "@/lib/const";
-import { auth } from "../auth";
+import { getAuthInfo } from "./auth";
 
 export const getAttendeesEventID = async (id: string) => {
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
   const url = `${EVENTS_API}${URLS.attendees.all.replace("{id}", id)}`;
 
   try {
     const res = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       method: "GET",
+      next: { revalidate: 60 },
     });
     const data = await res.json();
     if (res.ok) {
@@ -27,17 +28,18 @@ export const getAttendeesEventID = async (id: string) => {
 };
 
 export const getAttendeeID = async (id: string) => {
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
   const url = `${EVENTS_API}${URLS.attendees.one.replace("{id}", id)}`;
 
   try {
     const res = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       method: "GET",
+      next: { revalidate: 60 },
     });
     const data = await res.json();
     if (res.ok) {
@@ -50,8 +52,8 @@ export const getAttendeeID = async (id: string) => {
 };
 
 export const checkEventAttendee = async (id: string, slug: string) => {
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
   const url = `${EVENTS_API}${URLS.attendees.attendee_check.replace(
     "{cleanName}",
     slug
@@ -60,10 +62,11 @@ export const checkEventAttendee = async (id: string, slug: string) => {
   try {
     const res = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
       method: "GET",
+      next: { revalidate: 60 },
     });
     const data = await res.json();
     if (data.success === true) {

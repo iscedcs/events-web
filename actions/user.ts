@@ -1,20 +1,21 @@
 "use server";
 
 import { AUTH_API, URLS } from "@/lib/const";
-import { auth } from "../auth";
+import { getAuthInfo } from "./auth";
 
 export const getUserByID = async (id: string) => {
   try {
     const url = `${AUTH_API}${URLS.user.one.replace("{id}", id)}`;
-    const session = await auth();
-    const BEARER_TOKEN = session?.user.accessToken;
+    const auth = await getAuthInfo();
+    const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
+      next: { revalidate: 60 },
     });
     const data = await res.json();
     const success = data.success;

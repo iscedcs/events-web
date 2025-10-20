@@ -2,23 +2,34 @@
 
 import { EVENTS_API, URLS } from "@/lib/const";
 import { SingleUserWatchlistProps } from "@/lib/types/event";
-import { auth } from "../auth";
+import { revalidatePath } from "next/cache";
+import { getAuthInfo } from "./auth";
 
-export const getWatchlistUserID = async () => {
-  const url = `${EVENTS_API}${URLS.watchlist.all_watchlist}`;
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+export const getWatchlistUserID = async (userId: string) => {
+  if (!userId) return [];
+
+  const url = `${EVENTS_API}${URLS.watchlist.all_watchlist.replace(
+    "{userId}",
+    userId
+  )}`;
+
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
 
   try {
     const res = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
       },
-      // cache: "force-cache",
-      next: { revalidate: 60 },
+      cache: "no-store",
     });
+
+    if (!res.ok) {
+      console.log("watchlist fetch failed", res.status, await res.text());
+      return [];
+    }
 
     const data = await res.json();
     const watchlist: SingleUserWatchlistProps[] = data.data.watchlist;
@@ -32,8 +43,8 @@ export const getWatchlistUserID = async () => {
 };
 
 export const checkWatchList = async (eventId: string) => {
-  const session = await auth();
-  const BEARER_TOKEN = session?.user.accessToken;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
   const url = `${EVENTS_API}${URLS.watchlist.event_watchlist_check.replace(
     "{eventId}",
     eventId
@@ -42,9 +53,10 @@ export const checkWatchList = async (eventId: string) => {
     const res = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${BEARER_TOKEN}`,
+        Authorization: `Bearer ${BEARER}`,
       },
       method: "GET",
+      next: { revalidate: 60 },
     });
     const data = await res.json();
     const isInWatchlist = data.data.isInWatchlist;

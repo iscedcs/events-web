@@ -69,7 +69,6 @@ export default function BookmarkButton({
       if (data.success) {
         setClicked(false);
         router.refresh();
-        router.push(pathname);
         toast.success("Event removed from your bookmarks");
       } else if (data.status === 401) {
         setClicked(false);
