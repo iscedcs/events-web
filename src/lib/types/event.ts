@@ -73,10 +73,10 @@ export interface SingleAttendeeProps {
   displayPicture: string;
 }
 
-export type MiniSingleAttendeeProps = Pick<
-  SingleAttendeeProps,
-  "name" | "displayPicture"
->;
+export interface MiniSingleAttendeeProps
+  extends Pick<SingleAttendeeProps, "name"> {
+  image: string;
+}
 
 export interface SingleUserWatchlistProps {
   id: string;

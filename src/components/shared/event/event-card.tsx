@@ -40,6 +40,8 @@ export default function EventCard({
                   ? time
                   : cardType === "interested"
                   ? time
+                  : cardType === "hosting"
+                  ? time
                   : null}{" "}
                 WAT
               </p>
@@ -108,26 +110,14 @@ export default function EventCard({
           </p>
         </div>
         <div className=" mt-[10px]">
-          <p className=" capitalize text-[24px]">
-            {cardType === "going" || cardType === "past"
-              ? title.toLowerCase()
-              : cardType === "interested"
-              ? title.toLowerCase()
-              : ""}
-          </p>
+          <p className=" capitalize text-[24px]">{title.toLowerCase()}</p>
         </div>
         <div className=" flex justify-between items-center">
           <div className=" flex mt-[10px] items-center gap-3">
             <FaUserCircle className=" w-[30px] h-[30px]" />
             <div className="">
               <p className=" text-[10px] text-accent">Presented by</p>
-              <p className=" text-[14px]">
-                {cardType === "going" || cardType === "past"
-                  ? host ?? "No host name"
-                  : cardType === "interested"
-                  ? host ?? "No host name"
-                  : null}
-              </p>
+              <p className=" text-[14px]">{host ?? "No host name"}</p>
             </div>
           </div>
           <div className=" flex gap-2">

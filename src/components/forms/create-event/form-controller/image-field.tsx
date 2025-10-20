@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import { toast } from "sonner";
-import { LuImage } from "react-icons/lu";
 import { ExternalFieldsProps } from "@/lib/types/event";
+import Image from "next/image";
+import { useState } from "react";
+import { LuImage } from "react-icons/lu";
+import { toast } from "sonner";
 
 export default function ImageField({
   onChange,
@@ -52,7 +53,7 @@ export default function ImageField({
     >
       {/* Image preview */}
       {value ? (
-        <img
+        <Image
           src={String(value)}
           alt={placeholder || "Uploaded image"}
           className="object-cover w-full h-full"

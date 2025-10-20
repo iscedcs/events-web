@@ -103,7 +103,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
           <p className=" text-[24px]">Attendees</p>
           <>
             {data?.attendees.length !== 0 ? (
-              <div className=" mt-[5px] flex  flex-col">  
+              <div className=" mt-[5px] flex  flex-col">
                 {data?.attendees.map((attendee, k) => (
                   <div
                     key={k}
@@ -111,12 +111,12 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
                   >
                     <Image
                       className=" rounded-full"
-                      src={attendee.displayPicture ?? "/no-profile.png"}
+                      src={attendee.image ?? "/no-profile.png"}
                       alt=""
                       width={"32"}
                       height={"32"}
                     />
-                    <p className=" text-[16px]">{attendee.name}</p>
+                    <p className=" capitalize text-[16px]">{attendee.name}</p>
                   </div>
                 ))}
               </div>

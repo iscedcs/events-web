@@ -78,7 +78,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 
         <div
           className={`${
-            startDate <= now || endDate <= now ? "mt-[70px]" : " mt-[20px]"
+            startDate <= now || endDate <= now ? "mt-[30px]" : " mt-[20px]"
           }`}
         >
           <Image

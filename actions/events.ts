@@ -47,6 +47,68 @@ export const getAllEvents = async ({ limit, page }: PaginationType) => {
   }
 };
 
+export const getUserEVents = async ({ limit, page }: PaginationType) => {
+  const url = `${EVENTS_API}${URLS.events.all_events_user}?page=${page}&limit=${limit}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    const events: SingleEventProps[] = data.data.all;
+    const user = data.data.user;
+
+    if (res.ok) {
+      return {
+        events,
+        user,
+      };
+    } else {
+      return null;
+    }
+  } catch (e: any) {
+    console.log("Unable to fetch user events", e);
+    return null;
+  }
+};
+
+export const getEventIdByCleanName = async (slug: string) => {
+  const url = `${EVENTS_API}${URLS.events.one_slug.replace(
+    "{cleanName}",
+    slug
+  )}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    console.log({ data });
+    if (data.success) {
+      // console.log(data.data);
+      return {
+        id: data.data.id,
+      };
+    } else return null;
+  } catch (e: any) {
+    console.log("Unable to fetch Event ID by slug", e);
+  }
+};
+
 export const getTrendingEvents = async () => {
   //TODO: GET TRENDING EVENTS WHERE THERE ARE ATTENDEES, MOMENTS, FEEDS
   const url = `${EVENTS_API}${URLS.events.all}`;
