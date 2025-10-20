@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { format } from "date-fns";
+import { AuthError, AuthInfo, UserInfo } from "@/lib/types/auth";
 
 /**
  * Server action to get the current access token and user info

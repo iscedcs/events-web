@@ -5,6 +5,7 @@ import { MdEventNote } from "react-icons/md";
 import { TrendingEventsProps } from "./types/event";
 import { HeaderItemsTypes } from "./types/layout";
 import { InitialTicketProps } from "./types/ticket";
+import { SingleMessageProps } from "./types/chat";
 
 export const AUTH_API = process.env.NEXT_PUBLIC_LIVE_ISCEAUTH_BACKEND_URL;
 export const EVENTS_API = process.env.NEXT_PUBLIC_LIVE_EVENTS_BACKEND_URL;

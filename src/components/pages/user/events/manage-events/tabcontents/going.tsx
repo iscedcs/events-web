@@ -5,10 +5,7 @@ import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
 import { SingleTicketProps } from "@/lib/types/ticket";
 import { useEffect, useState } from "react";
-import {
-  getFutureTicketsByUserId,
-  getTicketsByUserID,
-} from "../../../../../../../actions/tickets";
+import { getFutureTicketsByUserId } from "../../../../../../../actions/tickets";
 import EmptyState from "../empty-state";
 
 export default function Going({ userId }: { userId?: string }) {

@@ -1,33 +1,31 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { CountdownCallback, CountdownEndCallback } from "./types/auth";
 import { getAuthInfo } from "../../actions/auth";
+
+const TAILWIND_TEXT_COLORS = [
+  "text-red-500",
+  "text-orange-500",
+  "text-amber-500",
+  "text-yellow-500",
+  "text-lime-500",
+  "text-green-500",
+  "text-emerald-500",
+  "text-teal-500",
+  "text-cyan-500",
+  "text-sky-500",
+  "text-blue-500",
+  "text-indigo-500",
+  "text-violet-500",
+  "text-purple-500",
+  "text-fuchsia-500",
+  "text-pink-500",
+  "text-rose-500",
+];
+
+const TAILWIND_TONES = [400, 500, 600];
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export function startFiveMinuteCountdown(
-  onTick: CountdownCallback,
-  onEnd?: CountdownEndCallback
-) {
-  let totalSeconds = 5 * 60;
-
-  const interval = setInterval(() => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-
-    onTick(minutes, seconds);
-
-    if (totalSeconds === 0) {
-      clearInterval(interval);
-      if (onEnd) onEnd();
-    }
-
-    totalSeconds--;
-  }, 1000);
-
-  return () => clearInterval(interval);
 }
 
 export function shortenToThree(text: string): string {
@@ -69,11 +67,6 @@ export function isPastDate(pastDateISO: Date): boolean {
   return today > pastDate;
 }
 
-export async function xclientSession() {
-  const auth = await getAuthInfo();
-  return auth;
-}
-
 export function formatWithCommas(value: number | string): string {
   const numStr = value.toString();
 
@@ -83,3 +76,17 @@ export function formatWithCommas(value: number | string): string {
 
   return decimalPart ? `₦ ${formattedInt}.${decimalPart}` : `₦ ${formattedInt}`;
 }
+
+const hashString = (str: string): number => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0; // Convert to 32-bit integer
+  }
+  return Math.abs(hash);
+};
+
+export const getRandomTextColor = (name: string): string => {
+  const index = hashString(name) % TAILWIND_TEXT_COLORS.length;
+  return TAILWIND_TEXT_COLORS[index];
+};

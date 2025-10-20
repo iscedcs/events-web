@@ -1,17 +1,28 @@
-export interface IAuthResponse {
-  data: {
-    id: string;
-    email: string;
-    userType: string;
-    accessToken: string;
-    displayPicture: string;
-  };
+export interface UserInfo {
+  id?: string;
+  email?: string;
+  phone?: string;
+  firstName?: string;
+  lastName?: string;
+  displayPicture?: string;
+  userType?: string;
+  iat?: number;
+  exp?: number;
 }
 
-export type CountdownCallback = (minutes: number, seconds: number) => void;
-export type CountdownEndCallback = () => void;
+export interface AuthInfo {
+  accessToken: string;
+  user: UserInfo;
+  expiresAt: number;
+  isExpired: boolean;
+  willExpireAt: string | null;
+}
 
-export type userType = "USER" | "BUSINESS_USER";
+export interface AuthError {
+  error: string;
+  accessToken?: never;
+  user?: never;
+}
 
 export type AuthHeaderType = {
   loading: boolean;
@@ -19,3 +30,9 @@ export type AuthHeaderType = {
   linkText?: string;
   onClick?: () => void;
 };
+
+export interface JwtPayload {
+  userId: string;
+  exp: number;
+  iat: number;
+}

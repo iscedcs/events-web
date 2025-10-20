@@ -1,0 +1,471 @@
+"use client";
+
+import ChatBubble from "./chat-bubble";
+import ChatInput from "./chat-input";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import TypingWatchBar from "./typing-watch-bar";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useChatSocket } from "@/hooks/use-chat";
+import {
+  SingleChatMessageProps,
+  SingleChatRoomComponentProps,
+} from "@/lib/types/chat";
+import { useAuthInfo } from "@/hooks/use-auth-info";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
+export default function Chatroom({
+  attendee,
+  chatRoomId: initialChatRoomId,
+  event,
+  chatRoomType,
+}: SingleChatRoomComponentProps) {
+  const [chatRoomId] = useState<string | null>(initialChatRoomId || null);
+  const [typingUsers, setTypingUsers] = useState<
+    Map<string, { name: string; timestamp: number }>
+  >(new Map());
+  const [messages, setMessages] = useState<SingleChatMessageProps[]>([]);
+  const [lastFetchTime, setLastFetchTime] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [newMessageCount, setNewMessageCount] = useState(0);
+  const [loadingChatroom] = useState(!initialChatRoomId);
+  const [isNearBottom, setIsNearBottom] = useState(true);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [pendingMessages, setPendingMessages] = useState<
+    SingleChatMessageProps[]
+  >([]);
+
+  const allMessages = useMemo(() => {
+    return [...messages, ...pendingMessages].sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+  }, [messages, pendingMessages]);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const session = useAuthInfo();
+
+  console.log({ session });
+  const router = useRouter();
+
+  const handleMessage = useCallback((messagePayload: any) => {
+    const message: SingleChatMessageProps = {
+      id: messagePayload.id,
+      chatType: messagePayload.chatType,
+      eventId: messagePayload.eventId,
+      sender: messagePayload.sender,
+      message: messagePayload.message,
+      type: messagePayload.type,
+      timestamp: messagePayload.timestamp,
+      meta: messagePayload.meta,
+    };
+
+    setMessages((prev) => {
+      const exists = prev.some((m) => m.id === message.id);
+      if (exists) return prev;
+      return [...prev, message];
+    });
+
+    setLastFetchTime(new Date().toISOString());
+    setPendingMessages((prev) =>
+      prev.filter((m) => m.message !== message.message)
+    );
+  }, []);
+
+  const handleUserJoined = useCallback((data: any) => {
+    toast.info(`${data.userName} has joined the chat!`);
+  }, []);
+
+  const handleUserLeft = useCallback((data: any) => {
+    console.log("User left:", data);
+  }, []);
+
+  const handleTyping = useCallback(
+    (data: any) => {
+      const { userId, userName, isTyping } = data;
+      console.log("Typing event received:", {
+        userId,
+        userName,
+        isTyping,
+        currentUserId: attendee?.id,
+      });
+
+      if (userId === attendee?.id) {
+        console.log("Ignoring typing event from current user");
+        return;
+      }
+
+      setTypingUsers((prev) => {
+        const newMap = new Map(prev);
+        if (isTyping) {
+          newMap.set(userId, { name: userName, timestamp: Date.now() });
+          console.log(`${userName} started typing`);
+        } else {
+          newMap.delete(userId);
+          console.log(`${userName} stopped typing`);
+        }
+        console.log(
+          "Current typing users:",
+          Array.from(newMap.values()).map((u) => u.name)
+        );
+        return newMap;
+      });
+
+      // Auto-clear typing indicator after 5 seconds
+      if (isTyping) {
+        setTimeout(() => {
+          setTypingUsers((prev) => {
+            const newMap = new Map(prev);
+            const existing = newMap.get(userId);
+            if (existing && Date.now() - existing.timestamp > 4500) {
+              newMap.delete(userId);
+              console.log(`Auto-cleared typing for ${userName}`);
+            }
+            return newMap;
+          });
+        }, 5000);
+      }
+    },
+    [attendee?.id] // Only depend on current user's attendee ID
+  );
+
+  const handleMessageSeen = useCallback((data: any) => {
+    console.log("Message seen:", data);
+  }, []);
+
+  const handleRecentMessages = useCallback((data: any) => {
+    console.log("Recent messages received:", data.messages?.[0]);
+    if (data.messages) {
+      const formattedMessages = data.messages.map((msg: any) => ({
+        id: msg.id,
+        chatType: msg.payload?.chatType,
+        eventId: msg.payload?.eventId,
+        sender: msg.payload?.sender || {
+          id: msg.attendee_id || msg.attendee?.userId,
+          name: msg.attendee?.user?.name || "Unknown User",
+          displayPicture: msg.attendee?.user?.image,
+        },
+        message: msg.message,
+        type: msg.payload?.type || "text",
+        timestamp: msg.created_at,
+        meta: msg.payload?.meta,
+      }));
+
+      setMessages(formattedMessages);
+      setLastFetchTime(new Date().toISOString());
+    }
+    setLoading(false);
+  }, []);
+
+  const handleError = useCallback((err: any) => {
+    console.error("Socket error:", err);
+    setError(err.message || "Connection error");
+  }, []);
+
+  // Socket connection
+  const {
+    socket,
+    isConnected,
+    joinRoom,
+    leaveRoom,
+    sendMessage: socketSendMessage,
+    sendTyping,
+    markMessageSeen,
+    getRecentMessages,
+  } = useChatSocket({
+    token: session.auth?.accessToken || "",
+    onMessage: handleMessage,
+    onUserJoined: handleUserJoined,
+    onUserLeft: handleUserLeft,
+    onTyping: handleTyping,
+    onMessageSeen: handleMessageSeen,
+    onRecentMessages: handleRecentMessages,
+    onError: handleError,
+  });
+
+  const stableChatRoomId = useRef(chatRoomId);
+  const stableUserId = useRef(session.auth?.accessToken);
+
+  useEffect(() => {
+    if (stableChatRoomId.current && stableUserId.current && isConnected) {
+      console.log(
+        "Joining room:",
+        stableChatRoomId.current,
+        "with user:",
+        stableUserId.current
+      );
+      joinRoom(stableChatRoomId.current, stableUserId.current);
+      getRecentMessages(stableChatRoomId.current, 50);
+    }
+
+    return () => {
+      if (stableChatRoomId.current && stableUserId.current && isConnected) {
+        leaveRoom(stableChatRoomId.current, stableUserId.current);
+      }
+    };
+  }, [isConnected, joinRoom, leaveRoom, getRecentMessages]);
+
+  useEffect(() => {
+    stableChatRoomId.current = chatRoomId;
+    stableUserId.current = session.auth?.accessToken;
+  }, [chatRoomId, session.auth?.accessToken]);
+
+  const refreshMessages = useCallback(() => {
+    if (chatRoomId && isConnected) {
+      getRecentMessages(chatRoomId, 50);
+    }
+  }, [chatRoomId, isConnected, getRecentMessages]);
+
+  const scrollToBottom = useCallback((smooth = true) => {
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
+    scrollEl.scrollTo({
+      top: scrollEl.scrollHeight,
+      behavior: smooth ? "smooth" : "auto",
+    });
+  }, []);
+
+  const checkScrollPosition = useCallback(() => {
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = scrollEl;
+    const distanceFromBottom = scrollHeight - (scrollTop + clientHeight);
+    const nearBottom = distanceFromBottom < 80;
+
+    setIsNearBottom(nearBottom);
+    if (nearBottom) {
+      setNewMessageCount(0);
+      setShowScrollButton(false);
+    } else if (messages.length > 0) {
+      setShowScrollButton(true);
+    }
+  }, [messages.length]);
+
+  useEffect(() => {
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
+
+    const handleScroll = () => {
+      requestAnimationFrame(checkScrollPosition);
+    };
+
+    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
+    checkScrollPosition();
+
+    return () => {
+      scrollEl.removeEventListener("scroll", handleScroll);
+    };
+  }, [checkScrollPosition]);
+
+  useEffect(() => {
+    if (allMessages.length === 0) return;
+
+    if (isNearBottom) {
+      scrollToBottom(true);
+    } else {
+      setNewMessageCount((prev) => prev + 1);
+    }
+  }, [allMessages.length, isNearBottom, scrollToBottom]);
+
+  useEffect(() => {
+    if (!loading && allMessages.length > 0) {
+      const timeoutId = setTimeout(() => scrollToBottom(false), 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [loading, allMessages.length, scrollToBottom]);
+
+  const handleSendMessage = useCallback(
+    async (
+      messageText: string,
+      type: "text" | "audio" | "image" | "link" = "text"
+    ) => {
+      if (
+        !chatRoomId ||
+        !messageText.trim() ||
+        !session?.auth?.user ||
+        !isConnected ||
+        !attendee
+      )
+        return;
+
+      const tempId = `temp-${Date.now()}`;
+      const optimisticMessage: SingleChatMessageProps = {
+        id: tempId,
+        tempId,
+        sender: {
+          id: attendee.userId,
+          name: attendee.name || "You",
+          displayPicture: attendee.displayPicture,
+        },
+        message: messageText,
+        type,
+        timestamp: new Date().toISOString(),
+        status: "sending",
+        chatType: chatRoomType,
+        eventId: event.id,
+      };
+
+      // Add optimistic message
+      setPendingMessages((prev) => [...prev, optimisticMessage]);
+
+      try {
+        // Send through socket with the format your backend expects
+        socketSendMessage({
+          chatRoomId,
+          id: session.auth.user.id!,
+          message: messageText,
+          type,
+          chatType: chatRoomType,
+          eventId: event.id,
+          attendee_id: attendee.id,
+        });
+      } catch (err) {
+        console.error("Failed to send message:", err);
+        // Mark as failed
+        setPendingMessages((prev) =>
+          prev.map((m) =>
+            m.tempId === tempId ? { ...m, status: "failed" } : m
+          )
+        );
+      }
+    },
+    [
+      chatRoomId,
+      session?.auth?.user,
+      isConnected,
+      chatRoomType,
+      event.id,
+      attendee,
+      socketSendMessage,
+    ]
+  );
+
+  const handleRetryMessage = useCallback(
+    async (message: SingleChatMessageProps) => {
+      if (!message?.message) return;
+
+      setPendingMessages((prev) =>
+        prev.map((m) =>
+          m.tempId === message.tempId ? { ...m, status: "sending" } : m
+        )
+      );
+
+      try {
+        await handleSendMessage(message.message, message.type as any);
+        setPendingMessages((prev) =>
+          prev.filter((m) => m.tempId !== message.tempId)
+        );
+      } catch {
+        setPendingMessages((prev) =>
+          prev.map((m) =>
+            m.tempId === message.tempId ? { ...m, status: "failed" } : m
+          )
+        );
+      }
+    },
+    [handleSendMessage]
+  );
+
+  const handleTypingIndicator = useCallback(
+    (isTyping: boolean) => {
+      if (chatRoomId && session?.auth?.user?.id && isConnected) {
+        console.log(
+          `Broadcasting typing ${
+            isTyping ? "start" : "stop"
+          } to other users in room ${chatRoomId}`
+        );
+        sendTyping(chatRoomId, session.auth?.user.id, isTyping);
+      }
+    },
+    [chatRoomId, session?.auth?.user?.id, isConnected, sendTyping]
+  );
+
+  const isCurrentUser = useCallback(
+    (message: SingleChatMessageProps) => message.sender.id === attendee?.userId,
+    [attendee?.userId]
+  );
+
+  const shouldShowAvatar = useCallback(
+    (message: SingleChatMessageProps, index: number) => {
+      if (index === 0) return true;
+      const prevMessage = allMessages[index - 1];
+      return prevMessage.sender.id !== message.sender.id;
+    },
+    [allMessages]
+  );
+
+  const formatLastFetchTime = useCallback(() => {
+    if (!lastFetchTime) return "";
+    const date = new Date(lastFetchTime);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  }, [lastFetchTime]);
+
+  if (loadingChatroom) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Loading chatroom...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!chatRoomId) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400 mb-4">Failed to load chatroom</p>
+          <Button onClick={() => router.back()} variant="outline">
+            Go Back
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className=" relative h-[calc(100vh-55px)] py-[5px] px-[10px]">
+      <ScrollArea ref={scrollContainerRef} className=" h-full">
+        <div className=" ">
+          {allMessages.length === 0 ? (
+            <div className=" absolute top-1/2 -translate-x-[50%] -translate-y-[50%] text-center  left-1/2">
+              <p className=" text-accent text-[12px]">
+                Be the first to send a message here
+              </p>
+            </div>
+          ) : (
+            <div className="flex pb-[120px]  gap-5 flex-col">
+              {allMessages.map((message) => (
+                <ChatBubble
+                  isCurrentUser={isCurrentUser(message)}
+                  message={message}
+                  key={message.id}
+                  onPrivateChat={(userId) => {
+                    router.push(`/chat/${userId}`);
+                  }}
+                  onRetry={handleRetryMessage}
+                />
+              ))}
+            </div>
+          )}
+          {typingUsers.size > 0 && <TypingWatchBar />}
+        </div>
+        <ScrollBar orientation="vertical" />
+      </ScrollArea>
+      <ChatInput
+        onSendMessage={handleSendMessage}
+        onTyping={handleTypingIndicator}
+        disabled={!isConnected}
+        placeholder={isConnected ? "Write message..." : "Connecting..."}
+      />
+    </div>
+  );
+}
