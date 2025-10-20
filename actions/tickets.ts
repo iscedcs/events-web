@@ -1,8 +1,8 @@
 "use server";
 
 import { EVENTS_API, URLS } from "@/lib/const";
-import { getAuthInfo } from "./auth";
 import { SingleTicketProps } from "@/lib/types/ticket";
+import { getAuthInfo } from "./auth";
 
 export const getTicketByID = async (id: string) => {
   const url = `${EVENTS_API}${URLS.tickets.ticket_by_id.replace("{id}", id)}`;
@@ -29,7 +29,7 @@ export const getTicketByID = async (id: string) => {
   }
 };
 
-export const getTicketByUserID = async (id: string) => {
+export const getTicketsByUserID = async (id: string) => {
   const url = `${EVENTS_API}${URLS.tickets.all_ticket_user.replace(
     "{userId}",
     id
@@ -96,5 +96,38 @@ export const getPastTicketsByUserID = async (id: string) => {
   } catch (e: any) {
     console.log("Unable to fetch past tickets by user id", e);
     return null;
+  }
+};
+
+export const getFutureTicketsByUserId = async (id: string) => {
+  const url = `${EVENTS_API}${URLS.tickets.all_ticket_user.replace(
+    "{userId}",
+    id
+  )}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${BEARER}`,
+      },
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    const tickets: SingleTicketProps[] = data.data;
+    const filteredTickets = tickets.filter((item) => {
+      const startDate = new Date(item.event?.startDate ?? new Date());
+      return startDate > new Date();
+    });
+
+    if (res.ok) {
+      return filteredTickets;
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to fetch ticket by user id", e);
   }
 };

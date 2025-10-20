@@ -111,7 +111,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
                   >
                     <Image
                       className=" rounded-full"
-                      src={attendee.displayPicture}
+                      src={attendee.displayPicture ?? "/no-profile.png"}
                       alt=""
                       width={"32"}
                       height={"32"}

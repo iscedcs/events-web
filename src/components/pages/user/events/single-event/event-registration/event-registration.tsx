@@ -17,6 +17,8 @@ import EventRegistrationCTA from "./event-registration-cta";
 import ViewTicket from "./view-ticket";
 import { getCurrentUser } from "../../../../../../../actions/auth";
 import EventChatButton from "@/components/shared/event/event-chat-button";
+import ClosedRegistration from "./closed-registration";
+import EventMapLocation from "./event-map-location";
 
 export default async function EventRegistration({ slug }: { slug: string }) {
   const event: SingleEventProps = await getEventsByCleanName(slug ?? "");
@@ -26,6 +28,10 @@ export default async function EventRegistration({ slug }: { slug: string }) {
   console.log({ userId });
 
   const check = await checkEventAttendee(userId, slug);
+
+  const now = new Date();
+  const startDate = new Date(event?.startDate ?? now);
+  const endDate = new Date(event?.endDate ?? now);
 
   console.log({ check });
 
@@ -42,7 +48,10 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 
   return (
     <div className=" ">
-      {check?.check && <EventChatButton event={event} />}
+      {check?.check &&
+        (startDate <= now || endDate <= now ? null : (
+          <EventChatButton event={event} />
+        ))}
       <div className=" px-[10px] ">
         <div className="">
           {!check?.check && (
@@ -50,7 +59,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
               <div className="">
                 <Link
                   className=" text-[12px]  flex gap-2 items-center"
-                  href={""}
+                  href={"/user/events?tab=create"}
                 >
                   Host your event
                   <MdOutlineArrowOutward />
@@ -67,7 +76,11 @@ export default async function EventRegistration({ slug }: { slug: string }) {
           )}
         </div>
 
-        <div className=" mt-[20px]">
+        <div
+          className={`${
+            startDate <= now || endDate <= now ? "mt-[70px]" : " mt-[20px]"
+          }`}
+        >
           <Image
             src={
               event.image?.startsWith("http") || event.image?.startsWith("/")
@@ -81,7 +94,11 @@ export default async function EventRegistration({ slug }: { slug: string }) {
           />
           <div className=" mt-[10px] flex items-center gap-2">
             <div className=" animate-caret-blink bg-white w-[8px] h-[8px] "></div>
-            <p className=" text-[10px]">Registration on-going</p>
+            {startDate <= now || endDate <= now ? (
+              <p className=" text-[10px]">Registration closed</p>
+            ) : (
+              <p className=" text-[10px]">Registration on-going</p>
+            )}
           </div>
           <div className=" mt-[10px]   ">
             <p className="text-[24px] capitalize">
@@ -131,11 +148,14 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                 </p>
               </div>
             </div>
-            {check?.check ? (
+            {startDate <= now || endDate <= now ? (
+              <ClosedRegistration />
+            ) : check?.check ? (
               <ViewTicket slug={slug} ticketId={ticketId} />
             ) : (
               <EventRegistrationCTA slug={slug} />
             )}
+
             <div className=" mt-[10px]">
               <p className=" py-[20px]">About Event</p>
               <hr className=" h-[0.5px]" />
@@ -154,13 +174,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                   {event.town.toLowerCase()}
                 </p>
                 <div className=" mt-[10px]">
-                  <Image
-                    src={"/dummy-images/map.png"}
-                    alt="map"
-                    width={"1000"}
-                    height={"1000"}
-                    className=" rounded-[12px]"
-                  />
+                  <EventMapLocation event={event} />
                 </div>
                 <div className=" mt-[30px]">
                   <Link href={""} className=" underline">

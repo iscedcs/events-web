@@ -69,7 +69,7 @@ export function isPastDate(pastDateISO: Date): boolean {
   return today > pastDate;
 }
 
-export async function clientSession() {
+export async function xclientSession() {
   const auth = await getAuthInfo();
   return auth;
 }

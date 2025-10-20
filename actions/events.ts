@@ -221,6 +221,7 @@ export const getEventWithTenAttendeesByCleanName = async (slug: string) => {
       return {
         event: event,
         attendees: attendees,
+        totalAttendees,
       };
     } else return null;
   } catch (e: any) {

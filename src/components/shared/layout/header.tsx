@@ -12,6 +12,7 @@ import { HederType } from "@/lib/types/layout";
 import Image from "next/image";
 import Link from "next/link";
 import { GoLinkExternal } from "react-icons/go";
+import { FaPowerOff } from "react-icons/fa";
 
 export default function Header({ title, user, hasBack }: HederType) {
   const fullName = `${user?.firstName} ${user?.lastName}`;
@@ -91,34 +92,37 @@ export default function Header({ title, user, hasBack }: HederType) {
                   <Link
                     href={item.path}
                     key={k}
-                    className="  flex items-center gap-3">
+                    className="  flex items-center gap-3"
+                  >
                     {item.icon}
                     <p>{item.title}</p>
                   </Link>
                 ))}
                 {user ? (
-                  <Button
-                    onClick={onSignOut}
-                    className="text-left text-red-400">
-                    Sign out
-                  </Button>
+                  <div onClick={onSignOut} className=" flex gap-4 items-center">
+                    <FaPowerOff />
+                    <p>Sign out</p>
+                  </div>
                 ) : (
-                  <Button onClick={onSignIn} className="text-left">
-                    Sign in
-                  </Button>
+                  <div onClick={onSignOut} className=" flex gap-4 items-center">
+                    <FaPowerOff />
+                    <p>Sign out</p>
+                  </div>
                 )}{" "}
               </div>
             </div>
             <div className=" flex flex-col gap-3">
               <Link
                 href={""}
-                className=" py-[20px] flex items-center justify-between rounded-[12px] px-[20px] text-black bg-accent">
+                className=" py-[20px] flex items-center justify-between rounded-[12px] px-[20px] text-black bg-accent"
+              >
                 <p className=" font-semibold">Connect</p>
                 <GoLinkExternal />
               </Link>
               <Link
                 href={""}
-                className=" py-[20px] flex items-center justify-between rounded-[12px] px-[20px] text-black bg-accent">
+                className=" py-[20px] flex items-center justify-between rounded-[12px] px-[20px] text-black bg-accent"
+              >
                 <p className=" font-semibold">Wallet</p>
                 <GoLinkExternal />
               </Link>
