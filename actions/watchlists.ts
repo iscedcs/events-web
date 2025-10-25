@@ -42,6 +42,47 @@ export const getWatchlistUserID = async (userId: string) => {
   }
 };
 
+export const getWatchlistForCalendarUserID = async (userId: string) => {
+  if (!userId) return [];
+
+  const url = `${EVENTS_API}${URLS.watchlist.all_watchlist.replace(
+    "{userId}",
+    userId
+  )}`;
+
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${BEARER}`,
+      },
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      console.log("watchlist fetch failed", res.status, await res.text());
+      return [];
+    }
+
+    const data = await res.json();
+    const watchlist: SingleUserWatchlistProps[] = data.data.watchlist;
+    if (res.ok) {
+      return watchlist.map((i) => ({
+        image: i.event?.image,
+        title: i.event?.title,
+        cleanName: i.event?.cleanName,
+        startDate: i.event?.startDate,
+      }));
+    }
+  } catch (e: any) {
+    console.log("Unable to fetch user watchlist", e);
+  }
+};
+
 export const checkWatchList = async (eventId: string) => {
   const auth = await getAuthInfo();
   const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;

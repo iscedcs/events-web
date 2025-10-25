@@ -20,8 +20,8 @@ export default function Going({ userId }: { userId?: string }) {
     const fetchEvents = async () => {
       setLoading(true);
       try {
-        const ticketsData = await getFutureTicketsByUserId(userId);
-        if (!cancelled) setTickets(ticketsData ?? []);
+        const ticketsData = await getFutureTicketsByUserId(userId, {});
+        if (!cancelled) setTickets(ticketsData?.filteredTickets ?? []);
       } finally {
         if (!cancelled) setLoading(false);
       }

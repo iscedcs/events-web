@@ -63,11 +63,15 @@ export const getUserEVents = async ({ limit, page }: PaginationType) => {
     });
     const data = await res.json();
     const events: SingleEventProps[] = data.data.all;
+    const sortedEvents = [...events].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
     const user = data.data.user;
 
     if (res.ok) {
       return {
-        events,
+        events: sortedEvents,
         user,
       };
     } else {
@@ -76,6 +80,40 @@ export const getUserEVents = async ({ limit, page }: PaginationType) => {
   } catch (e: any) {
     console.log("Unable to fetch user events", e);
     return null;
+  }
+};
+
+export const getUserEVentsForCalendar = async ({
+  limit,
+  page,
+}: PaginationType) => {
+  const url = `${EVENTS_API}${URLS.events.all_events_user}?page=${page}&limit=${limit}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    const events: SingleEventProps[] = data.data.all;
+    // console.log({ data });
+
+    if (res.ok) {
+      return events.map((i) => ({
+        image: i.image,
+        title: i.title,
+        cleanName: i.cleanName,
+        startDate: i.startDate,
+      }));
+    }
+  } catch (e: any) {
+    console.log("Unable to fetch user events", e);
   }
 };
 
@@ -219,6 +257,7 @@ export const getEventsForCalendar = async ({ limit, page }: PaginationType) => {
     if (data.success === true) {
       return events.map((i) => ({
         image: i.image,
+        title: i.title,
         cleanName: i.cleanName,
         startDate: i.startDate,
       }));

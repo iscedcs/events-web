@@ -1,19 +1,19 @@
 "use client";
 
-import ChatBubble from "./chat-bubble";
-import ChatInput from "./chat-input";
+import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import TypingWatchBar from "./typing-watch-bar";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useAuthInfo } from "@/hooks/use-auth-info";
 import { useChatSocket } from "@/hooks/use-chat";
 import {
   SingleChatMessageProps,
   SingleChatRoomComponentProps,
 } from "@/lib/types/chat";
-import { useAuthInfo } from "@/hooks/use-auth-info";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
+import ChatBubble from "./chat-bubble";
+import ChatInput from "./chat-input";
+import TypingWatchBar from "./typing-watch-bar";
 
 export default function Chatroom({
   attendee,
@@ -44,15 +44,31 @@ export default function Chatroom({
     );
   }, [messages, pendingMessages]);
 
+  console.log("MESSAGES", { messages });
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const session = useAuthInfo();
 
   console.log({ session });
   const router = useRouter();
 
+  console.log({ attendee });
+
+  const scrollToBottom = useCallback((smooth = true) => {
+    const scrollEl = scrollContainerRef.current;
+    if (!scrollEl) return;
+    requestAnimationFrame(() => {
+      scrollEl.scrollTo({
+        top: scrollEl.scrollHeight,
+        behavior: smooth ? "smooth" : "auto",
+      });
+    });
+  }, []);
+
   const handleMessage = useCallback((messagePayload: any) => {
     const message: SingleChatMessageProps = {
       id: messagePayload.id,
+      tempId: messagePayload.tempId, // ✅ include tempId in message
       chatType: messagePayload.chatType,
       eventId: messagePayload.eventId,
       sender: messagePayload.sender,
@@ -62,21 +78,27 @@ export default function Chatroom({
       meta: messagePayload.meta,
     };
 
+    // Add to confirmed messages list if not already there
     setMessages((prev) => {
       const exists = prev.some((m) => m.id === message.id);
       if (exists) return prev;
       return [...prev, message];
     });
 
-    setLastFetchTime(new Date().toISOString());
+    // ✅ Remove optimistic/pending message with matching tempId
     setPendingMessages((prev) =>
-      prev.filter((m) => m.message !== message.message)
+      prev.filter((m) => m.tempId !== messagePayload.tempId)
     );
+
+    setLastFetchTime(new Date().toISOString());
   }, []);
 
-  const handleUserJoined = useCallback((data: any) => {
-    toast.info(`${data.userName} has joined the chat!`);
-  }, []);
+  const handleUserJoined = useCallback(
+    (data: any) => {
+      toast.info(`${data.userName} has joined the chat!`);
+    },
+    [scrollToBottom]
+  );
 
   const handleUserLeft = useCallback((data: any) => {
     console.log("User left:", data);
@@ -85,14 +107,15 @@ export default function Chatroom({
   const handleTyping = useCallback(
     (data: any) => {
       const { userId, userName, isTyping } = data;
+      // console.log({ data });
       console.log("Typing event received:", {
         userId,
         userName,
         isTyping,
-        currentUserId: attendee?.id,
+        currentUserId: session.auth?.user.id,
       });
 
-      if (userId === attendee?.id) {
+      if (userId === session.auth?.user.id) {
         console.log("Ignoring typing event from current user");
         return;
       }
@@ -128,36 +151,42 @@ export default function Chatroom({
         }, 5000);
       }
     },
-    [attendee?.id] // Only depend on current user's attendee ID
+    [session.auth?.user.id] // Only depend on current user's attendee ID
   );
 
   const handleMessageSeen = useCallback((data: any) => {
     console.log("Message seen:", data);
   }, []);
 
-  const handleRecentMessages = useCallback((data: any) => {
-    console.log("Recent messages received:", data.messages?.[0]);
-    if (data.messages) {
-      const formattedMessages = data.messages.map((msg: any) => ({
-        id: msg.id,
-        chatType: msg.payload?.chatType,
-        eventId: msg.payload?.eventId,
-        sender: msg.payload?.sender || {
-          id: msg.attendee_id || msg.attendee?.userId,
-          name: msg.attendee?.user?.name || "Unknown User",
-          displayPicture: msg.attendee?.user?.image,
-        },
-        message: msg.message,
-        type: msg.payload?.type || "text",
-        timestamp: msg.created_at,
-        meta: msg.payload?.meta,
-      }));
+  const handleRecentMessages = useCallback(
+    (data: any) => {
+      console.log("Recent messages received:", data.messages?.[0]);
+      if (data.messages) {
+        const formattedMessages = data.messages.map((msg: any) => ({
+          id: msg.id,
+          chatType: msg.payload?.chatType,
+          eventId: msg.payload?.eventId,
+          sender: msg.payload?.sender || {
+            id: msg.attendee_id || msg.attendee?.id,
+            name: msg.attendee?.user?.name || "Unknown User",
+            displayPicture: msg.attendee?.user?.image,
+          },
+          message: msg.message,
+          status: msg.payload.status,
+          type: msg.payload?.type || "text",
+          timestamp: msg.payload?.timestamp,
+          meta: msg.payload?.meta,
+        }));
 
-      setMessages(formattedMessages);
-      setLastFetchTime(new Date().toISOString());
-    }
-    setLoading(false);
-  }, []);
+        console.log({ formattedMessages });
+        setMessages(formattedMessages);
+        setLastFetchTime(new Date().toISOString());
+        setTimeout(() => scrollToBottom(false), 100);
+      }
+      setLoading(false);
+    },
+    [scrollToBottom]
+  );
 
   const handleError = useCallback((err: any) => {
     console.error("Socket error:", err);
@@ -186,7 +215,7 @@ export default function Chatroom({
   });
 
   const stableChatRoomId = useRef(chatRoomId);
-  const stableUserId = useRef(session.auth?.accessToken);
+  const stableUserId = useRef(session.auth?.user.id);
 
   useEffect(() => {
     if (stableChatRoomId.current && stableUserId.current && isConnected) {
@@ -209,23 +238,14 @@ export default function Chatroom({
 
   useEffect(() => {
     stableChatRoomId.current = chatRoomId;
-    stableUserId.current = session.auth?.accessToken;
-  }, [chatRoomId, session.auth?.accessToken]);
+    stableUserId.current = session.auth?.user.id;
+  }, [chatRoomId, session.auth?.user.id]);
 
   const refreshMessages = useCallback(() => {
     if (chatRoomId && isConnected) {
       getRecentMessages(chatRoomId, 50);
     }
   }, [chatRoomId, isConnected, getRecentMessages]);
-
-  const scrollToBottom = useCallback((smooth = true) => {
-    const scrollEl = scrollContainerRef.current;
-    if (!scrollEl) return;
-    scrollEl.scrollTo({
-      top: scrollEl.scrollHeight,
-      behavior: smooth ? "smooth" : "auto",
-    });
-  }, []);
 
   const checkScrollPosition = useCallback(() => {
     const scrollEl = scrollContainerRef.current;
@@ -311,9 +331,12 @@ export default function Chatroom({
       // Add optimistic message
       setPendingMessages((prev) => [...prev, optimisticMessage]);
 
+      console.log({ optimisticMessage });
+
       try {
         // Send through socket with the format your backend expects
         socketSendMessage({
+          tempId,
           chatRoomId,
           id: session.auth.user.id!,
           message: messageText,
@@ -371,41 +394,23 @@ export default function Chatroom({
 
   const handleTypingIndicator = useCallback(
     (isTyping: boolean) => {
-      if (chatRoomId && session?.auth?.user?.id && isConnected) {
+      if (chatRoomId && session.auth?.user.id && isConnected) {
         console.log(
           `Broadcasting typing ${
             isTyping ? "start" : "stop"
           } to other users in room ${chatRoomId}`
         );
-        sendTyping(chatRoomId, session.auth?.user.id, isTyping);
+        sendTyping(chatRoomId, session.auth?.user.id ?? "", isTyping);
       }
     },
-    [chatRoomId, session?.auth?.user?.id, isConnected, sendTyping]
+    [chatRoomId, session.auth?.user.id, isConnected, sendTyping]
   );
 
   const isCurrentUser = useCallback(
-    (message: SingleChatMessageProps) => message.sender.id === attendee?.userId,
-    [attendee?.userId]
+    (message: SingleChatMessageProps) =>
+      message.sender.id === session.auth?.user.id,
+    [session.auth?.user.id]
   );
-
-  const shouldShowAvatar = useCallback(
-    (message: SingleChatMessageProps, index: number) => {
-      if (index === 0) return true;
-      const prevMessage = allMessages[index - 1];
-      return prevMessage.sender.id !== message.sender.id;
-    },
-    [allMessages]
-  );
-
-  const formatLastFetchTime = useCallback(() => {
-    if (!lastFetchTime) return "";
-    const date = new Date(lastFetchTime);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  }, [lastFetchTime]);
 
   if (loadingChatroom) {
     return (
@@ -433,7 +438,11 @@ export default function Chatroom({
 
   return (
     <div className=" relative h-[calc(100vh-55px)] py-[5px] px-[10px]">
-      <ScrollArea ref={scrollContainerRef} className=" h-full">
+      <ScrollArea
+        style={{ scrollBehavior: "smooth" }}
+        ref={scrollContainerRef}
+        className=" h-full"
+      >
         <div className=" ">
           {allMessages.length === 0 ? (
             <div className=" absolute top-1/2 -translate-x-[50%] -translate-y-[50%] text-center  left-1/2">
@@ -443,11 +452,11 @@ export default function Chatroom({
             </div>
           ) : (
             <div className="flex pb-[120px]  gap-5 flex-col">
-              {allMessages.map((message) => (
+              {allMessages.map((message, k) => (
                 <ChatBubble
                   isCurrentUser={isCurrentUser(message)}
                   message={message}
-                  key={message.id}
+                  key={message.id || message.tempId}
                   onPrivateChat={(userId) => {
                     router.push(`/chat/${userId}`);
                   }}

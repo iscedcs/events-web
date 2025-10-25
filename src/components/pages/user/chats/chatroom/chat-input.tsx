@@ -96,6 +96,7 @@ export default function ChatInput({
     setIsSending(true);
 
     try {
+      console.log({ messageToSend });
       await onSendMessage(messageToSend);
 
       // Focus input after successful send
@@ -114,6 +115,15 @@ export default function ChatInput({
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleInputBlur = () => {
+    // Small delay to prevent flickering when clicking send button
+    setTimeout(() => {
+      if (!isSending) {
+        stopTyping();
+      }
+    }, 100);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -161,7 +171,7 @@ export default function ChatInput({
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
           onFocus={handleInputFocus}
-          // onBlur={handleInputBlur}
+          onBlur={handleInputBlur}
           placeholder={placeholder}
           disabled={disabled || isSending}
           autoComplete="off"

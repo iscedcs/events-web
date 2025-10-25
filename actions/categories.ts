@@ -18,8 +18,9 @@ export const getUniqueCategories = async () => {
       next: { revalidate: 60 },
     });
     const data = await res.json();
-    if (data.success === true) {
-      return data.data;
+    const sortedData = data.data.splice(0, 9);
+    if (res.ok) {
+      return sortedData;
     }
     return null;
   } catch (e: any) {

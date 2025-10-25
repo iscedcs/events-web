@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { convertTo12Hour, convertTo24Hour } from "@/lib/utils";
 import { format } from "date-fns";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
@@ -84,7 +85,7 @@ export default function DateTimeField() {
                       mode="single"
                       selected={field.value ? new Date(field.value) : undefined}
                       onSelect={(date) => {
-                        field.onChange(date?.toISOString());
+                        if (date) field.onChange(format(date, "yyyy-MM-dd"));
                         setStartOpen(false);
                       }}
                     />
@@ -101,7 +102,12 @@ export default function DateTimeField() {
                   type="time"
                   step="1"
                   {...field}
-                  value={field.value || ""}
+                  value={field.value ? convertTo24Hour(field.value) : ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const formatted12Hour = convertTo12Hour(value);
+                    field.onChange(formatted12Hour);
+                  }}
                   className="bg-[#151515] rounded-[8px] px-[15px] appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
                 />
               )}
@@ -139,7 +145,7 @@ export default function DateTimeField() {
                       mode="single"
                       selected={field.value ? new Date(field.value) : undefined}
                       onSelect={(date) => {
-                        field.onChange(date?.toISOString());
+                        if (date) field.onChange(format(date, "yyyy-MM-dd"));
                         setEndOpen(false);
                       }}
                     />
@@ -156,7 +162,12 @@ export default function DateTimeField() {
                   type="time"
                   step="1"
                   {...field}
-                  value={field.value || ""}
+                  value={field.value ? convertTo24Hour(field.value) : ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const formatted12Hour = convertTo12Hour(value);
+                    field.onChange(formatted12Hour);
+                  }}
                   className="bg-[#151515] rounded-[8px] px-[15px] appearance-none [&::-webkit-calendar-picker-indicator]:hidden"
                 />
               )}

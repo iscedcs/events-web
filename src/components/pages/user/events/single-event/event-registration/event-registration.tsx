@@ -19,6 +19,7 @@ import { getCurrentUser } from "../../../../../../../actions/auth";
 import EventChatButton from "@/components/shared/event/event-chat-button";
 import ClosedRegistration from "./closed-registration";
 import EventMapLocation from "./event-map-location";
+import { stripTime } from "@/lib/utils";
 
 export default async function EventRegistration({ slug }: { slug: string }) {
   const event: SingleEventProps = await getEventsByCleanName(slug ?? "");
@@ -29,9 +30,9 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 
   const check = await checkEventAttendee(userId, slug);
 
-  const now = new Date();
-  const startDate = new Date(event?.startDate ?? now);
-  const endDate = new Date(event?.endDate ?? now);
+  const now = stripTime(new Date());
+  const startDate = stripTime(new Date(event?.startDate ?? now));
+  const endDate = stripTime(new Date(event?.endDate ?? now));
 
   console.log({ check });
 
@@ -46,10 +47,15 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 
   console.log(event.id);
 
+  console.log({
+    EndDate: endDate,
+    StartDate: startDate,
+  });
+
   return (
     <div className=" ">
       {check?.check &&
-        (startDate <= now || endDate <= now ? null : (
+        (startDate < now || endDate < now ? null : (
           <EventChatButton event={event} />
         ))}
       <div className=" px-[10px] ">
@@ -78,7 +84,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 
         <div
           className={`${
-            startDate <= now || endDate <= now ? "mt-[30px]" : " mt-[20px]"
+            startDate < now || endDate < now ? "mt-[30px]" : " mt-[20px]"
           }`}
         >
           <Image
@@ -94,7 +100,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
           />
           <div className=" mt-[10px] flex items-center gap-2">
             <div className=" animate-caret-blink bg-white w-[8px] h-[8px] "></div>
-            {startDate <= now || endDate <= now ? (
+            {startDate < now || endDate < now ? (
               <p className=" text-[10px]">Registration closed</p>
             ) : (
               <p className=" text-[10px]">Registration on-going</p>
@@ -148,7 +154,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                 </p>
               </div>
             </div>
-            {startDate <= now || endDate <= now ? (
+            {startDate < now || endDate < now ? (
               <ClosedRegistration />
             ) : check?.check ? (
               <ViewTicket slug={slug} ticketId={ticketId} />

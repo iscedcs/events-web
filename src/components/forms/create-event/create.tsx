@@ -281,9 +281,9 @@ export default function EventCreationForm() {
             <ChatEnableField />
           </div>
         </div>
-        {/* <Button type="button" onClick={checkValidity} className="mt-4">
+        <Button type="button" onClick={checkValidity} className="mt-4">
           Check Validity
-        </Button> */}
+        </Button>
 
         <Button
           type="submit"

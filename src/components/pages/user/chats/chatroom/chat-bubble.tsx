@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/drawer";
 import { SingleChatMessageProps, SingleMessageProps } from "@/lib/types/chat";
 import { getRandomTextColor } from "@/lib/utils";
+import { timeStamp } from "console";
+import { format } from "date-fns";
 import {
   AlertCircle,
   Check,
@@ -29,125 +31,146 @@ export default function ChatBubble({
 }: SingleMessageProps) {
   //   const colorRender = getRandomTextColor();
 
-  const timestamp = new Date(message.timestamp).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  // console.log({ message });
+
+  // const timestamp = new Date(message.timestamp).toLocaleTimeString("en-US", {
+  //   hour: "2-digit",
+  //   minute: "2-digit",
+  //   hour12: false,
+  // });
+
+  const timestamp = message?.timestamp
+    ? format(new Date(message.timestamp), "p")
+    : "";
 
   if (isCurrentUser) {
     return (
-      <div className=" flex flex-row-reverse items-start gap-2">
+      <div className="flex flex-row-reverse items-start gap-2">
         <Image
           alt="image"
-          width={"30"}
-          height={"30"}
-          className=" rounded-full"
+          width={30}
+          height={30}
+          className="rounded-full w-[30px] h-[30px] object-cover"
           src={message.sender.displayPicture ?? "/no-profile.png"}
         />
-        <div className=" flex flex-col items-end">
-          <div className=" flex gap-3">
+        <div className="flex flex-col items-end">
+          <div className="flex gap-3">
             <p
-              className={` text-[12px] ${getRandomTextColor(
+              className={`capitalize text-[12px] ${getRandomTextColor(
                 message.sender.name
               )}`}
             >
-              {message.sender.name} {message.isFromCreator && " · host"}
+              You
             </p>
-            <p className=" text-accent text-[12px]">{timestamp}</p>
+            <p className="text-accent text-[12px]">{timestamp}</p>
           </div>
-          <div className=" flex flex-col items-end">
-            <div className=" flex flex-row-reverse items-center">
-              <div
-                className={` w-[90%] text-right text-[12px] mt-[3px] rounded-bl-0  bg-secondary px-[15px] rounded-l-[20px] rounded-br-[20px] py-[10px]`}
-              >
-                {message.message}
-              </div>
-              <Drawer>
-                <DrawerTrigger>
-                  <EllipsisVertical className=" w-5 h-5 text-accent" />
-                </DrawerTrigger>
-                <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
-                  <DrawerTitle className=" font-black text-center">
-                    CHAT OPTIONS
-                  </DrawerTitle>
-                  <div className=" flex flex-col gap-2 mt-[20px]">
-                    <span className=" flex gap-2 items-center">
-                      <Trash2 className=" w-4 h-4" />
-                      <p>Delete message</p>
-                    </span>
-                    <span className=" flex gap-2 items-center">
-                      <PencilLine className=" w-4 h-4" />
-                      <p>Edit message</p>
-                    </span>
-                  </div>
-                </DrawerContent>
-              </Drawer>
-            </div>
-            <p className=" text-accent text-[12px] mt-[5px]">
-              {renderMessageStatus(message, onRetry)}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div className=" flex items-start gap-2">
-        <Image
-          alt="image"
-          width={"30"}
-          height={"30"}
-          className=" rounded-full"
-          src={message.sender.displayPicture ?? "/no-profile.png"}
-        />
-        <div className="">
-          <div className=" flex gap-3">
-            <p
-              className={` text-[12px] ${getRandomTextColor(
-                message.sender.name
-              )}`}
-            >
-              {message.sender.name} {message.isFromCreator && " · host"}
-            </p>
-            <p className=" text-accent text-[12px]">11:46</p>
-          </div>
-          <div className=" flex items-center">
-            <div className=" w-[90%] text-[12px] mt-[3px] rounded-tl-0  bg-secondary px-[15px] rounded-r-[20px] rounded-bl-[20px] py-[10px]">
+          <div className="flex flex-col items-end">
+            <div className="w-[90%] text-left text-[12px] mt-[3px] rounded-bl-0 bg-secondary px-[25px] rounded-l-[20px] rounded-br-[20px] py-[12px]">
               {message.message}
             </div>
-            <Drawer>
-              <DrawerTrigger>
-                <EllipsisVertical className=" w-5 h-5 text-accent" />
-              </DrawerTrigger>
-              <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
-                <DrawerTitle className=" font-black text-center">
-                  CHAT OPTIONS
-                </DrawerTitle>
-                <div className=" flex flex-col gap-2 mt-[20px]">
-                  <span className=" flex gap-2 items-center">
-                    <UserRound className=" w-4 h-4" />
-                    <p>View profile</p>
-                  </span>
-                  {message.isFromCreator ? (
-                    <span className=" flex gap-2 items-center">
-                      <MessageCircleReply className=" w-4 h-4" />
-                      <p>Private chat host</p>
-                    </span>
-                  ) : (
-                    <span className=" flex gap-2 items-center">
-                      <MessageCircleReply className=" w-4 h-4" />
-                      <p>Private chat attendee</p>
-                    </span>
-                  )}
-                </div>
-              </DrawerContent>
-            </Drawer>
+            <div className="text-accent text-[12px] mt-[5px]">
+              {renderMessageStatus(message, onRetry)}
+            </div>
           </div>
         </div>
       </div>
     );
   }
+
+  if (message.isFromCreator) {
+    return (
+      <div className="flex items-start gap-2">
+        <Image
+          alt="image"
+          width={30}
+          height={30}
+          className="rounded-full w-[30px] h-[30px] object-cover"
+          src={message.sender.displayPicture ?? "/no-profile.png"}
+        />
+        <div>
+          <div className="flex gap-3">
+            <p
+              className={`capitalize text-[12px] ${getRandomTextColor(
+                message.sender.name
+              )}`}
+            >
+              {message.sender.name} · host
+            </p>
+            <p className="text-accent text-[12px]">{timestamp}</p>
+          </div>
+          <div className="flex items-center">
+            <div className="w-[90%] text-[12px] mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
+              {message.message}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Other attendees
+  return (
+    <div className="flex items-start gap-2">
+      <Image
+        alt="image"
+        width={30}
+        height={30}
+        className="rounded-full w-[30px] h-[30px] object-cover"
+        src={message.sender.displayPicture ?? "/no-profile.png"}
+      />
+      <div>
+        <div className="flex gap-3">
+          <p
+            className={`capitalize text-[12px] ${getRandomTextColor(
+              message.sender.name
+            )}`}
+          >
+            {message.sender.name}
+          </p>
+          <p className="text-accent text-[12px]">{timestamp}</p>
+        </div>
+        <div className="flex items-center">
+          <div className="w-[90%] text-[12px] mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
+            {message.message}
+          </div>
+        </div>
+        {/* <Drawer>
+          {" "}
+          <DrawerTrigger>
+            {" "}
+            <EllipsisVertical className=" w-5 h-5 text-accent" />{" "}
+          </DrawerTrigger>{" "}
+          <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
+            {" "}
+            <DrawerTitle className=" font-black text-center">
+              {" "}
+              CHAT OPTIONS{" "}
+            </DrawerTitle>{" "}
+            <div className=" flex flex-col gap-2 mt-[20px]">
+              {" "}
+              <span className=" flex gap-2 items-center">
+                {" "}
+                <UserRound className=" w-4 h-4" /> <p>View profile</p>{" "}
+              </span>{" "}
+              {message.isFromCreator ? (
+                <span className=" flex gap-2 items-center">
+                  {" "}
+                  <MessageCircleReply className=" w-4 h-4" />{" "}
+                  <p>Private chat host</p>{" "}
+                </span>
+              ) : (
+                <span className=" flex gap-2 items-center">
+                  {" "}
+                  <MessageCircleReply className=" w-4 h-4" />{" "}
+                  <p>Private chat attendee</p>{" "}
+                </span>
+              )}{" "}
+            </div>{" "}
+          </DrawerContent>{" "}
+        </Drawer> */}
+      </div>
+    </div>
+  );
 }
 
 function renderMessageStatus(
@@ -166,9 +189,7 @@ function renderMessageStatus(
       return (
         <div className="flex items-center gap-1 text-zinc-400">
           <Check className="h-3 w-3" />
-          <span className="text-xs">
-            {renderMessageStatus(message, onRetry)}
-          </span>
+          <span className="text-xs">Delivered</span>
         </div>
       );
     case "failed":
