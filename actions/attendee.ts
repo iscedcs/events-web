@@ -66,7 +66,7 @@ export const checkEventAttendee = async (id: string, slug: string) => {
         "Content-Type": "application/json",
       },
       method: "GET",
-      next: { revalidate: 60 },
+      // next: { revalidate: 60 },
     });
     const data = await res.json();
     if (data.success === true) {

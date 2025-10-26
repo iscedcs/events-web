@@ -52,12 +52,12 @@ export const useChatSocket = ({
   useEffect(() => {
     if (!token) return;
 
-    const decoded = jwtDecode<{ id: string }>(token);
-    console.log({ decoded });
+    // const decoded = jwtDecode<{ id: string }>(token);
+    // console.log({ decoded });
 
-    const userId = decoded.id;
+    // const userId = decoded.id;
 
-    console.log({ userId });
+    // console.log({ userId });
 
     console.log({ token });
 
@@ -130,6 +130,8 @@ export const useChatSocket = ({
   const joinRoom = useCallback((roomId: string, userId: string) => {
     if (socketRef.current?.connected) {
       socketRef.current.emit("joinRoom", { roomId, userId });
+
+      console.log("JOINED ROOM INFO:", { roomId, userId });
     }
   }, []);
 
@@ -145,6 +147,7 @@ export const useChatSocket = ({
       id: string;
       message: string;
       type?: string;
+      tempId?: string;
       chatType?: string;
       eventId?: string;
       attendee_id?: string;
@@ -153,6 +156,7 @@ export const useChatSocket = ({
       if (socketRef.current?.connected) {
         socketRef.current.emit("sendMessage", {
           chatRoomId: data.chatRoomId,
+          tempId: data.tempId,
           userId: data.id,
           message: data.message,
           type: data.type || "text",
@@ -170,6 +174,8 @@ export const useChatSocket = ({
     (chatRoomId: string, userId: string, isTyping: boolean) => {
       if (socketRef.current?.connected) {
         socketRef.current.emit("typing", { chatRoomId, userId, isTyping });
+
+        console.log("TYPING INFO", { chatRoomId, userId, isTyping });
       }
     },
     []
@@ -191,6 +197,11 @@ export const useChatSocket = ({
   const getRecentMessages = useCallback(
     (chatRoomId: string, limit?: number, beforeMessageId?: string) => {
       if (socketRef.current?.connected) {
+        console.log("RECENT MESSAGES INFO", {
+          chatRoomId,
+          limit,
+          beforeMessageId,
+        });
         socketRef.current.emit("getRecentMessages", {
           chatRoomId,
           limit,

@@ -56,6 +56,8 @@ export default function ImageField({
         <Image
           src={String(value)}
           alt={placeholder || "Uploaded image"}
+          width={"1000"}
+          height={"1000"}
           className="object-cover w-full h-full"
         />
       ) : (

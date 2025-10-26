@@ -107,7 +107,7 @@ export default function EventRegistrationForm({
       eventId: ticketInfo?.event?.id,
       eventName: ticketInfo?.event?.title,
       userId: user?.id,
-      image: "",
+      image: user?.displayPicture,
       name: data.name,
       email: data.email,
       phone: user?.phone,

@@ -5,6 +5,7 @@ import Interested from "./tabcontents/interested";
 import Past from "./tabcontents/past";
 
 export default function ManageEvents({ userId }: { userId?: string }) {
+  // console.log({ userId });
   return (
     <div className=" relative px-[10px]">
       <div className=" w-full">

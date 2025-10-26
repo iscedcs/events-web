@@ -17,6 +17,8 @@ export default async function Register(props: { params: Params }) {
   const me = await getCurrentUser(); // null if not logged in
   const user = me ? await getUserByID(me.id!) : "";
 
+  console.log({ me });
+
   const event: SingleEventProps = await getEventsByCleanName(params.slug ?? "");
   const check = await checkEventAttendee(me?.id ?? "", params.slug);
 

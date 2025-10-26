@@ -8,22 +8,28 @@ import { FaBagShopping, FaHourglass, FaTicketSimple } from "react-icons/fa6";
 import { getEventWithTenAttendeesByCleanName } from "../../../../../../../actions/events";
 import { DUMMYATTENDEES } from "@/lib/const";
 import Image from "next/image";
+import { stripTime } from "@/lib/utils";
 
 export default async function CreatorEvent({ slug }: { slug: string }) {
   const formattedProps = encodeURIComponent(slug);
   const data = await getEventWithTenAttendeesByCleanName(formattedProps ?? "");
-  const today = new Date();
-  const eventStartDate = new Date(data?.event?.startDate);
-  const eventEndDate = new Date(data?.event?.endDate ?? "");
+  const today = stripTime(new Date());
+  const eventStartDate = stripTime(new Date(data?.event?.startDate));
+  const eventEndDate = stripTime(new Date(data?.event?.endDate));
   var message = "";
   var isToday;
+
+  console.log({ eventStartDate });
+  console.log(data?.event?.startDate);
+
+  const isTime = new Date().getTime() === data?.event.time;
 
   switch (true) {
     case today < eventStartDate:
       message = `Event is not today`;
       isToday = false;
       break;
-    case today > eventEndDate || today > eventStartDate:
+    case today < eventEndDate && today < eventStartDate:
       message = "Event is over";
       isToday = false;
       break;
@@ -49,15 +55,20 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
             </p>
           )}
         </div>
-        {today > eventStartDate ||
-          today > eventEndDate ||
-          (today > eventStartDate && (
-            <div className="">
-              <Button className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]">
+        {message === "Event is today" && (
+          <div className="">
+            <Button
+              asChild
+              className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
+            >
+              <Link
+                href={`/user/events/${data?.event.cleanName.toLowerCase()}/check-in`}
+              >
                 Begin Contactless Entry
-              </Button>
-            </div>
-          ))}
+              </Link>
+            </Button>
+          </div>
+        )}
         <div className="">
           <div className=" flex mt-[20px] items-center justify-between">
             <p className=" text-[24px]">Tickets</p>

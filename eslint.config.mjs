@@ -67,7 +67,8 @@ export default [
       "@typescript-eslint/no-unsafe-function-type": "off", //temp
       "@typescript-eslint/no-wrapper-object-types": "off", //temp
       "@typescript-eslint/no-unnecessary-type-constraint": "off", //temp
-      "react-hooks/exhaustive-deps": "off"
+      "react-hooks/exhaustive-deps": "off",
+      "prefer-const" :"off"
     },
   },
 ];

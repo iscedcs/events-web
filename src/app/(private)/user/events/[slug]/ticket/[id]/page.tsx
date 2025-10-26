@@ -18,6 +18,7 @@ import {
 import { getCurrentUser } from "../../../../../../../../actions/auth";
 import { getTicketByID } from "../../../../../../../../actions/tickets";
 import { getUserByID } from "../../../../../../../../actions/user";
+import QrCodeGenerator from "@/components/pages/user/events/single-event/attendee-check-in/qr-code-gen";
 
 type Params = Promise<{ id: string }>;
 
@@ -25,6 +26,7 @@ export default async function Ticket(props: { params: Params }) {
   const params = await props.params;
 
   const me = await getCurrentUser();
+
   const user = me ? await getUserByID(me.id!) : "";
   const ticket: SingleTicketProps = await getTicketByID(params.id);
   const attendees: SingleAttendeeProps[] = await getAttendeesEventID(
@@ -43,6 +45,8 @@ export default async function Ticket(props: { params: Params }) {
   const now = new Date();
   const startDate = new Date(ticket?.event?.startDate ?? now);
   const endDate = new Date(ticket?.event?.endDate ?? now);
+
+  const baseUrl = process.env.NEXT_PUBLIC_URL;
 
   return (
     <div>
@@ -120,14 +124,8 @@ export default async function Ticket(props: { params: Params }) {
             </div>
           </div>
           <div className=" flex justify-between items-end  pt-[20px]">
-            <div className="">
-              <Image
-                src={"/dummy-images/qrcode.png"}
-                alt="qrcode"
-                width={"1000"}
-                height={"1000"}
-                className=" w-[100px] h-[100px] object-cover"
-              />
+            <div className=" rounded-[8px] py-[8px] px-[9px] bg-white">
+              <QrCodeGenerator size={100} value={`${attendee.id}`} />
             </div>
             {startDate <= now || endDate <= now ? null : (
               <div className="">

@@ -20,7 +20,7 @@ export interface SingleEventProps {
   image: string;
   cleanName: string;
   startDate: Date;
-  endDate: string;
+  endDate: Date;
   time: string;
   host: string;
   userId: string;

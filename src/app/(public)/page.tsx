@@ -10,7 +10,6 @@ export default async function IntroPage() {
         <p>Events</p>
         <div className=" flex gap-2 ">
           <SignIn />
-          <SignUp />
         </div>
       </div>
 
