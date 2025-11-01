@@ -23,24 +23,27 @@ export default async function CheckIn(props: { params: Params }) {
   const headerUser = userId ? await getUserByID(userId) : null;
 
   return (
-    <div>
+    <div className=" ">
       <Header hasBack title={event?.title.toLowerCase()} user={headerUser} />
       <EventChatButton event={event} />
 
       <div className=" px-[10px] pt-[15px]">
         <p className=" text-[24px] font-bold ">Enter the access code</p>
-        <Input className="rounded-none border-t-0 border-l-0 border-r-0 mt-[10px] " />
-        <Button className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]">
-          Validate
-        </Button>
-
-        <Link
-          href={`/user/events/${params.slug}/check-in/scan`}
-          className=" flex gap-4 mt-5 items-center justify-center"
-        >
-          <ScanLine />
-          <p>Scan ticket via QR instead</p>
-        </Link>
+        <div className=" flex h-[100svh] justify-between flex-col">
+          <div className="">
+            <Input className="rounded-none border-t-0 border-l-0 border-r-0 mt-[10px] " />
+            <Button className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]">
+              Validate
+            </Button>
+          </div>
+          <Link
+            href={`/user/events/${params.slug}/check-in/scan`}
+            className=" mb-[50px] flex flex-col gap-1  mt-5 items-center justify-center"
+          >
+            <ScanLine />
+            <p>Scan ticket via QR instead</p>
+          </Link>
+        </div>
       </div>
     </div>
   );

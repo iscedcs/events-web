@@ -9,14 +9,17 @@ import { UserProps } from "@/lib/types/user";
 import { SingleEventProps } from "@/lib/types/event";
 import { getEventsByCleanName } from "../../../../../../../../actions/events";
 import { redirect } from "next/navigation";
+import { Info, LoaderCircle } from "lucide-react";
+import { checkInAttendeeWithID } from "../../../../../../../../actions/attendee";
 
 type Params = Promise<{ slug: string }>;
 export default function QrCodeScanner(props: { params: Params }) {
   const params = use(props.params);
   const slug = params.slug;
-  //   const [scannedData, setScannedData] = useState<string | null>(null);
+  // const [scannedData, setScannedData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<UserProps>();
+  const [loading, setLoading] = useState(false);
   const [event, setEvent] = useState<SingleEventProps>();
 
   const auth = useAuthInfo();
@@ -41,13 +44,30 @@ export default function QrCodeScanner(props: { params: Params }) {
 
   //   const headerUser = userId ? await getUserByID(userId) : null;
 
-  const handleScan = (data: string | null) => {
+  const handleScan = async (data: string | null) => {
+    setLoading(true);
+    setError(null);
     if (data) {
-      //   setScannedData(data);
-      setError(null);
-      redirect(
-        `${baseUrl}/user/events/${event?.cleanName.toLowerCase()}/check-in/${data}`
-      );
+      const checkIn = await checkInAttendeeWithID({
+        attendeeId: data,
+        eventId: event?.id ?? "",
+      });
+      console.log({ checkIn });
+      if (checkIn?.statusCode === "409") {
+        redirect(
+          `${baseUrl}/user/events/${event?.cleanName.toLowerCase()}/check-in/${data}?checked=true`
+        );
+      }
+      if (checkIn?.statusCode === "400") {
+        redirect(
+          `${baseUrl}/user/events/${event?.cleanName.toLowerCase()}/check-in/${data}?checked=error`
+        );
+      }
+      if (checkIn?.result) {
+        redirect(
+          `${baseUrl}/user/events/${event?.cleanName.toLowerCase()}/check-in/${data}`
+        );
+      }
     }
   };
 
@@ -56,7 +76,7 @@ export default function QrCodeScanner(props: { params: Params }) {
     setError("Failed to access camera or scan QR code.");
   };
 
-  console.log({ eventname: event?.cleanName });
+  // console.log({ eventname: event?.cleanName });
 
   return (
     <>
@@ -87,6 +107,16 @@ export default function QrCodeScanner(props: { params: Params }) {
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </div>
       </div>
+
+      {loading && (
+        <div className=" bg-[#000000be] absolute top-0 h-screen w-full">
+          <div className=" bg-secondary px-[25px] flex-col gap-1 items-center text-center justify-center py-[20px] rounded-[20px] flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <LoaderCircle className=" animate-spin" />
+            <p className=" pt-[10px]">Validating Attendee</p>
+            <p className=" text-accent text-[12px]">Give us a minute</p>
+          </div>
+        </div>
+      )}
     </>
   );
 }

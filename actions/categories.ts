@@ -15,7 +15,7 @@ export const getUniqueCategories = async () => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const sortedData = data.data.splice(0, 9);

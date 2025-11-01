@@ -15,7 +15,7 @@ export const getUserByID = async (id: string) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const success = data.success;

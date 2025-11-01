@@ -20,6 +20,7 @@ import { eventRegistrationFormSchema } from "@/lib/schema/event-registration";
 import { SingleEventProps } from "@/lib/types/event";
 import { SingleTicketProps } from "@/lib/types/ticket";
 import { UserProps } from "@/lib/types/user";
+import { formatWithCommasAndCurrency } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -32,7 +33,6 @@ import { toast } from "sonner";
 import z from "zod";
 import { getEventsByCleanName } from "../../../../actions/events";
 import { getTicketByID } from "../../../../actions/tickets";
-import { formatWithCommas } from "@/lib/utils";
 
 export type eventRegistrationFormValues = z.infer<
   typeof eventRegistrationFormSchema
@@ -228,7 +228,7 @@ export default function EventRegistrationForm({
                             <div className="">
                               <p className=" text-[16px]">{ticket.title}</p>
                               <p className=" text-accent text-[16px]">
-                                {formatWithCommas(ticket.amount)}
+                                {formatWithCommasAndCurrency(ticket.amount)}
                               </p>
                             </div>
                           </div>

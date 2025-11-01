@@ -2,7 +2,6 @@
 
 import { EVENTS_API, URLS } from "@/lib/const";
 import { SingleUserWatchlistProps } from "@/lib/types/event";
-import { revalidatePath } from "next/cache";
 import { getAuthInfo } from "./auth";
 
 export const getWatchlistUserID = async (userId: string) => {
@@ -97,7 +96,7 @@ export const checkWatchList = async (eventId: string) => {
         Authorization: `Bearer ${BEARER}`,
       },
       method: "GET",
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const isInWatchlist = data.data.isInWatchlist;

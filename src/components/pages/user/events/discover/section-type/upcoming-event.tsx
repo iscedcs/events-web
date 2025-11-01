@@ -3,11 +3,11 @@
 import UpcomingEventSkeleton from "@/components/skeletons/upcoming-event";
 import { Button } from "@/components/ui/button";
 import { SingleEventProps } from "@/lib/types/event";
+import { formatWithCommasAndCurrency } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getMostRecentEvent } from "../../../../../../../actions/events";
-import { formatWithCommas } from "@/lib/utils";
 
 export default function UpcomingEvent() {
   const [event, setEvent] = useState<SingleEventProps>();
@@ -71,7 +71,9 @@ export default function UpcomingEvent() {
                     <p>
                       {event?.tickets[0].isFree === true
                         ? "FREE"
-                        : formatWithCommas(event?.tickets[0].amount ?? 0)}
+                        : formatWithCommasAndCurrency(
+                            event?.tickets[0].amount ?? 0
+                          )}
                     </p>
                   </span>
 

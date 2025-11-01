@@ -141,15 +141,15 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                 </p>
               </div>
             </div>
-            <div className=" flex items-center gap-2 mt-[10px]">
+            <div className="  flex items-center gap-2 mt-[10px]">
               <div className=" bg-secondary flex items-center justify-center w-[40px] border-accent h-[40px] border rounded-[12px] ">
                 <PiMapPinFill className=" w-[20px] h-[20px]" />
               </div>
-              <div className="">
-                <p className=" text-[16px] capitalize">
+              <div className="  w-[80%]">
+                <p className=" line-clamp-2 text-[16px] capitalize">
                   {event.location.toLowerCase()}
                 </p>
-                <p className=" text-[14px] capitalize">
+                <p className=" text-accent text-[14px] capitalize">
                   {event.town.toLowerCase()}
                 </p>
               </div>

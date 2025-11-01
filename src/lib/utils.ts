@@ -1,6 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { getAuthInfo } from "../../actions/auth";
 
 const TAILWIND_TEXT_COLORS = [
   "text-red-500",
@@ -67,7 +66,7 @@ export function isPastDate(pastDateISO: Date): boolean {
   return today > pastDate;
 }
 
-export function formatWithCommas(value: number | string): string {
+export function formatWithCommasAndCurrency(value: number | string): string {
   const numStr = value.toString();
 
   const [integerPart, decimalPart] = numStr.split(".");
@@ -75,6 +74,16 @@ export function formatWithCommas(value: number | string): string {
   const formattedInt = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
   return decimalPart ? `₦ ${formattedInt}.${decimalPart}` : `₦ ${formattedInt}`;
+}
+
+export function formatWithCommas(value: number | string): string {
+  const numStr = value.toString();
+
+  const [integerPart, decimalPart] = numStr.split(".");
+
+  const formattedInt = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  return decimalPart ? `${formattedInt}.${decimalPart}` : `${formattedInt}`;
 }
 
 const hashString = (str: string): number => {
