@@ -1,27 +1,23 @@
 import AttendeeCard from "@/components/pages/user/events/single-event/attendee-check-in/attendee-card";
 import Header from "@/components/shared/layout/header";
 import { SingleAttendeeProps } from "@/lib/types/event";
-import {
-  checkInAttendeeWithID,
-  getAttendeeID,
-} from "../../../../../../../../actions/attendee";
+import { getAttendeeID } from "../../../../../../../../actions/attendee";
 import { getAuthInfo } from "../../../../../../../../actions/auth";
 import { getUserByID } from "../../../../../../../../actions/user";
 
-type Params = { attendeeId: string };
-type SearchParams = {
+type Params = Promise<{ attendeeId: string }>;
+type SearchParams = Promise<{
   checked?: string | string[] | undefined;
   [key: string]: string | string[] | undefined;
-};
+}>;
 
-export default async function CheckIn({
-  params,
-  searchParams,
-}: {
+export default async function CheckIn(props: {
   params: Params;
   searchParams: SearchParams;
 }) {
-  const { attendeeId } = params;
+  const params = await props.params;
+  const searchParams = await props.searchParams;
+  const attendeeId = params.attendeeId;
   const checked = searchParams.checked;
   const session = await getAuthInfo();
   const headerUser = await getUserByID(session.user?.id ?? "");
