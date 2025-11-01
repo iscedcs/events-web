@@ -1,10 +1,10 @@
 "use server";
 
 import { EVENTS_API, URLS } from "@/lib/const";
-import { SingleTicketProps } from "@/lib/types/ticket";
-import { getAuthInfo } from "./auth";
 import { PaginationType } from "@/lib/types/layout";
+import { SingleTicketProps } from "@/lib/types/ticket";
 import { stripTime } from "@/lib/utils";
+import { getAuthInfo } from "./auth";
 
 export const getTicketByID = async (id: string) => {
   const url = `${EVENTS_API}${URLS.tickets.ticket_by_id.replace("{id}", id)}`;
@@ -18,7 +18,7 @@ export const getTicketByID = async (id: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER}`,
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
 
@@ -28,6 +28,44 @@ export const getTicketByID = async (id: string) => {
     return null;
   } catch (e: any) {
     console.log("Unable to fetch ticket by id", e);
+  }
+};
+
+export const getTicketsByEventID = async (id: string) => {
+  const url = `${EVENTS_API}${URLS.tickets.all_ticket_for_event.replace(
+    "{eventId}",
+    id
+  )}`;
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${BEARER}`,
+      },
+    });
+    const data = await res.json();
+    const tickets: SingleTicketProps[] = data.tickets;
+    const paid = data.meta.paid;
+    const free = data.meta.free;
+    const available = data.meta.available;
+    const total = data.meta.total;
+
+    if (res.ok) {
+      return {
+        tickets,
+        paid,
+        free,
+        available,
+        total,
+      };
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to fetch events by event ID", e);
   }
 };
 
@@ -46,7 +84,7 @@ export const getTicketsByUserID = async (id: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER}`,
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const tickets: SingleTicketProps[] = data.data;
@@ -75,7 +113,7 @@ export const getPastTicketsByUserID = async (id: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER}`,
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
 
     const data = await res.json();
@@ -116,7 +154,7 @@ export const getPastTicketsForCalendarByUserID = async (id: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER}`,
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
 
     const data = await res.json();
@@ -162,7 +200,7 @@ export const getFutureTicketsByUserId = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER}`,
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const tickets: SingleTicketProps[] = data.data;
@@ -203,7 +241,7 @@ export const getFutureTicketsForCalendarByUserId = async (id: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER}`,
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     // console.log({ data });

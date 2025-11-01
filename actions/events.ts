@@ -19,7 +19,7 @@ export const getAllEvents = async ({ limit, page }: PaginationType) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
@@ -59,7 +59,7 @@ export const getUserEVents = async ({ limit, page }: PaginationType) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const events: SingleEventProps[] = data.data.all;
@@ -98,7 +98,7 @@ export const getUserEVentsForCalendar = async ({
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const events: SingleEventProps[] = data.data.all;
@@ -132,7 +132,7 @@ export const getEventIdByCleanName = async (slug: string) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
@@ -160,7 +160,7 @@ export const getTrendingEvents = async () => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
@@ -203,7 +203,7 @@ export const getMostRecentEvent = async ({ limit, page }: PaginationType) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const events: SingleEventProps[] = data.data.events;
@@ -238,7 +238,7 @@ export const getEventsForCalendar = async ({ limit, page }: PaginationType) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const events: SingleEventProps[] = data.data.events;
@@ -282,7 +282,7 @@ export const getEventsByCleanName = async (slug: string) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
@@ -310,7 +310,7 @@ export const getEventWithTenAttendeesByCleanName = async (slug: string) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
@@ -342,7 +342,7 @@ export const getEventsByID = async (id: string) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
@@ -370,7 +370,7 @@ export const getEventsWithAttendeesByCleanName = async (slug: string) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
@@ -395,7 +395,7 @@ export const searchForEvents = async (value: string) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     const item: SingleEventProps[] = data.data.events.data;

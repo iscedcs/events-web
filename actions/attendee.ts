@@ -15,7 +15,7 @@ export const getAttendeesEventID = async (id: string) => {
         "Content-Type": "application/json",
       },
       method: "GET",
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     if (res.ok) {
@@ -39,7 +39,7 @@ export const getAttendeeID = async (id: string) => {
         "Content-Type": "application/json",
       },
       method: "GET",
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     if (res.ok) {
@@ -78,5 +78,58 @@ export const checkEventAttendee = async (id: string, slug: string) => {
     return null;
   } catch (e: any) {
     console.log("Unable to check if user is an attendee", e);
+  }
+};
+
+export const checkInAttendeeWithID = async ({
+  eventId,
+  attendeeId,
+}: {
+  eventId: string;
+  attendeeId: string;
+}) => {
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+  const url = `${EVENTS_API}${URLS.attendees.check_in_with_attendeeId.replace(
+    "{id}",
+    attendeeId
+  )}?eventId=${eventId}`;
+
+  try {
+    const res = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${BEARER}`,
+      },
+    });
+
+    const data = await res.json();
+    console.log({ data });
+
+    if (data) {
+      if (data.statusCode === 409) {
+        return {
+          statusCode: "409",
+          error: "Attendee already checked in",
+        };
+      }
+      if (data.statusCode === 400) {
+        return {
+          statusCode: "400",
+          error: "Attendee does not belong to this event",
+        };
+      }
+      if (data.sucess === true) {
+        return {
+          result: data.data,
+        };
+      }
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to check in attendee into an event", e);
+    return null;
   }
 };

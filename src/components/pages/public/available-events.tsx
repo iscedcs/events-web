@@ -4,7 +4,7 @@ import { getAllEvents } from "../../../../actions/events";
 
 export default async function AvailableEvents() {
   const events = await getAllEvents({
-    limit: 5,
+    limit: 8,
     page: 1,
   });
 

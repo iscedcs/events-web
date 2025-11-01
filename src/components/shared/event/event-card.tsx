@@ -23,6 +23,11 @@ export default function EventCard({
   showBookmarkButton,
   startDate,
 }: EventCardProps) {
+  const today = new Date();
+  const eventStartDate = new Date(startDate);
+
+  // console.log({ startDate: new Date(startDate), today });
+
   return (
     <>
       <div className="">
@@ -56,7 +61,7 @@ export default function EventCard({
           ) : cardType === "hosting" ? (
             <div className="">
               <Button asChild>
-                <Link href={link}>My event</Link>
+                <Link href={link}>Details</Link>
               </Button>
             </div>
           ) : cardType === "interested" ? (
@@ -100,8 +105,10 @@ export default function EventCard({
           <p className=" text-[10px]">
             {cardType === "going"
               ? "Going for this event"
-              : cardType === "hosting"
+              : cardType === "hosting" && eventStartDate > today
               ? "You are hosting this event"
+              : cardType === "hosting" && eventStartDate < today
+              ? "You hosted this event"
               : cardType === "past"
               ? "You already attended this event."
               : cardType === "interested"

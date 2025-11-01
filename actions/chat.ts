@@ -1,8 +1,8 @@
 "use server";
 
 import { EVENTS_API, URLS } from "@/lib/const";
-import { getAuthInfo } from "./auth";
 import { SingleChatroomProps } from "@/lib/types/chat";
+import { getAuthInfo } from "./auth";
 
 export const getEventChatroomByEventID = async (eventId: string) => {
   const url = `${EVENTS_API}${URLS.chat.event_chatroom.replace(
@@ -19,7 +19,7 @@ export const getEventChatroomByEventID = async (eventId: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER}`,
       },
-      next: { revalidate: 60 },
+      next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
