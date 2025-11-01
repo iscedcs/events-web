@@ -437,7 +437,7 @@ export default function Chatroom({
   }
 
   return (
-    <div className=" relative h-[calc(100vh-55px)] py-[5px] px-[10px]">
+    <div className=" relative h-[calc(100svh-55px)] py-[5px] px-[10px]">
       <ScrollArea
         style={{ scrollBehavior: "smooth" }}
         ref={scrollContainerRef}
