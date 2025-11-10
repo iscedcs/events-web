@@ -70,6 +70,7 @@ export const URLS = {
     all_ticket_for_event: "/tickets/event/{eventId}",
     ticket_by_id: "/tickets/{id}",
     all_ticket_user: "/tickets/user/{userId}",
+    register_via_tickets: "/tickets/access",
   },
   watchlist: {
     add_watchlist: "/watchlist/add",

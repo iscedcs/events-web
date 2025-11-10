@@ -19,6 +19,8 @@ export default async function ChatRoom(props: { params: Params }) {
   const event: SingleEventProps = await getEventsByCleanName(params.slug);
   const chatroomInfo = await getEventChatroomByEventID(event?.id);
 
+  console.log({ chatroomInfo });
+
   const auth = await getAuthInfo();
 
   const attendee = event.attendees.find(
