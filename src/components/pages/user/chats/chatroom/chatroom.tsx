@@ -23,7 +23,10 @@ export default function Chatroom({
 }: SingleChatRoomComponentProps) {
   const [chatRoomId] = useState<string | null>(initialChatRoomId || null);
   const [typingUsers, setTypingUsers] = useState<
-    Map<string, { name: string; timestamp: number }>
+    Map<
+      string,
+      { name: string; timestamp: number; displayPicture?: string | null }
+    >
   >(new Map());
   const [messages, setMessages] = useState<SingleChatMessageProps[]>([]);
   const [lastFetchTime, setLastFetchTime] = useState<string | null>(null);
@@ -78,8 +81,10 @@ export default function Chatroom({
       meta: messagePayload.meta,
     };
 
-    // Add to confirmed messages list if not already there
+    console.log({ messagePayload });
+
     setMessages((prev) => {
+      // Avoid duplicates
       const exists = prev.some((m) => m.id === message.id);
       if (exists) return prev;
       return [...prev, message];
@@ -88,16 +93,20 @@ export default function Chatroom({
     setPendingMessages((prev) =>
       prev.filter(
         (m) =>
-          m.tempId !== messagePayload.tempId &&
           !(
-            m.message === messagePayload.message &&
-            m.sender.id === messagePayload.sender.id
+            (messagePayload.tempId && m.tempId === messagePayload.tempId) ||
+            (!messagePayload.tempId &&
+              m.message === messagePayload.message &&
+              m.sender.id === messagePayload.sender?.id)
           )
       )
     );
 
     setLastFetchTime(new Date().toISOString());
   }, []);
+
+  console.log({ messages });
+  console.log({ pendingMessages });
 
   const handleUserJoined = useCallback(
     (data: any) => {
@@ -112,11 +121,12 @@ export default function Chatroom({
 
   const handleTyping = useCallback(
     (data: any) => {
-      const { userId, userName, isTyping } = data;
+      const { userId, userName, displayPicture, isTyping } = data;
       // console.log({ data });
       console.log("Typing event received:", {
         userId,
         userName,
+        displayPicture,
         isTyping,
         currentUserId: session.auth?.user.id,
       });
@@ -129,7 +139,11 @@ export default function Chatroom({
       setTypingUsers((prev) => {
         const newMap = new Map(prev);
         if (isTyping) {
-          newMap.set(userId, { name: userName, timestamp: Date.now() });
+          newMap.set(userId, {
+            name: userName,
+            displayPicture: attendee?.displayPicture,
+            timestamp: Date.now(),
+          });
           console.log(`${userName} started typing`);
         } else {
           newMap.delete(userId);
@@ -154,7 +168,7 @@ export default function Chatroom({
             }
             return newMap;
           });
-        }, 5000);
+        }, 9000);
       }
     },
     [session.auth?.user.id] // Only depend on current user's attendee ID
@@ -312,19 +326,30 @@ export default function Chatroom({
         !chatRoomId ||
         !messageText.trim() ||
         !session?.auth?.user ||
-        !isConnected ||
-        !attendee
+        !isConnected
       )
         return;
 
+      // Safely get user and attendee info
+      const userId = session.auth.user.id ?? "";
+      const attendeeId = attendee?.id || null;
+
+      // Fallbacks to make sure we always have something valid
+      if (!userId && !attendeeId) {
+        console.warn("Cannot send message without user or attendee ID");
+        return;
+      }
+
       const tempId = `temp-${Date.now()}`;
+
       const optimisticMessage: SingleChatMessageProps = {
         id: tempId,
         tempId,
         sender: {
-          id: attendee?.userId ?? session.auth.user.id ?? "",
-          name: attendee.name || "You",
-          displayPicture: attendee.displayPicture,
+          id: userId,
+          name: attendee?.name || "You",
+          displayPicture:
+            attendee?.displayPicture || session.auth.user.displayPicture,
         },
         message: messageText,
         type,
@@ -334,27 +359,26 @@ export default function Chatroom({
         eventId: event.id,
       };
 
-      // Add optimistic message
-      setPendingMessages((prev) => [...prev, optimisticMessage]);
-
       console.log({ optimisticMessage });
 
+      // Add optimistic message immediately
+      setPendingMessages((prev) => [...prev, optimisticMessage]);
+
       try {
+        const userIdPayload = attendeeId ? attendeeId : userId;
+        console.log({ userIdPayload });
         socketSendMessage({
           tempId,
           chatRoomId,
-          id: session.auth.user.id!,
           message: messageText,
           type,
           chatType: chatRoomType,
           eventId: event.id,
-          attendee_id: attendee.id ?? session.auth.user.id,
+          id: userId!,
+          attendee_id: attendeeId ?? userId,
         });
-
-        console.log({ socketSendMessage });
       } catch (err) {
         console.error("Failed to send message:", err);
-        // Mark as failed
         setPendingMessages((prev) =>
           prev.map((m) =>
             m.tempId === tempId ? { ...m, status: "failed" } : m
@@ -412,6 +436,8 @@ export default function Chatroom({
     },
     [chatRoomId, session.auth?.user.id, isConnected, sendTyping]
   );
+
+  console.log({ typingUsers });
 
   const isCurrentUser = useCallback(
     (message: SingleChatMessageProps) =>
@@ -473,7 +499,7 @@ export default function Chatroom({
               ))}
             </div>
           )}
-          {typingUsers.size > 0 && <TypingWatchBar />}
+          <TypingWatchBar typingUsers={typingUsers} />
         </div>
         <ScrollBar orientation="vertical" />
       </ScrollArea>
