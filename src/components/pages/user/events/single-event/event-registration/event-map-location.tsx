@@ -63,7 +63,7 @@ const EventMapLocation: React.FC<EventMapLocationProps> = React.memo(
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
             center={center}
-            zoom={13}
+            zoom={15}
             options={mapOptions}
           >
             {/* Marker showing event location */}

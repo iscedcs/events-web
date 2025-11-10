@@ -31,7 +31,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
   const isTime = currentTime === eventTime;
 
   switch (true) {
-    case today < eventStartDate && today > eventEndDate:
+    case today < eventStartDate || today > eventEndDate:
       message = `Event is not today`;
       isToday = false;
       break;
@@ -61,7 +61,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
             </p>
           )}
         </div>
-        {/* {(isTime || today < eventEndDate) && ( */}
+        {isTime && today < eventEndDate && (
           <div className="">
             <Button
               asChild
@@ -74,7 +74,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
               </Link>
             </Button>
           </div>
-        {/* )} */}
+        )}
         <div className="">
           <div className=" flex mt-[20px] items-center justify-between">
             <p className=" text-[24px]">Tickets</p>

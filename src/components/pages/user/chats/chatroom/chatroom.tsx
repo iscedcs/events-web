@@ -68,7 +68,7 @@ export default function Chatroom({
   const handleMessage = useCallback((messagePayload: any) => {
     const message: SingleChatMessageProps = {
       id: messagePayload.id,
-      tempId: messagePayload.tempId, // ✅ include tempId in message
+      tempId: messagePayload.tempId,
       chatType: messagePayload.chatType,
       eventId: messagePayload.eventId,
       sender: messagePayload.sender,
@@ -85,9 +85,15 @@ export default function Chatroom({
       return [...prev, message];
     });
 
-    // ✅ Remove optimistic/pending message with matching tempId
     setPendingMessages((prev) =>
-      prev.filter((m) => m.tempId !== messagePayload.tempId)
+      prev.filter(
+        (m) =>
+          m.tempId !== messagePayload.tempId &&
+          !(
+            m.message === messagePayload.message &&
+            m.sender.id === messagePayload.sender.id
+          )
+      )
     );
 
     setLastFetchTime(new Date().toISOString());
@@ -316,7 +322,7 @@ export default function Chatroom({
         id: tempId,
         tempId,
         sender: {
-          id: attendee.userId,
+          id: attendee?.userId ?? session.auth.user.id ?? "",
           name: attendee.name || "You",
           displayPicture: attendee.displayPicture,
         },
@@ -334,7 +340,6 @@ export default function Chatroom({
       console.log({ optimisticMessage });
 
       try {
-        // Send through socket with the format your backend expects
         socketSendMessage({
           tempId,
           chatRoomId,
@@ -343,8 +348,10 @@ export default function Chatroom({
           type,
           chatType: chatRoomType,
           eventId: event.id,
-          attendee_id: attendee.id,
+          attendee_id: attendee.id ?? session.auth.user.id,
         });
+
+        console.log({ socketSendMessage });
       } catch (err) {
         console.error("Failed to send message:", err);
         // Mark as failed
@@ -408,7 +415,8 @@ export default function Chatroom({
 
   const isCurrentUser = useCallback(
     (message: SingleChatMessageProps) =>
-      message.sender.id === session.auth?.user.id,
+      message.sender.id === session.auth?.user.id ||
+      message.isFromCreator === true,
     [session.auth?.user.id]
   );
 
