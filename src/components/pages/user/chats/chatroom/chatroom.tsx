@@ -14,6 +14,9 @@ import { toast } from "sonner";
 import ChatBubble from "./chat-bubble";
 import ChatInput from "./chat-input";
 import TypingWatchBar from "./typing-watch-bar";
+import { ArrowDownToDot } from "lucide-react";
+import ChatroomSkeleton from "@/components/skeletons/chat-room";
+import { AiFillInfoCircle } from "react-icons/ai";
 
 export default function Chatroom({
   attendee,
@@ -68,6 +71,8 @@ export default function Chatroom({
     });
   }, []);
 
+  // const handleScrollTo
+
   const handleMessage = useCallback((messagePayload: any) => {
     const message: SingleChatMessageProps = {
       id: messagePayload.id,
@@ -110,7 +115,23 @@ export default function Chatroom({
 
   const handleUserJoined = useCallback(
     (data: any) => {
-      toast.info(`${data.userName} has joined the chat!`);
+      // toast.info(`${data.userName} has joined the chat!`);
+      toast.custom(
+        (t) => (
+          <div className=" bg-[#333333] rounded-[8px] p-3 flex items-center gap-3">
+            <span className=" flex items-center gap-3 text-white">
+              <AiFillInfoCircle className=" text-white" />
+              <p className=" text-[12px]">
+                {data.userName} has joined the chat!
+              </p>
+            </span>
+          </div>
+        ),
+        {
+          position: "top-center",
+          duration: 4000,
+        }
+      );
     },
     [scrollToBottom]
   );
@@ -246,7 +267,7 @@ export default function Chatroom({
         stableUserId.current
       );
       joinRoom(stableChatRoomId.current, stableUserId.current);
-      getRecentMessages(stableChatRoomId.current, 50);
+      getRecentMessages(stableChatRoomId.current, 90);
     }
 
     return () => {
@@ -471,44 +492,66 @@ export default function Chatroom({
   }
 
   return (
-    <div className=" relative h-[calc(100svh-55px)] py-[5px] px-[10px]">
-      <ScrollArea
-        style={{ scrollBehavior: "smooth" }}
-        ref={scrollContainerRef}
-        className=" h-full"
-      >
-        <div className=" ">
-          {allMessages.length === 0 ? (
-            <div className=" absolute top-1/2 -translate-x-[50%] -translate-y-[50%] text-center  left-1/2">
-              <p className=" text-accent text-[12px]">
-                Be the first to send a message here
-              </p>
-            </div>
-          ) : (
-            <div className="flex pb-[120px]  gap-5 flex-col">
-              {allMessages.map((message, k) => (
-                <ChatBubble
-                  isCurrentUser={isCurrentUser(message)}
-                  message={message}
-                  key={message.id || message.tempId}
-                  onPrivateChat={(userId) => {
-                    router.push(`/chat/${userId}`);
+    <>
+      {!isConnected || allMessages.length === 0 ? (
+        <ChatroomSkeleton />
+      ) : (
+        <div className=" relative h-[calc(100svh-55px)] py-[5px] px-[10px]">
+          <ScrollArea
+            style={{ scrollBehavior: "smooth" }}
+            ref={scrollContainerRef}
+            className=" h-full"
+          >
+            <div className=" ">
+              {allMessages.length === 0 ? (
+                <div className=" absolute top-1/2 -translate-x-[50%] -translate-y-[50%] text-center  left-1/2">
+                  <p className=" text-accent text-[12px]">
+                    Be the first to send a message here
+                  </p>
+                </div>
+              ) : (
+                <div className="flex pb-[120px]  gap-5 flex-col">
+                  {allMessages.map((message, k) => (
+                    <ChatBubble
+                      isCurrentUser={isCurrentUser(message)}
+                      message={message}
+                      key={message.id || message.tempId}
+                      onPrivateChat={(userId) => {
+                        router.push(`/chat/${userId}`);
+                      }}
+                      onRetry={handleRetryMessage}
+                    />
+                  ))}
+                </div>
+              )}
+              {showScrollButton && (
+                <Button
+                  onClick={() => {
+                    scrollToBottom();
                   }}
-                  onRetry={handleRetryMessage}
-                />
-              ))}
+                  className=" fixed right-0 flex items-center rounded-full bottom-0 mb-[100px] mr-[10px] z-40"
+                >
+                  <ArrowDownToDot className=" w-3 h-3" />
+                  {newMessageCount && (
+                    <p className=" text-[12px]">
+                      {newMessageCount} new{" "}
+                      {newMessageCount > 1 ? "messages" : "message"}
+                    </p>
+                  )}
+                </Button>
+              )}
+              <TypingWatchBar typingUsers={typingUsers} />
             </div>
-          )}
-          <TypingWatchBar typingUsers={typingUsers} />
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
+          <ChatInput
+            onSendMessage={handleSendMessage}
+            onTyping={handleTypingIndicator}
+            disabled={!isConnected}
+            placeholder={isConnected ? "Write message..." : "Connecting..."}
+          />
         </div>
-        <ScrollBar orientation="vertical" />
-      </ScrollArea>
-      <ChatInput
-        onSendMessage={handleSendMessage}
-        onTyping={handleTypingIndicator}
-        disabled={!isConnected}
-        placeholder={isConnected ? "Write message..." : "Connecting..."}
-      />
-    </div>
+      )}
+    </>
   );
 }
