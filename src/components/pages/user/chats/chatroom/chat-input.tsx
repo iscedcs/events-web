@@ -160,10 +160,10 @@ export default function ChatInput({
   return (
     <div className=" py-[10px] px-[10px] absolute bg-[#313132] w-full bottom-0 left-0">
       <div className=" flex items-center gap-2">
-        <div className=" flex items-center gap-4">
+        {/* <div className=" flex items-center gap-4">
           <Camera className=" w-4 h-4" />
           <Mic className=" w-4 h-4" />
-        </div>
+        </div> */}
 
         <Input
           ref={inputRef}

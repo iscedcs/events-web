@@ -29,16 +29,6 @@ export default function ChatBubble({
   onPrivateChat,
   onRetry,
 }: SingleMessageProps) {
-  //   const colorRender = getRandomTextColor();
-
-  // console.log({ message });
-
-  // const timestamp = new Date(message.timestamp).toLocaleTimeString("en-US", {
-  //   hour: "2-digit",
-  //   minute: "2-digit",
-  //   hour12: false,
-  // });
-
   const timestamp = message?.timestamp
     ? format(new Date(message.timestamp), "p")
     : "";
@@ -46,13 +36,13 @@ export default function ChatBubble({
   if (isCurrentUser) {
     return (
       <div className="flex flex-row-reverse items-start gap-2">
-        <Image
+        {/* <Image
           alt="image"
           width={30}
           height={30}
           className="rounded-full w-[30px] h-[30px] object-cover"
           src={message.sender.displayPicture ?? "/no-profile.png"}
-        />
+        /> */}
         <div className="flex flex-col items-end">
           <div className="flex gap-3">
             <p
@@ -64,14 +54,34 @@ export default function ChatBubble({
             </p>
             <p className="text-accent text-[12px]">{timestamp}</p>
           </div>
-          <div className="flex flex-col items-end">
-            <div className="w-[90%] text-left text-[12px] mt-[3px] rounded-bl-0 bg-secondary px-[25px] rounded-l-[20px] rounded-br-[20px] py-[12px]">
-              {message.message}
+          <div className=" flex flex-row-reverse gap-1 items-center ">
+            <div className=" ">
+              <div className="w-full text-[12px] mt-[3px] rounded-tr-0 bg-secondary px-[25px] rounded-l-[20px] rounded-br-[20px] py-[12px]">
+                {message.message}
+              </div>
             </div>
-            <div className="text-accent text-[12px] mt-[5px]">
-              {renderMessageStatus(message, onRetry)}
-            </div>
+            <Drawer>
+              <DrawerTrigger>
+                <EllipsisVertical className=" w-5 h-5 text-accent" />
+              </DrawerTrigger>{" "}
+              <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
+                <DrawerTitle className=" font-black text-center">
+                  CHAT OPTIONS
+                </DrawerTitle>
+                <div className=" flex flex-col gap-4 mt-[20px]">
+                  <span className=" flex gap-2 items-center">
+                    <PencilLine className=" w-4 h-4" /> <p>Edit message</p>
+                  </span>
+
+                  <span className=" flex gap-2 items-center">
+                    <Trash2 className=" w-4 h-4" />
+                    <p>Delete message</p>
+                  </span>
+                </div>
+              </DrawerContent>
+            </Drawer>
           </div>
+          <div className="">{renderMessageStatus(message)}</div>
         </div>
       </div>
     );
@@ -98,10 +108,44 @@ export default function ChatBubble({
             </p>
             <p className="text-accent text-[12px]">{timestamp}</p>
           </div>
-          <div className="flex items-center">
-            <div className="w-[90%] text-[12px] mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
-              {message.message}
+          <div className=" flex gap-1 items-center ">
+            <div className="">
+              <div className="w-full text-[12px] mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
+                {message.message}
+              </div>
             </div>
+            <Drawer>
+              <DrawerTrigger>
+                <EllipsisVertical className=" w-5 h-5 text-accent" />{" "}
+              </DrawerTrigger>{" "}
+              <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
+                {" "}
+                <DrawerTitle className=" font-black text-center">
+                  {" "}
+                  CHAT OPTIONS{" "}
+                </DrawerTitle>{" "}
+                <div className=" flex flex-col gap-2 mt-[20px]">
+                  {" "}
+                  <span className=" flex gap-2 items-center">
+                    {" "}
+                    <UserRound className=" w-4 h-4" /> <p>View profile</p>{" "}
+                  </span>{" "}
+                  {message.isFromCreator ? (
+                    <span className=" flex gap-2 items-center">
+                      {" "}
+                      <MessageCircleReply className=" w-4 h-4" />{" "}
+                      <p>Private chat host</p>{" "}
+                    </span>
+                  ) : (
+                    <span className=" flex gap-2 items-center">
+                      {" "}
+                      <MessageCircleReply className=" w-4 h-4" />{" "}
+                      <p>Private chat attendee</p>{" "}
+                    </span>
+                  )}{" "}
+                </div>{" "}
+              </DrawerContent>{" "}
+            </Drawer>
           </div>
         </div>
       </div>
@@ -113,13 +157,13 @@ export default function ChatBubble({
     <div className="flex items-start gap-2">
       <Image
         alt="image"
-        width={30}
-        height={30}
-        className="rounded-full w-[30px] h-[30px] object-cover"
+        width={20}
+        height={20}
+        className="rounded-full w-[20px] h-[20px] object-cover"
         src={message.sender.displayPicture ?? "/no-profile.png"}
       />
-      <div>
-        <div className="flex gap-3">
+      <div className="">
+        <div className="flex gap-2">
           <p
             className={`capitalize text-[12px] ${getRandomTextColor(
               message.sender.name
@@ -129,45 +173,39 @@ export default function ChatBubble({
           </p>
           <p className="text-accent text-[12px]">{timestamp}</p>
         </div>
-        <div className="flex items-center">
-          <div className="w-[90%] text-[12px] mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
-            {message.message}
+        <div className=" flex gap-1 items-center ">
+          <div className="">
+            <div className="w-full text-[12px] mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
+              {message.message}
+            </div>
           </div>
+          <Drawer>
+            <DrawerTrigger>
+              <EllipsisVertical className=" w-5 h-5 text-accent" />
+            </DrawerTrigger>{" "}
+            <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
+              <DrawerTitle className=" font-black text-center">
+                CHAT OPTIONS
+              </DrawerTitle>
+              <div className=" flex flex-col gap-4 mt-[20px]">
+                <span className=" flex gap-2 items-center">
+                  <UserRound className=" w-4 h-4" /> <p>View profile</p>
+                </span>
+                {message.isFromCreator ? (
+                  <span className=" flex gap-2 items-center">
+                    <MessageCircleReply className=" w-4 h-4" />
+                    <p>Private chat host</p>
+                  </span>
+                ) : (
+                  <span className=" flex gap-2 items-center">
+                    <MessageCircleReply className=" w-4 h-4" />
+                    <p>Private chat attendee</p>
+                  </span>
+                )}
+              </div>
+            </DrawerContent>
+          </Drawer>
         </div>
-        {/* <Drawer>
-          {" "}
-          <DrawerTrigger>
-            {" "}
-            <EllipsisVertical className=" w-5 h-5 text-accent" />{" "}
-          </DrawerTrigger>{" "}
-          <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
-            {" "}
-            <DrawerTitle className=" font-black text-center">
-              {" "}
-              CHAT OPTIONS{" "}
-            </DrawerTitle>{" "}
-            <div className=" flex flex-col gap-2 mt-[20px]">
-              {" "}
-              <span className=" flex gap-2 items-center">
-                {" "}
-                <UserRound className=" w-4 h-4" /> <p>View profile</p>{" "}
-              </span>{" "}
-              {message.isFromCreator ? (
-                <span className=" flex gap-2 items-center">
-                  {" "}
-                  <MessageCircleReply className=" w-4 h-4" />{" "}
-                  <p>Private chat host</p>{" "}
-                </span>
-              ) : (
-                <span className=" flex gap-2 items-center">
-                  {" "}
-                  <MessageCircleReply className=" w-4 h-4" />{" "}
-                  <p>Private chat attendee</p>{" "}
-                </span>
-              )}{" "}
-            </div>{" "}
-          </DrawerContent>{" "}
-        </Drawer> */}
       </div>
     </div>
   );
