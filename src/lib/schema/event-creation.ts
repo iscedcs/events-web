@@ -33,7 +33,7 @@ export const eventCreationSchema = z
     hasFreeTickets: z.boolean(),
     location: z
       .string()
-      .min(3, "Location must be at least 3 characters long")
+      .min(3, "Event location must be at least 3 characters long")
       .max(200, "Location is too long"),
     image: z
       .string()
@@ -42,7 +42,7 @@ export const eventCreationSchema = z
       .or(z.literal("")), // allow empty if optional
     title: z
       .string()
-      .min(3, "Title must be at least 3 characters long")
+      .min(3, "Event title must be at least 3 characters long")
       .max(100, "Title is too long"),
     host: z
       .string()
@@ -50,7 +50,7 @@ export const eventCreationSchema = z
       .max(100, "Host name is too long"),
     description: z
       .string()
-      .min(10, "Description must be at least 10 characters long")
+      .min(10, "Event description must be at least 10 characters long")
       .max(1000, "Description is too long"),
     latitude: z.number().refine((val) => val >= -90 && val <= 90, {
       message: "Latitude must be between -90 and 90",
@@ -60,9 +60,8 @@ export const eventCreationSchema = z
     }),
     audienceSize: z
       .number()
-      .int("Audience size must be a whole number")
-      .positive("Audience size must be greater than 0")
-      .max(1000000, "Audience size is unrealistically large"),
+      .int("Capacity must be a whole number")
+      .positive("Capacity must be greater than 0"),
     categories: z
       .array(z.string().min(1, "Category cannot be empty"))
       .min(1, "Select at least one category"),
@@ -73,11 +72,14 @@ export const eventCreationSchema = z
       .max(100, "Town name is too long"),
     startDate: z
       .string()
-      .refine((val) => !isNaN(Date.parse(val)), "Invalid start date"),
+      .refine(
+        (val) => !isNaN(Date.parse(val)),
+        "Event start date is not valid"
+      ),
     endDate: z
       .string()
-      .refine((val) => !isNaN(Date.parse(val)), "Invalid end date"),
-    time: z.string().min(2, "Invalid time format"),
+      .refine((val) => !isNaN(Date.parse(val)), "Event end date is not valid"),
+    time: z.string().min(2, "Event time is not valid"),
     tickets: z
       .array(
         z
@@ -106,7 +108,6 @@ export const eventCreationSchema = z
   })
   .refine(
     (data) => {
-      // Ensure end date is after start date
       const start = new Date(data.startDate);
       const end = new Date(data.endDate);
       return end > start;
@@ -123,6 +124,15 @@ export const eventCreationSchema = z
       ),
     {
       message: "Paid tickets must have an amount greater than 0",
+      path: ["tickets"],
+    }
+  )
+  .refine(
+    (data) => {
+      data.tickets?.length === 0;
+    },
+    {
+      message: "Event must have one or more tickets",
       path: ["tickets"],
     }
   );

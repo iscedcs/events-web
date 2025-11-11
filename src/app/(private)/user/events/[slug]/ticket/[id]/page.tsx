@@ -19,6 +19,8 @@ import { getCurrentUser } from "../../../../../../../../actions/auth";
 import { getTicketByID } from "../../../../../../../../actions/tickets";
 import { getUserByID } from "../../../../../../../../actions/user";
 import QrCodeGenerator from "@/components/pages/user/events/single-event/attendee-check-in/qr-code-gen";
+import { stripTime } from "@/lib/utils";
+import { isAfter, isBefore, isEqual } from "date-fns";
 
 type Params = Promise<{ id: string }>;
 
@@ -42,9 +44,13 @@ export default async function Ticket(props: { params: Params }) {
 
   const token = attendee.token;
 
-  const now = new Date();
-  const startDate = new Date(ticket?.event?.startDate ?? now);
-  const endDate = new Date(ticket?.event?.endDate ?? now);
+  const now = stripTime(new Date());
+  const startDate = stripTime(new Date(ticket?.event?.startDate ?? now));
+  const endDate = stripTime(new Date(ticket?.event?.endDate ?? now));
+
+  // console.log({ startDate, endDate, now });
+
+  // console.log(isEqual(now, startDate));
 
   const baseUrl = process.env.NEXT_PUBLIC_URL;
 
@@ -127,18 +133,19 @@ export default async function Ticket(props: { params: Params }) {
             <div className=" rounded-[8px] py-[8px] px-[9px] bg-white">
               <QrCodeGenerator size={100} value={`${attendee.id}`} />
             </div>
-            {startDate <= now || endDate <= now ? null : (
-              <div className="">
-                <Button className=" text-white bg-[#6600FF]" asChild>
-                  <Link
-                    href={`/user/events/${ticket.event?.cleanName.toLowerCase()}/chat`}
-                  >
-                    Join chat
-                    <MdOutlineMessage />
-                  </Link>
-                </Button>
-              </div>
-            )}
+            {isEqual(now, startDate) ||
+              (isBefore(now, endDate) && (
+                <div className="">
+                  <Button className=" text-white bg-[#6600FF]" asChild>
+                    <Link
+                      href={`/user/events/${ticket.event?.cleanName.toLowerCase()}/chat`}
+                    >
+                      Join chat
+                      <MdOutlineMessage />
+                    </Link>
+                  </Button>
+                </div>
+              ))}
           </div>
         </div>
         <div className="relative p-[20px] bg-secondary rounded-[24px]">

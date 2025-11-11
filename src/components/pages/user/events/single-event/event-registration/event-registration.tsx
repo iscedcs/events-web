@@ -1,6 +1,6 @@
 import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
 import { SingleEventProps } from "@/lib/types/event";
-import { format } from "date-fns";
+import { format, isAfter, isBefore, isEqual } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillInstagram } from "react-icons/ai";
@@ -54,10 +54,8 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 
   return (
     <div className=" ">
-      {check?.check &&
-        (startDate < now || endDate < now ? null : (
-          <EventChatButton event={event} />
-        ))}
+      {(check?.check && isEqual(now, startDate)) ||
+        (isBefore(now, endDate) && <EventChatButton event={event} />)}
       <div className=" px-[10px] ">
         <div className="">
           {!check?.check && (
@@ -84,7 +82,9 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 
         <div
           className={`${
-            startDate < now || endDate < now ? "mt-[30px]" : " mt-[20px]"
+            isEqual(now, startDate) || isBefore(now, endDate)
+              ? "mt-[20px]"
+              : " mt-[70px]"
           }`}
         >
           <Image
@@ -99,9 +99,15 @@ export default async function EventRegistration({ slug }: { slug: string }) {
             className=" w-full h-[300px] rounded-[24px] object-cover"
           />
           <div className=" mt-[10px] flex items-center gap-2">
-            <div className=" animate-caret-blink bg-white w-[8px] h-[8px] "></div>
-            {startDate < now || endDate < now ? (
-              <p className=" text-[10px]">Registration closed</p>
+            <div
+              className={` ${
+                isAfter(now, startDate) || isAfter(now, endDate)
+                  ? " bg-error"
+                  : "animate-caret-blink bg-white"
+              }  w-[8px] h-[8px]`}
+            ></div>
+            {isAfter(now, startDate) || isAfter(now, endDate) ? (
+              <p className=" text-error text-[10px]">Registration closed</p>
             ) : (
               <p className=" text-[10px]">Registration on-going</p>
             )}
@@ -154,7 +160,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                 </p>
               </div>
             </div>
-            {startDate < now || endDate < now ? (
+            {isAfter(now, startDate) || isAfter(now, endDate) ? (
               <ClosedRegistration />
             ) : check?.check ? (
               <ViewTicket slug={slug} ticketId={ticketId} />
