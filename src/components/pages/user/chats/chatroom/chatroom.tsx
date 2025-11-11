@@ -493,7 +493,7 @@ export default function Chatroom({
 
   return (
     <>
-      {!isConnected || allMessages.length === 0 ? (
+      {!isConnected ? (
         <ChatroomSkeleton />
       ) : (
         <div className=" relative h-[calc(100svh-55px)] py-[5px] px-[10px]">

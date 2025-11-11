@@ -20,7 +20,7 @@ const UserEvents: NextPage<UserEventsProps> = async ({ searchParams }) => {
   const tabParam = resolvedSearchParams?.tab;
   const currentTab = Array.isArray(tabParam)
     ? tabParam[0]
-    : tabParam || "manage";
+    : tabParam || "discover";
 
   return (
     <div>

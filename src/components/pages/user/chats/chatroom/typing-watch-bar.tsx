@@ -31,7 +31,9 @@ export default function TypingWatchBar({
             </div>
             <span>
               <p>
-                {Array.from(typingUsers.values())[0].name}
+                <span className=" capitalize">
+                  {Array.from(typingUsers.values())[0].name.toLowerCase()}
+                </span>
                 {`${
                   typingUsers.size > 1
                     ? ` and ${typingUsers.size - 1} person is typing`
