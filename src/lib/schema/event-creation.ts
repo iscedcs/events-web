@@ -127,12 +127,7 @@ export const eventCreationSchema = z
       path: ["tickets"],
     }
   )
-  .refine(
-    (data) => {
-      data.tickets?.length === 0;
-    },
-    {
-      message: "Event must have one or more tickets",
-      path: ["tickets"],
-    }
-  );
+  .refine((data) => data.tickets && data.tickets.length > 0, {
+    message: "Event must have one or more tickets",
+    path: ["tickets"],
+  });

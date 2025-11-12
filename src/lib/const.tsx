@@ -65,6 +65,8 @@ export const URLS = {
     create: "/attendees/create",
     attendee_check: "/attendees/{cleanName}/with-attendee-check",
     check_in_with_attendeeId: "/attendees/{id}/check-in",
+    check_in_with_token: "/attendees/check-in-by-token",
+    one_token: "/attendees/get-by-token",
   },
   tickets: {
     all_ticket_for_event: "/tickets/event/{eventId}",
