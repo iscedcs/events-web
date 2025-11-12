@@ -1,11 +1,20 @@
-import { Crown, Ticket, Trash } from "lucide-react";
+import {
+  Bell,
+  Crown,
+  Headset,
+  LogOut,
+  Pencil,
+  ReceiptText,
+  ShieldAlert,
+  Ticket,
+  UserRoundPlus,
+} from "lucide-react";
 import { FaRegUser } from "react-icons/fa";
 import { LuMessageSquareText } from "react-icons/lu";
 import { MdEventNote } from "react-icons/md";
 import { TrendingEventsProps } from "./types/event";
 import { HeaderItemsTypes } from "./types/layout";
 import { InitialTicketProps } from "./types/ticket";
-import { SingleMessageProps } from "./types/chat";
 
 export const AUTH_API = process.env.NEXT_PUBLIC_LIVE_ISCEAUTH_BACKEND_URL;
 export const EVENTS_API = process.env.NEXT_PUBLIC_LIVE_EVENTS_BACKEND_URL;
@@ -599,19 +608,19 @@ export const CATEGORIES = [
 export const HEADERITEMS: HeaderItemsTypes[] = [
   {
     icon: <FaRegUser className=" w-[16px] h-[16px]" />,
-    path: "",
+    path: "/user/me",
     title: "Your profile",
     value: "profile",
   },
   {
     icon: <MdEventNote className=" w-[16px] h-[16px]" />,
-    path: "",
+    path: "/user/me/my-events",
     title: "Your events",
     value: "events",
   },
   {
     icon: <LuMessageSquareText className=" w-[16px] h-[16px]" />,
-    path: "",
+    path: "/user/my-chats",
     title: "Your chats",
     value: "events",
   },
@@ -722,5 +731,43 @@ export const DUMMYATTENDEES = [
   {
     image: "/no-profile.png",
     name: "John Doe 2",
+  },
+];
+
+export const ACCOUNTSETTINGS = [
+  {
+    icon: <Pencil />,
+    label: "Edit profile",
+    path: "me/edit",
+  },
+  {
+    icon: <Bell />,
+    label: "Notification settings",
+    path: "",
+  },
+  {
+    icon: <UserRoundPlus />,
+    label: "Invite a friend",
+    path: "",
+  },
+  {
+    icon: <Headset />,
+    label: "Contact support",
+    path: "",
+  },
+  {
+    icon: <ReceiptText />,
+    label: "Terms of service",
+    path: "",
+  },
+  {
+    icon: <ShieldAlert />,
+    label: "Privacy policy",
+    path: "",
+  },
+  {
+    icon: <LogOut />,
+    label: "Sign out from this device",
+    path: "",
   },
 ];

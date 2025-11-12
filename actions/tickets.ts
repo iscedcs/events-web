@@ -5,6 +5,7 @@ import { PaginationType } from "@/lib/types/layout";
 import { SingleTicketProps } from "@/lib/types/ticket";
 import { stripTime } from "@/lib/utils";
 import { getAuthInfo } from "./auth";
+import { isBefore } from "date-fns";
 
 export const getTicketByID = async (id: string) => {
   const url = `${EVENTS_API}${URLS.tickets.ticket_by_id.replace("{id}", id)}`;
@@ -124,9 +125,11 @@ export const getPastTicketsByUserID = async (id: string) => {
 
       const pastTickets = tickets.filter((ticket) => {
         const startDateStr = ticket.event?.startDate;
+        const endDateStr = ticket.event?.endDate;
         if (!startDateStr) return false;
         const startDate = new Date(startDateStr);
-        return startDate < now;
+        const endDate = new Date(endDateStr ?? "");
+        return isBefore(startDate, now) && isBefore(endDate, now);
       });
 
       return pastTickets;
@@ -165,9 +168,11 @@ export const getPastTicketsForCalendarByUserID = async (id: string) => {
 
       const pastTickets = tickets.filter((ticket) => {
         const startDateStr = ticket.event?.startDate;
+        const endDateStr = ticket.event?.endDate;
         if (!startDateStr) return false;
         const startDate = new Date(startDateStr);
-        return startDate < now;
+        const endDate = new Date(endDateStr ?? "");
+        return isBefore(startDate, now) && isBefore(endDate, now);
       });
 
       return pastTickets.map((i) => ({
