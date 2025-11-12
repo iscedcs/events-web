@@ -133,19 +133,18 @@ export default async function Ticket(props: { params: Params }) {
             <div className=" rounded-[8px] py-[8px] px-[9px] bg-white">
               <QrCodeGenerator size={100} value={`${attendee.id}`} />
             </div>
-            {isEqual(now, startDate) ||
-              (isBefore(now, endDate) && (
-                <div className="">
-                  <Button className=" text-white bg-[#6600FF]" asChild>
-                    <Link
-                      href={`/user/events/${ticket.event?.cleanName.toLowerCase()}/chat`}
-                    >
-                      Join chat
-                      <MdOutlineMessage />
-                    </Link>
-                  </Button>
-                </div>
-              ))}
+            {isBefore(now, endDate) && (
+              <div className="">
+                <Button className=" text-white bg-[#6600FF]" asChild>
+                  <Link
+                    href={`/user/events/${ticket.event?.cleanName.toLowerCase()}/chat`}
+                  >
+                    Join chat
+                    <MdOutlineMessage />
+                  </Link>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className="relative p-[20px] bg-secondary rounded-[24px]">

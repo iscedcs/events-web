@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScanLine } from "lucide-react";
 import Link from "next/link";
+import TokenValidation from "@/components/pages/user/events/single-event/attendee-check-in/token-validation";
 
 type Params = Promise<{ slug: string }>;
 export default async function CheckIn(props: { params: Params }) {
@@ -23,22 +24,16 @@ export default async function CheckIn(props: { params: Params }) {
   const headerUser = userId ? await getUserByID(userId) : null;
 
   return (
-    <div className=" ">
+    <div className=" h-[100svh]">
       <Header hasBack title={event?.title.toLowerCase()} user={headerUser} />
       <EventChatButton event={event} />
 
       <div className=" px-[10px] pt-[15px]">
-        <p className=" text-[24px] font-bold ">Enter the access code</p>
-        <div className=" flex h-[100svh] justify-between flex-col">
-          <div className="">
-            <Input className="rounded-none border-t-0 border-l-0 border-r-0 mt-[10px] " />
-            <Button className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]">
-              Validate
-            </Button>
-          </div>
+        <div className=" flex justify-between flex-col">
+          <TokenValidation event={event} />
           <Link
             href={`/user/events/${params.slug}/check-in/scan`}
-            className=" mb-[50px] flex flex-col gap-1  mt-5 items-center justify-center"
+            className=" mb-[60px] flex flex-col gap-1  mt-5 items-center justify-center"
           >
             <ScanLine />
             <p>Scan ticket via QR instead</p>
