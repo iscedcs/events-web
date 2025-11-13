@@ -54,7 +54,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 
   return (
     <div className=" ">
-      {check?.check && isEqual(now, startDate) && isBefore(now, endDate) && (
+      {check?.check && isBefore(now, endDate) && (
         <EventChatButton event={event} />
       )}
       <div className=" px-[10px] ">
