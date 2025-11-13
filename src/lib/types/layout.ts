@@ -3,7 +3,7 @@ import { UserProps } from "./user";
 export interface HederType {
   hasBack?: boolean;
   title: string;
-  user: UserProps | undefined;
+  user: UserProps | undefined | null;
 }
 
 export interface HeaderItemsTypes {

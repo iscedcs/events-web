@@ -1,5 +1,6 @@
 import {
   Bell,
+  Bookmark,
   Crown,
   Headset,
   LogOut,
@@ -46,6 +47,7 @@ export const URLS = {
     updelete: "/events/{id}/updelete",
     one_slug: "/events/clean-name/{cleanName}",
     event_search: "/events/search",
+    nearby_events: "/events/nearby",
   },
   chat: {
     create: "/chat/create",
@@ -616,6 +618,12 @@ export const HEADERITEMS: HeaderItemsTypes[] = [
     icon: <MdEventNote className=" w-[16px] h-[16px]" />,
     path: "/user/me/my-events",
     title: "Your events",
+    value: "events",
+  },
+  {
+    icon: <Bookmark className=" w-[16px] h-[16px]" />,
+    path: "/user/me/my-events",
+    title: "Your bookmarks",
     value: "events",
   },
   {

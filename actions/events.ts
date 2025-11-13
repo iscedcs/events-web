@@ -408,3 +408,40 @@ export const searchForEvents = async (value: string) => {
     console.log("Unable to search for events", e);
   }
 };
+
+export const getNearbyEvents = async (
+  lng: string,
+  lat: string,
+  radius: string
+) => {
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+  const url = new URL(`${EVENTS_API}${URLS.events.nearby_events}`);
+  url.searchParams.set("lng", lng);
+  url.searchParams.set("lat", lat);
+  radius && url.searchParams.set("radius", radius);
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${BEARER}`,
+        "Content-Type": "application/json",
+      },
+      next: { revalidate: 20 },
+    });
+
+    const data = await res.json();
+    const events: SingleEventProps[] = data.data;
+
+    if (res.ok) {
+      return {
+        events,
+      };
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to fetch nearby events", e);
+    return null;
+  }
+};
