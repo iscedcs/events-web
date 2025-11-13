@@ -29,7 +29,7 @@ export default async function Ticket(props: { params: Params }) {
 
   const me = await getCurrentUser();
 
-  const user = me ? await getUserByID(me.id!) : "";
+  const user = me ? await getUserByID(me.id!) : null;
   const ticket: SingleTicketProps = await getTicketByID(params.id);
   const attendees: SingleAttendeeProps[] = await getAttendeesEventID(
     ticket.event?.id ?? ""

@@ -18,7 +18,7 @@ export default function QrCodeScanner(props: { params: Params }) {
   const slug = params.slug;
   // const [scannedData, setScannedData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<UserProps>();
+  const [user, setUser] = useState<UserProps | null>();
   const [loading, setLoading] = useState(false);
   const [event, setEvent] = useState<SingleEventProps>();
 
