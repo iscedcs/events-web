@@ -15,9 +15,11 @@ export default async function Register(props: { params: Params }) {
   const params = await props.params;
 
   const me = await getCurrentUser(); // null if not logged in
-  const user = me ? await getUserByID(me.id!) : "";
+  const user = await getUserByID(me?.id ?? "");
 
-  console.log({ me });
+  // console.log({ user });
+
+  // console.log({ me });
 
   const event: SingleEventProps = await getEventsByCleanName(params.slug ?? "");
   const check = await checkEventAttendee(me?.id ?? "", params.slug);
@@ -55,7 +57,10 @@ export default async function Register(props: { params: Params }) {
           </div>
         </div>
         <div className=" px-[15px]">
-          <EventRegistrationForm slug={params.slug ?? ""} user={user ?? " "} />
+          <EventRegistrationForm
+            slug={params.slug ?? ""}
+            user={user ?? undefined}
+          />
         </div>
       </div>
     </div>
