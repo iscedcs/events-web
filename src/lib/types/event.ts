@@ -14,8 +14,8 @@ export interface SingleEventProps {
   title: string;
   description: string;
   location: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
   town: string;
   image: string;
   cleanName: string;
@@ -102,7 +102,7 @@ export interface EventSearchItemProps {
 export interface EventCardProps
   extends Pick<
     SingleEventProps,
-    "id" | "title" | "startDate" | "time" | "image" | "host"
+    "id" | "title" | "startDate" | "time" | "image" | "host" | "endDate"
   > {
   cardType: "going" | "hosting" | "interested" | "past";
   link: string;

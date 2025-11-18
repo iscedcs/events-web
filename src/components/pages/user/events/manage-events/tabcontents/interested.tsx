@@ -80,6 +80,7 @@ export default function Interested({ userId }: { userId?: string }) {
               <div key={watchlist.id}>
                 <EventCard
                   host={watchlist.event.host}
+                  endDate={watchlist.event.endDate}
                   image={watchlist.event.image}
                   isClicked={true}
                   startDate={watchlist.event.startDate}

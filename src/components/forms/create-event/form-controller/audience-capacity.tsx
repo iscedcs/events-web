@@ -7,6 +7,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ExternalFieldsProps } from "@/lib/types/event";
+import { formatWithCommas } from "@/lib/utils";
 import React from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { LuArrowUpToLine } from "react-icons/lu";
@@ -27,7 +28,11 @@ export default function AudienceCapacity({
           <Dialog>
             <DialogTrigger asChild>
               <div className=" flex items-center gap-2">
-                <p>{value && value !== "0" ? value : "No Value"}</p>
+                <p>
+                  {value && value !== "0"
+                    ? formatWithCommas(Number(value))
+                    : "No Value"}
+                </p>
                 <AiOutlineEdit />
               </div>
             </DialogTrigger>

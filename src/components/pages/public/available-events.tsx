@@ -17,6 +17,7 @@ export default async function AvailableEvents() {
             cardType="interested"
             host={event.host}
             id={event.id}
+            endDate={event.endDate}
             image={event.image}
             link={`/user/events/${event.cleanName.toLowerCase()}`}
             startDate={event.startDate}

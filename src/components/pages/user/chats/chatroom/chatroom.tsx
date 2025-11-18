@@ -1,5 +1,6 @@
 "use client";
 
+import ChatroomSkeleton from "@/components/skeletons/chat-room";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useAuthInfo } from "@/hooks/use-auth-info";
@@ -8,15 +9,14 @@ import {
   SingleChatMessageProps,
   SingleChatRoomComponentProps,
 } from "@/lib/types/chat";
+import { ArrowDownToDot } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AiFillInfoCircle } from "react-icons/ai";
 import { toast } from "sonner";
 import ChatBubble from "./chat-bubble";
 import ChatInput from "./chat-input";
 import TypingWatchBar from "./typing-watch-bar";
-import { ArrowDownToDot } from "lucide-react";
-import ChatroomSkeleton from "@/components/skeletons/chat-room";
-import { AiFillInfoCircle } from "react-icons/ai";
 
 export default function Chatroom({
   attendee,
@@ -79,12 +79,22 @@ export default function Chatroom({
       tempId: messagePayload.tempId,
       chatType: messagePayload.chatType,
       eventId: messagePayload.eventId,
-      sender: messagePayload.sender,
+      creator_id: messagePayload.creator_id ?? session.auth?.user.id,
+      sender: {
+        id: messagePayload.sender.id,
+        name: messagePayload.sender.name,
+        displayPicture: messagePayload.sender.displayPicture,
+      },
       message: messagePayload.message,
       type: messagePayload.type,
       timestamp: messagePayload.timestamp,
-      meta: messagePayload.meta,
+      createdAt: messagePayload.createdAt ?? messagePayload.updatedAt,
+      updatedAt: messagePayload.updatedAt,
+      isFromCreator: messagePayload.creator_id !== null,
+      deletedAt: messagePayload.deletedAt ?? null,
     };
+
+    console.log({ message });
 
     console.log({ messagePayload });
 
@@ -201,22 +211,28 @@ export default function Chatroom({
 
   const handleRecentMessages = useCallback(
     (data: any) => {
-      console.log("Recent messages received:", data.messages?.[0]);
+      console.log("Recent messages received:", data.messages);
+
       if (data.messages) {
         const formattedMessages = data.messages.map((msg: any) => ({
           id: msg.id,
           chatType: msg.payload?.chatType,
+          updatedAt: msg.updatedAt,
+          deletedAt: msg.deletedAt,
+          creator_id: msg.creator_id,
           eventId: msg.payload?.eventId,
           sender: msg.payload?.sender || {
-            id: msg.attendee_id || msg.attendee?.id,
+            id: msg.payload.sender.id,
             name: msg.attendee?.user?.name || "Unknown User",
             displayPicture: msg.attendee?.user?.image,
           },
           message: msg.message,
-          status: msg.payload.status,
+          // status: msg.payload.status,
           type: msg.payload?.type || "text",
           timestamp: msg.payload?.timestamp,
-          meta: msg.payload?.meta,
+          isFromCreator: msg.isFromCreator,
+          // meta: msg.payload?.meta,
+          createdAt: msg.createdAt,
         }));
 
         console.log({ formattedMessages });
@@ -362,10 +378,11 @@ export default function Chatroom({
       }
 
       const tempId = `temp-${Date.now()}`;
+      const tempTimestamp = new Date().toISOString();
 
       const optimisticMessage: SingleChatMessageProps = {
         id: tempId,
-        tempId,
+        // tempId,
         sender: {
           id: userId,
           name: attendee?.name || "You",
@@ -374,10 +391,15 @@ export default function Chatroom({
         },
         message: messageText,
         type,
-        timestamp: new Date().toISOString(),
-        status: "sending",
+        timestamp: tempTimestamp,
+        // status: "sending",
         chatType: chatRoomType,
+        updatedAt: tempTimestamp,
         eventId: event.id,
+        createdAt: tempTimestamp,
+        creator_id: userId,
+        deletedAt: null,
+        isFromCreator: attendee === null,
       };
 
       console.log({ optimisticMessage });
@@ -392,11 +414,17 @@ export default function Chatroom({
           tempId,
           chatRoomId,
           message: messageText,
+          creator_id: userId,
           type,
           chatType: chatRoomType,
           eventId: event.id,
           id: userId!,
+          updatedAt: tempTimestamp,
           attendee_id: attendeeId ?? userId,
+          deletedAt: null,
+          isFromCreator: attendee === null,
+          timestamp: tempTimestamp,
+          createdAt: tempTimestamp,
         });
       } catch (err) {
         console.error("Failed to send message:", err);
@@ -435,9 +463,7 @@ export default function Chatroom({
         );
       } catch {
         setPendingMessages((prev) =>
-          prev.map((m) =>
-            m.tempId === message.tempId ? { ...m, status: "failed" } : m
-          )
+          prev.map((m) => (m.tempId === message.tempId ? { ...m } : m))
         );
       }
     },
@@ -462,10 +488,59 @@ export default function Chatroom({
 
   const isCurrentUser = useCallback(
     (message: SingleChatMessageProps) =>
-      message.sender.id === session.auth?.user.id ||
-      message.isFromCreator === true,
+      message.sender.id === session.auth?.user.id,
     [session.auth?.user.id]
   );
+
+  const handleEditing = async (id: string, newText: string) => {
+    // console.log({ id, newText });
+    try {
+      const res = await fetch("/api/chat/edit", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: newText, id: id }),
+      });
+      const data = await res.json();
+      // console.log({ data: data.data.data });
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === id
+            ? { ...msg, message: newText, updatedAt: data.data.data.updatedAt }
+            : msg
+        )
+      );
+    } catch (e: any) {
+      console.error("Failed to update message:", e);
+    }
+  };
+
+  const handleDeleting = async (id: string) => {
+    try {
+      const res = await fetch("/api/chat/delete", {
+        headers: { "Content-Type": "application/json" },
+        method: "PATCH",
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json();
+
+      // console.log({ data });
+
+      // setMessages((prev) => prev.filter((msg) => msg.id !== id));
+
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === id
+            ? {
+                ...msg,
+                deletedAt: new Date().toISOString(),
+              }
+            : msg
+        )
+      );
+    } catch (e: any) {
+      console.log("Unable to delete messages", e);
+    }
+  };
 
   if (loadingChatroom) {
     return (
@@ -511,8 +586,10 @@ export default function Chatroom({
                 </div>
               ) : (
                 <div className="flex pb-[120px]  gap-5 flex-col">
-                  {allMessages.map((message, k) => (
+                  {allMessages.map((message) => (
                     <ChatBubble
+                      onEditMessage={handleEditing}
+                      onDeleteMessage={handleDeleting}
                       isCurrentUser={isCurrentUser(message)}
                       message={message}
                       key={message.id || message.tempId}

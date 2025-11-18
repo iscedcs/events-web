@@ -1,18 +1,29 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerContent,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
 import { SingleChatMessageProps, SingleMessageProps } from "@/lib/types/chat";
 import { getRandomTextColor } from "@/lib/utils";
-import { timeStamp } from "console";
 import { format } from "date-fns";
 import {
   AlertCircle,
   Check,
   Clock,
+  Dot,
   EllipsisVertical,
   MessageCircleReply,
   PencilLine,
@@ -21,14 +32,23 @@ import {
   UserRound,
 } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import { useState } from "react";
+import { PiStarFourFill } from "react-icons/pi";
+import { GiQueenCrown } from "react-icons/gi";
 
 export default function ChatBubble({
   isCurrentUser,
   message,
   onPrivateChat,
+  onDeleteMessage,
+  onEditMessage,
   onRetry,
 }: SingleMessageProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [inputText, setInputText] = useState(message.message);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const timestamp = message?.timestamp
     ? format(new Date(message.timestamp), "p")
     : "";
@@ -52,101 +72,146 @@ export default function ChatBubble({
             >
               You
             </p>
+            {message.isFromCreator && (
+              <GiQueenCrown className=" w-3 h-3 text-[#F5BC0D]" />
+            )}
             <p className="text-accent text-[12px]">{timestamp}</p>
           </div>
           <div className=" flex flex-row-reverse gap-1 items-center ">
             <div className=" ">
               <div className="w-full text-[12px] mt-[3px] rounded-tr-0 bg-secondary px-[25px] rounded-l-[20px] rounded-br-[20px] py-[12px]">
-                {message.message}
+                {message.deletedAt !== null ? (
+                  <p className=" text-accent italic">
+                    This message has been deleted
+                  </p>
+                ) : (
+                  message.message
+                )}
               </div>
             </div>
-            <Drawer>
-              <DrawerTrigger>
-                <EllipsisVertical className=" w-5 h-5 text-accent" />
-              </DrawerTrigger>{" "}
-              <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
-                <DrawerTitle className=" font-black text-center">
-                  CHAT OPTIONS
-                </DrawerTitle>
-                <div className=" flex flex-col gap-4 mt-[20px]">
-                  <span className=" flex gap-2 items-center">
-                    <PencilLine className=" w-4 h-4" /> <p>Edit message</p>
-                  </span>
+            {message.deletedAt === null && (
+              <Drawer onOpenChange={setDrawerOpen} open={drawerOpen}>
+                <DrawerTrigger>
+                  <EllipsisVertical className=" w-5 h-5 text-accent" />
+                </DrawerTrigger>{" "}
+                <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
+                  <DrawerTitle className=" font-black text-center">
+                    CHAT OPTIONS
+                  </DrawerTitle>
+                  <div className=" flex flex-col gap-4 mt-[20px]">
+                    <Dialog>
+                      <DialogTrigger
+                        onClick={() => {
+                          setIsEditing(true);
+                        }}
+                        asChild
+                      >
+                        <span className=" flex gap-2 items-center">
+                          <PencilLine className=" w-4 h-4" />{" "}
+                          <p>Edit message</p>
+                        </span>
+                      </DialogTrigger>
+                      <DialogContent className=" w-full bg-secondary border-0">
+                        <DialogTitle>Edit message</DialogTitle>
+                        <div className="px-[15px] relative w-full py-[10px] rounded-[20px] bg-[#151515]">
+                          <p className=" break-words break-all">{inputText}</p>
+                          <Input
+                            placeholder="Start typing...."
+                            type="text"
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                            className=" mt-[10px] bg-[#151515] border-0 rounded-[8px]"
+                          />
+                        </div>
 
-                  <span className=" flex gap-2 items-center">
-                    <Trash2 className=" w-4 h-4" />
-                    <p>Delete message</p>
-                  </span>
-                </div>
-              </DrawerContent>
-            </Drawer>
-          </div>
-          <div className="">{renderMessageStatus(message)}</div>
-        </div>
-      </div>
-    );
-  }
+                        <DialogFooter className=" w-full flex flex-row gap-2">
+                          <DialogClose asChild>
+                            <Button
+                              onClick={() => {
+                                setIsEditing(false);
+                                setDrawerOpen(false);
+                              }}
+                              className=" w-[50%] rounded-[12px] font-semibold py-[24px]"
+                              variant="outline"
+                            >
+                              Cancel
+                            </Button>
+                          </DialogClose>
+                          <DialogClose asChild>
+                            <Button
+                              onClick={() => {
+                                onEditMessage(message.id, inputText);
+                                setIsEditing(false);
+                                setDrawerOpen(false);
+                              }}
+                              className=" w-[50%] rounded-[12px] font-semibold py-[24px]"
+                            >
+                              Save
+                            </Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
 
-  if (message.isFromCreator) {
-    return (
-      <div className="flex items-start gap-2">
-        <Image
-          alt="image"
-          width={30}
-          height={30}
-          className="rounded-full w-[30px] h-[30px] object-cover"
-          src={message.sender.displayPicture ?? "/no-profile.png"}
-        />
-        <div>
-          <div className="flex gap-3">
-            <p
-              className={`capitalize text-[12px] ${getRandomTextColor(
-                message.sender.name
-              )}`}
-            >
-              {message.sender.name} · host
-            </p>
-            <p className="text-accent text-[12px]">{timestamp}</p>
+                    <Dialog>
+                      <DialogTrigger
+                        asChild
+                        onClick={() => {
+                          setIsDeleting(true);
+                        }}
+                      >
+                        <span className=" flex gap-2 items-center">
+                          <Trash2 className=" w-4 h-4" />
+                          <p>Delete message</p>
+                        </span>
+                      </DialogTrigger>
+                      <DialogContent className="w-full bg-secondary border-0">
+                        <DialogTitle>Delete message</DialogTitle>
+                        <p>Are you sure you want to delete this message?</p>
+                        <DialogFooter className=" flex flex-row gap-3">
+                          <DialogClose asChild>
+                            <Button
+                              onClick={() => {
+                                setDrawerOpen(false);
+                                setIsDeleting(false);
+                              }}
+                              variant={"outline"}
+                              className=" w-[50%] rounded-[12px] font-semibold py-[24px]"
+                            >
+                              Cancel
+                            </Button>
+                          </DialogClose>
+                          <DialogClose asChild>
+                            <Button
+                              onClick={() => {
+                                onDeleteMessage(message.id);
+                                setDrawerOpen(false);
+                                setIsDeleting(false);
+                              }}
+                              className=" w-[50%] rounded-[12px] font-semibold py-[24px]"
+                            >
+                              Delete
+                            </Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </DrawerContent>
+              </Drawer>
+            )}
           </div>
-          <div className=" flex gap-1 items-center ">
-            <div className="">
-              <div className="w-full text-[12px] mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
-                {message.message}
-              </div>
+          {message.deletedAt === null && (
+            <div className=" items-center flex">
+              <div>{renderMessageStatus(message)}</div>
+              {message.updatedAt !== message.createdAt && (
+                <>
+                  <Dot className=" text-zinc-400" />
+                  <p className=" mt-[3px] text-[12px] text-zinc-400">Edited</p>
+                </>
+              )}
             </div>
-            <Drawer>
-              <DrawerTrigger>
-                <EllipsisVertical className=" w-5 h-5 text-accent" />{" "}
-              </DrawerTrigger>{" "}
-              <DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
-                {" "}
-                <DrawerTitle className=" font-black text-center">
-                  {" "}
-                  CHAT OPTIONS{" "}
-                </DrawerTitle>{" "}
-                <div className=" flex flex-col gap-2 mt-[20px]">
-                  {" "}
-                  <span className=" flex gap-2 items-center">
-                    {" "}
-                    <UserRound className=" w-4 h-4" /> <p>View profile</p>{" "}
-                  </span>{" "}
-                  {message.isFromCreator ? (
-                    <span className=" flex gap-2 items-center">
-                      {" "}
-                      <MessageCircleReply className=" w-4 h-4" />{" "}
-                      <p>Private chat host</p>{" "}
-                    </span>
-                  ) : (
-                    <span className=" flex gap-2 items-center">
-                      {" "}
-                      <MessageCircleReply className=" w-4 h-4" />{" "}
-                      <p>Private chat attendee</p>{" "}
-                    </span>
-                  )}{" "}
-                </div>{" "}
-              </DrawerContent>{" "}
-            </Drawer>
-          </div>
+          )}
         </div>
       </div>
     );
@@ -163,7 +228,7 @@ export default function ChatBubble({
         src={message.sender.displayPicture ?? "/no-profile.png"}
       />
       <div className="">
-        <div className="flex gap-2">
+        <div className=" items-center flex-row flex gap-2">
           <p
             className={`capitalize text-[12px] ${getRandomTextColor(
               message.sender.name
@@ -171,12 +236,21 @@ export default function ChatBubble({
           >
             {message.sender.name}
           </p>
+          {message.isFromCreator && (
+            <GiQueenCrown className=" w-3 h-3 text-[#F5BC0D]" />
+          )}
           <p className="text-accent text-[12px]">{timestamp}</p>
         </div>
         <div className=" flex gap-1 items-center ">
           <div className="">
             <div className="w-full text-[12px] mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
-              {message.message}
+              {message.deletedAt !== null ? (
+                <p className=" text-accent italic">
+                  This message has been deleted
+                </p>
+              ) : (
+                message.message
+              )}
             </div>
           </div>
           <Drawer>
@@ -194,7 +268,7 @@ export default function ChatBubble({
                 {message.isFromCreator ? (
                   <span className=" flex gap-2 items-center">
                     <MessageCircleReply className=" w-4 h-4" />
-                    <p>Private chat host</p>
+                    <p>Private chat event host</p>
                   </span>
                 ) : (
                   <span className=" flex gap-2 items-center">
@@ -206,6 +280,15 @@ export default function ChatBubble({
             </DrawerContent>
           </Drawer>
         </div>
+        {message.deletedAt === null && (
+          <>
+            {message.updatedAt !== message.createdAt && (
+              <>
+                <p className=" mt-[3px] text-[12px] text-zinc-400">Edited</p>
+              </>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

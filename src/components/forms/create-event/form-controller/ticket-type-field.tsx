@@ -166,6 +166,12 @@ export default function TicketTypeField() {
     });
   }, [fields, update]);
 
+  useEffect(() => {
+    if (fields.length > 0) {
+      setStep(3);
+    }
+  }, [fields.length]);
+
   const renderIcon = (title: string) => {
     switch (title) {
       case "Regular Ticket":

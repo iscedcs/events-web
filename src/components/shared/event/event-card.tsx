@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import BookmarkButton from "@/components/ui/secondary/bookmark-button";
 import { EventCardProps } from "@/lib/types/event";
-import { format } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillInstagram } from "react-icons/ai";
@@ -21,10 +21,12 @@ export default function EventCard({
   time,
   host,
   showBookmarkButton,
+  endDate,
   startDate,
 }: EventCardProps) {
   const today = new Date();
   const eventStartDate = new Date(startDate);
+  const eventEndDate = new Date(endDate);
 
   // console.log({ startDate: new Date(startDate), today });
 
@@ -102,12 +104,13 @@ export default function EventCard({
         </div>
         <div className=" mt-[10px] flex items-center gap-2">
           <div className=" animate-caret-blink w-[8px] h-[8px] bg-white"></div>
-          <p className=" text-[10px]">
+          <p className="text-[10px]">
             {cardType === "going"
               ? "Going for this event"
-              : cardType === "hosting" && eventStartDate > today
+              : (cardType === "hosting" && isBefore(today, eventEndDate)) ||
+                isBefore(today, eventStartDate)
               ? "You are hosting this event"
-              : cardType === "hosting" && eventStartDate < today
+              : cardType === "hosting" && isAfter(today, eventEndDate)
               ? "You hosted this event"
               : cardType === "past"
               ? "You already attended this event."

@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { io, type Socket } from "socket.io-client";
-import { jwtDecode } from "jwt-decode";
-import { JwtPayload } from "@/lib/types/auth";
 
 interface SocketOptions {
   token: string;
@@ -150,20 +148,33 @@ export const useChatSocket = ({
       tempId?: string;
       chatType?: string;
       eventId?: string;
+      updatedAt: string | null | undefined;
       attendee_id?: string;
+      creator_id: string;
       meta?: any;
+      deletedAt: string | null | undefined;
+      createdAt: string | null | undefined;
+      timestamp: string | null | undefined;
+      isFromCreator: boolean;
     }) => {
+      console.log({ SOCKETSENDMESSAGE: data });
       if (socketRef.current?.connected) {
         socketRef.current.emit("sendMessage", {
           chatRoomId: data.chatRoomId,
           tempId: data.tempId,
+          creator_id: data.creator_id,
           userId: data.id,
           message: data.message,
           type: data.type || "text",
           chatType: data.chatType || "group",
           eventId: data.eventId,
           attendee_id: data.attendee_id,
+          isFromCreator: data.isFromCreator,
           meta: data.meta,
+          updatedAt: data.updatedAt,
+          timestamp: data.timestamp,
+          deletedAt: data.deletedAt,
+          createdAt: data.createdAt,
         });
       }
     },

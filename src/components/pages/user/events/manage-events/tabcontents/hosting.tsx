@@ -55,6 +55,7 @@ export default function Hosting() {
                 image={event?.image ?? ""}
                 time={event?.time ?? ""}
                 host={event?.host ?? ""}
+                endDate={event.endDate ?? ""}
                 startDate={event?.startDate ?? new Date()}
                 id={event.id}
                 link={`/user/events/${event?.cleanName.toLowerCase()}`}

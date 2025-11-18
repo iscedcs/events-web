@@ -55,6 +55,7 @@ export default function Going({ userId }: { userId?: string }) {
           {tickets.map((ticket) => (
             <div key={ticket.id}>
               <EventCard
+                endDate={ticket.event?.endDate ?? new Date()}
                 title={ticket.event?.title ?? ""}
                 image={ticket.event?.image ?? ""}
                 time={ticket.event?.time ?? ""}

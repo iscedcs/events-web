@@ -25,6 +25,9 @@ export interface SingleMessageProps {
   // showAvatar?: boolean;
   onRetry?: (message: SingleChatMessageProps) => void;
   onPrivateChat?: (userId: string) => void;
+  onEditMessage: (id: string, newMessage: string) => void;
+  onDeleteMessage: (id: string) => void;
+  // isUpdated: boolean;
 }
 
 export interface SingleChatMessageProps {
@@ -43,6 +46,10 @@ export interface SingleChatMessageProps {
   status?: "sending" | "sent" | "failed";
   meta?: any;
   isFromCreator?: boolean;
+  creator_id: string;
+  updatedAt: string | null | undefined;
+  deletedAt: string | null | undefined;
+  createdAt: string | null | undefined;
 }
 
 export interface SingleChatRoomComponentProps {

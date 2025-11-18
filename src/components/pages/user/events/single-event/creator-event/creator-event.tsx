@@ -72,28 +72,31 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
             </p>
           )}
         </div>
-        {isEqual(today, eventStartDate) ||
-          (isBefore(today, eventEndDate) && (
-            <div className="">
-              <Button
-                asChild
-                className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
+        {(isEqual(today, eventStartDate) ||
+          (isBefore(today, eventEndDate) &&
+            isAfter(today, eventStartDate))) && (
+          <div className="">
+            <Button
+              asChild
+              className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
+            >
+              <Link
+                href={`/user/events/${data?.event.cleanName.toLowerCase()}/check-in`}
               >
-                <Link
-                  href={`/user/events/${data?.event.cleanName.toLowerCase()}/check-in`}
-                >
-                  Begin Contactless Entry
-                </Link>
-              </Button>
-            </div>
-          ))}
+                Begin Contactless Entry
+              </Link>
+            </Button>
+          </div>
+        )}
         <div className="">
           <div className=" flex mt-[20px] items-center justify-between">
             <p className=" text-[24px]">Tickets</p>
             {isEqual(today, eventStartDate) ||
               (isBefore(today, eventEndDate) && (
                 <Button asChild>
-                  <Link href={"/user/events/party-3025/edit"}>
+                  <Link
+                    href={`/user/events/${data?.event.cleanName.toLowerCase()}/edit`}
+                  >
                     Edit event
                     <PencilLine />
                   </Link>
@@ -151,7 +154,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
                     className=" border border-accent/25 border-l-0 py-[15px] px-[20px] border-t-0 border-r-0 flex gap-3 items-center"
                   >
                     <Image
-                      className=" rounded-full"
+                      className=" w-[32px] h-[32px] object-cover rounded-full"
                       src={attendee.image ?? "/no-profile.png"}
                       alt=""
                       width={"32"}
@@ -162,7 +165,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
                 ))}
               </div>
             ) : (
-              <p className=" mt-[10px] text-accent">
+              <p className=" mt-[10px] pb-[20px] text-accent">
                 No attendees yet, check this space later for an update.
               </p>
             )}
