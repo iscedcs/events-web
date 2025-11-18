@@ -44,6 +44,7 @@ export default function Past({ userId }: { userId?: string }) {
           {pastTicket.map((ticket) => (
             <div key={ticket.id}>
               <EventCard
+                endDate={ticket.event?.endDate ?? new Date()}
                 host={ticket.event?.host ?? ""}
                 image={ticket.event?.image ?? ""}
                 startDate={ticket.event?.startDate ?? new Date()}

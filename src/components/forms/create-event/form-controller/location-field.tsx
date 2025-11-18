@@ -134,8 +134,10 @@ export default function LocationField({
             <div className="flex items-center gap-3">
               <FaLocationDot className="text-accent w-[20px] h-[20px]" />
               <div className="w-[250px]">
-                <p className="truncate">
-                  {inputValue ? inputValue : "Add Event Location"}
+                <p className=" capitalize truncate">
+                  {inputValue.toLowerCase()
+                    ? inputValue.toLowerCase()
+                    : "Add Event Location"}
                 </p>
                 <p className="text-accent text-sm">
                   Offline location or virtual link

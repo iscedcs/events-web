@@ -75,7 +75,10 @@ export default function EventsNearYou() {
 
       <div className="mt-[10px]">
         {error ? (
-          <div className="rounded-[20px] bg-secondary py-[30px] flex items-center justify-center flex-col gap-3 text-center">
+          <div
+            onClick={getLocation}
+            className="rounded-[20px] bg-secondary py-[30px] flex items-center justify-center flex-col gap-3 text-center"
+          >
             <div className="bg-white flex items-center rounded-full justify-center w-[50px] h-[50px]">
               <MdOutlineLocationOff className="w-6 h-6 text-secondary" />
             </div>
@@ -83,7 +86,7 @@ export default function EventsNearYou() {
               <p className="text-[16px]">Unable to display events</p>
               <p className="text-[13px] text-accent">
                 {error === "Please allow location access to continue"
-                  ? "Turn on location to view events near you"
+                  ? "Tap to turn on location to view events near you"
                   : error}
               </p>
             </div>

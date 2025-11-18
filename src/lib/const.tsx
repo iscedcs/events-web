@@ -64,8 +64,11 @@ export const URLS = {
     post_chatroom_messages: "/chat/{id}/messages",
     update_message: "/chat/{id}/update-message",
     search: "/chat/search",
-    delete_message: "/chat/{id}/delete-message",
+    softdelete_message: "/chat/{id}/delete-message",
     harddelete_message: "/chat/{id}/harddelete-message",
+    private_chatroom_user: "/chat/private-user-chatrooms/{userId}",
+    create_private_room_attendees: "/chat/chatroom/private/attendee",
+    create_private_room_host: "/chat/chatroom/private/creator",
   },
   gallery: {
     gallery: "/gallery/event/{event_id}",
@@ -628,7 +631,7 @@ export const HEADERITEMS: HeaderItemsTypes[] = [
   },
   {
     icon: <LuMessageSquareText className=" w-[16px] h-[16px]" />,
-    path: "/user/my-chats",
+    path: "/user/me/my-chats",
     title: "Your chats",
     value: "events",
   },

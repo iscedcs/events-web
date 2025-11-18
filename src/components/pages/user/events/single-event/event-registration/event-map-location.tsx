@@ -45,7 +45,7 @@ const EventMapLocation: React.FC<EventMapLocationProps> = React.memo(
     const center = { lat: latitude, lng: longitude };
 
     if (
-      (event.latitude === "0" && event.longitude === "0") ||
+      (event.latitude === 0 && event.longitude === 0) ||
       (event.latitude === null && event.longitude === null)
     ) {
       return (

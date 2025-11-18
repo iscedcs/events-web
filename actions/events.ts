@@ -4,6 +4,7 @@ import { EVENTS_API, URLS } from "@/lib/const";
 import { MiniSingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
 import { PaginationType } from "@/lib/types/layout";
 import { getAuthInfo } from "./auth";
+import { isBefore } from "date-fns";
 
 const today = new Date();
 
@@ -282,7 +283,7 @@ export const getEventsByCleanName = async (slug: string) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 20 },
+      // next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
@@ -433,10 +434,14 @@ export const getNearbyEvents = async (
 
     const data = await res.json();
     const events: SingleEventProps[] = data.data;
+    const now = new Date();
+    const filteredEvents = events.filter(
+      (e) => isBefore(now, e.startDate) && isBefore(now, e.endDate)
+    );
 
     if (res.ok) {
       return {
-        events,
+        events: filteredEvents,
       };
     }
     return null;
