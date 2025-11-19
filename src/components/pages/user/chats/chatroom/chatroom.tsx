@@ -8,8 +8,9 @@ import { useChatSocket } from "@/hooks/use-chat";
 import {
   SingleChatMessageProps,
   SingleChatRoomComponentProps,
+  SingleChatroomProps,
 } from "@/lib/types/chat";
-import { ArrowDownToDot } from "lucide-react";
+import { ArrowDownToDot, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AiFillInfoCircle } from "react-icons/ai";
@@ -17,6 +18,8 @@ import { toast } from "sonner";
 import ChatBubble from "./chat-bubble";
 import ChatInput from "./chat-input";
 import TypingWatchBar from "./typing-watch-bar";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import Image from "next/image";
 
 export default function Chatroom({
   attendee,
@@ -42,6 +45,7 @@ export default function Chatroom({
   const [pendingMessages, setPendingMessages] = useState<
     SingleChatMessageProps[]
   >([]);
+  const [open, setOpen] = useState(true);
 
   const allMessages = useMemo(() => {
     return [...messages, ...pendingMessages].sort(
@@ -78,6 +82,7 @@ export default function Chatroom({
       id: messagePayload.id,
       tempId: messagePayload.tempId,
       chatType: messagePayload.chatType,
+      attendee_id: messagePayload.attendee_id ?? attendee?.id,
       eventId: messagePayload.eventId,
       creator_id: messagePayload.creator_id ?? session.auth?.user.id,
       sender: {
@@ -233,6 +238,7 @@ export default function Chatroom({
           isFromCreator: msg.isFromCreator,
           // meta: msg.payload?.meta,
           createdAt: msg.createdAt,
+          attendee_id: msg.attendee_id,
         }));
 
         console.log({ formattedMessages });
@@ -392,6 +398,7 @@ export default function Chatroom({
         message: messageText,
         type,
         timestamp: tempTimestamp,
+        attendee_id: attendee?.id,
         // status: "sending",
         chatType: chatRoomType,
         updatedAt: tempTimestamp,
@@ -542,6 +549,51 @@ export default function Chatroom({
     }
   };
 
+  const handlePrivateChat = async (
+    userType: "host" | "attendee",
+    participantA: string
+  ) => {
+    const payloadAttendee = {
+      eventId: event.id,
+      participantA: participantA,
+      participantB: attendee?.id,
+    };
+
+    const payloadHost = {
+      eventId: event.id,
+      participantA: participantA,
+    };
+
+    console.log({ payloadHost });
+
+    console.log({
+      participantA,
+      participantB: attendee?.id,
+    });
+
+    try {
+      const res = await fetch(
+        userType === "attendee"
+          ? "/api/chat/chatroom-with-attendee"
+          : "/api/chat/chatroom-with-host",
+        {
+          headers: { "Content-Type": "application/json" },
+          method: "POST",
+          body: JSON.stringify(
+            userType === "host" ? payloadHost : payloadAttendee
+          ),
+        }
+      );
+      const data = await res.json();
+      const chatroom: SingleChatroomProps = data.data;
+      if (chatroom) {
+        router.push(`/user/me/my-chats/${chatroom.id}`);
+      }
+    } catch (e: any) {
+      console.log("Unable to access private room", e);
+    }
+  };
+
   if (loadingChatroom) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -592,11 +644,14 @@ export default function Chatroom({
                       onDeleteMessage={handleDeleting}
                       isCurrentUser={isCurrentUser(message)}
                       message={message}
+                      isPrivate={chatRoomType === "private"}
                       key={message.id || message.tempId}
-                      onPrivateChat={(userId) => {
-                        router.push(`/chat/${userId}`);
-                      }}
+                      onPrivateChat={handlePrivateChat}
+                      // onPrivateChat={(userId) => {
+                      //   router.push(`/chat/${userId}`);
+                      // }}
                       onRetry={handleRetryMessage}
+                      attendee={attendee}
                     />
                   ))}
                 </div>
@@ -629,6 +684,61 @@ export default function Chatroom({
           />
         </div>
       )}
+      {/* 
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className=" bg-secondary border-0 z-50">
+          <DialogTitle hidden>dfmd</DialogTitle>
+          <p className=" text-center">Creating Connection</p>
+          <div className=" flex flex-row items-center justify-center  ">
+            <div className=" animate-pulse w-[120px]  relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="120"
+                height="120"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide animate-spin lucide-loader-circle-icon lucide-loader-circle"
+              >
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+              <Image
+                alt="image"
+                src={"/no-profile.png"}
+                width={"1000"}
+                height={"1000"}
+                className=" w-[80px] top-1/2 -translate-x-1/2 left-1/2  -translate-y-1/2 absolute h-[80px] rounded-full object-cover"
+              />
+            </div>
+            <div className=" animate-pulse w-[120px]  relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="120"
+                height="120"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide animate-spin lucide-loader-circle-icon lucide-loader-circle"
+              >
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+              <Image
+                alt="image"
+                src={"/no-profile.png"}
+                width={"1000"}
+                height={"1000"}
+                className=" w-[80px] top-1/2 -translate-x-1/2 left-1/2  -translate-y-1/2 absolute h-[80px] rounded-full object-cover"
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog> */}
     </>
   );
 }

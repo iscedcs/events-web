@@ -24,9 +24,11 @@ export interface SingleMessageProps {
   isCurrentUser: boolean;
   // showAvatar?: boolean;
   onRetry?: (message: SingleChatMessageProps) => void;
-  onPrivateChat?: (userId: string) => void;
+  onPrivateChat: (userType: "host" | "attendee", participantA: string) => void;
   onEditMessage: (id: string, newMessage: string) => void;
   onDeleteMessage: (id: string) => void;
+  isPrivate: boolean;
+  attendee: SingleAttendeeProps | undefined;
   // isUpdated: boolean;
 }
 
@@ -35,6 +37,7 @@ export interface SingleChatMessageProps {
   tempId?: string;
   chatType?: string;
   eventId?: string;
+  attendee_id: string | null | undefined;
   sender: {
     id: string;
     name: string;
@@ -67,4 +70,27 @@ export interface ChatInputProps {
   disabled?: boolean;
   placeholder?: string;
   onTyping?: (isTyping: boolean) => void;
+}
+
+export interface SinglePrivateChatroomProps {
+  chatRoomId: string;
+  eventId: string;
+  eventName: string;
+  eventTitle: string;
+  isPrivate: boolean;
+  participantA: {
+    id: string;
+    name: string;
+    displayPicture: string;
+    attendeeId: string;
+  };
+  participantB: {
+    id: string;
+    name: string;
+    displayPicture: string;
+    attendeeId: string;
+  };
+  creatorId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { SingleChatMessageProps, SingleMessageProps } from "@/lib/types/chat";
+import { SingleAttendeeProps } from "@/lib/types/event";
 import { getRandomTextColor } from "@/lib/utils";
 import { format } from "date-fns";
 import {
@@ -32,9 +33,11 @@ import {
   UserRound,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import { PiStarFourFill } from "react-icons/pi";
+import { useEffect, useState } from "react";
 import { GiQueenCrown } from "react-icons/gi";
+import { getAttendeesEventID } from "../../../../../../actions/attendee";
+import { getAuthInfo } from "../../../../../../actions/auth";
+import { useAuthInfo } from "@/hooks/use-auth-info";
 
 export default function ChatBubble({
   isCurrentUser,
@@ -42,12 +45,16 @@ export default function ChatBubble({
   onPrivateChat,
   onDeleteMessage,
   onEditMessage,
+  isPrivate,
   onRetry,
+  attendee,
 }: SingleMessageProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [inputText, setInputText] = useState(message.message);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // console.log({ attendee });
 
   const timestamp = message?.timestamp
     ? format(new Date(message.timestamp), "p")
@@ -65,15 +72,14 @@ export default function ChatBubble({
         /> */}
         <div className="flex flex-col items-end">
           <div className="flex gap-3">
-            <p
-              className={`capitalize text-[12px] ${getRandomTextColor(
-                message.sender.name
-              )}`}
-            >
-              You
-            </p>
-            {message.isFromCreator && (
-              <GiQueenCrown className=" w-3 h-3 text-[#F5BC0D]" />
+            {!isPrivate && (
+              <p
+                className={`capitalize text-[12px] ${getRandomTextColor(
+                  message.sender.name
+                )}`}
+              >
+                You
+              </p>
             )}
             <p className="text-accent text-[12px]">{timestamp}</p>
           </div>
@@ -220,22 +226,26 @@ export default function ChatBubble({
   // Other attendees
   return (
     <div className="flex items-start gap-2">
-      <Image
-        alt="image"
-        width={20}
-        height={20}
-        className="rounded-full w-[20px] h-[20px] object-cover"
-        src={message.sender.displayPicture ?? "/no-profile.png"}
-      />
+      {!isPrivate && (
+        <Image
+          alt="image"
+          width={20}
+          height={20}
+          className="rounded-full w-[20px] h-[20px] object-cover"
+          src={message.sender.displayPicture ?? "/no-profile.png"}
+        />
+      )}
       <div className="">
         <div className=" items-center flex-row flex gap-2">
-          <p
-            className={`capitalize text-[12px] ${getRandomTextColor(
-              message.sender.name
-            )}`}
-          >
-            {message.sender.name}
-          </p>
+          {!isPrivate && (
+            <p
+              className={`capitalize text-[12px] ${getRandomTextColor(
+                message.sender.name
+              )}`}
+            >
+              {message.sender.name}
+            </p>
+          )}
           {message.isFromCreator && (
             <GiQueenCrown className=" w-3 h-3 text-[#F5BC0D]" />
           )}
@@ -265,16 +275,30 @@ export default function ChatBubble({
                 <span className=" flex gap-2 items-center">
                   <UserRound className=" w-4 h-4" /> <p>View profile</p>
                 </span>
-                {message.isFromCreator ? (
-                  <span className=" flex gap-2 items-center">
-                    <MessageCircleReply className=" w-4 h-4" />
-                    <p>Private chat event host</p>
-                  </span>
-                ) : (
-                  <span className=" flex gap-2 items-center">
-                    <MessageCircleReply className=" w-4 h-4" />
-                    <p>Private chat attendee</p>
-                  </span>
+                {!isPrivate && (
+                  <>
+                    {message.isFromCreator ? (
+                      <span
+                        onClick={() => {
+                          onPrivateChat("host", attendee?.id ?? "");
+                        }}
+                        className=" flex gap-2 items-center"
+                      >
+                        <MessageCircleReply className=" w-4 h-4" />
+                        <p>Private chat event host</p>
+                      </span>
+                    ) : (
+                      <span
+                        onClick={() => {
+                          onPrivateChat("attendee", message.attendee_id ?? "");
+                        }}
+                        className=" flex gap-2 items-center"
+                      >
+                        <MessageCircleReply className=" w-4 h-4" />
+                        <p>Private chat attendee</p>
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
             </DrawerContent>
