@@ -34,54 +34,52 @@ export default function ChatsDisplay() {
       try {
         const rooms = await getPrivateChatroomForUser(userId);
         const chatrooms = rooms ?? [];
-
         setPrivateChatrooms(chatrooms);
 
-        // fetch attendee info for each chatroom
         const attendeePromises = chatrooms.map(async (room) => {
           const { participantA, participantB, chatRoomId } = room;
 
-          // determine the other person
-          const other =
-            participantA.attendeeId === userId
-              ? participantB.attendeeId
-              : participantA.attendeeId;
+          const participantAId = participantA?.attendeeId;
+          const participantBId = participantB?.attendeeId;
+
+          if (!participantAId && !participantBId) {
+            return { chatRoomId, info: { name: "", image: "" } };
+          }
 
           const info = await getAttendeeInformationForChat({
-            participantA: participantA.attendeeId,
-            participantB: participantB.attendeeId,
+            participantA: participantAId ?? "",
+            participantB: participantBId ?? "",
+            creatorId: room.creatorId,
           });
 
           return {
             chatRoomId,
-            info: info
-              ? { name: info.name, image: info.image }
-              : { name: "", image: "" },
+            info: info ?? { name: "", image: "" },
           };
         });
 
-        // Wait for all attendee info fetches
         const attendees = await Promise.all(attendeePromises);
 
-        // convert to map
         const map: Record<string, { name: string; image: string }> = {};
-        attendees.forEach((a) => {
-          map[a.chatRoomId] = a.info;
+        attendees.forEach(({ chatRoomId, info }) => {
+          map[chatRoomId] = info;
         });
 
         setAttendeeInfoMap(map);
       } catch (e) {
-        console.log("Error fetching chat data:", e);
+        console.error("Error fetching chat data:", e);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [userId]);
+  }, [userId, session]);
+
+  console.log({ attendeeInfoMap, privateChatrooms });
 
   return (
-    <div className="w-full">
+    <div className="w-full relative min-h-[300px]">
       <Tabs defaultValue="private" className="w-full">
         <TabsList className="text-[13px] h-full bg-secondary w-full grid grid-cols-2">
           <TabsTrigger
@@ -90,7 +88,6 @@ export default function ChatsDisplay() {
           >
             Private Chats
           </TabsTrigger>
-
           <TabsTrigger
             className="data-[state=active]:bg-white data-[state=active]:text-black py-[8px] rounded-full"
             value="group"
@@ -102,38 +99,33 @@ export default function ChatsDisplay() {
         <TabsContent value="private">
           {loading ? (
             <SingleChatCardSkeleton />
+          ) : privateChatrooms.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-3 mt-10 text-accent">
+              <MessageCircleDashed className="w-14 h-14" />
+              <p>No private chatrooms yet</p>
+            </div>
           ) : (
-            <>
-              {privateChatrooms.length === 0 ? (
-                <div className=" flex items-center absolute translate-y-1/2 translate-x-1/2 justify-center flex-col gap-3 text-accent">
-                  <MessageCircleDashed className=" w-14 h-14" />
-                  <p>No private  chatrooms yet</p>
-                </div>
-              ) : (
-                <div className=" flex flex-col gap-4">
-                  {privateChatrooms.map((room) => {
-                    const attendee = attendeeInfoMap[room.chatRoomId];
-
-                    return (
-                      <SingleChatCard
-                        key={room.chatRoomId}
-                        chatroomId={room.chatRoomId}
-                        attendeeName={attendee?.name ?? ""}
-                        image={attendee?.image ?? null}
-                        eventTitle={room.eventTitle}
-                        isPrivate={room.isPrivate}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </>
+            <div className="flex flex-col gap-4">
+              {privateChatrooms.map((room) => {
+                const attendee = attendeeInfoMap[room.chatRoomId];
+                return (
+                  <SingleChatCard
+                    key={room.chatRoomId}
+                    chatroomId={room.chatRoomId}
+                    attendeeName={attendee?.name ?? ""}
+                    image={attendee?.image ?? null}
+                    eventTitle={room.eventTitle}
+                    isPrivate={room.isPrivate}
+                  />
+                );
+              })}
+            </div>
           )}
         </TabsContent>
 
-        <TabsContent className=" " value="group">
-          <div className=" flex items-center absolute translate-y-1/2 translate-x-1/2 justify-center flex-col gap-3 text-accent">
-            <MessageCircleDashed className=" w-14 h-14" />
+        <TabsContent value="group">
+          <div className="flex flex-col items-center justify-center gap-3 mt-10 text-accent">
+            <MessageCircleDashed className="w-14 h-14" />
             <p>No event chatrooms yet</p>
           </div>
         </TabsContent>

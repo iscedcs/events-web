@@ -24,10 +24,11 @@ export interface SingleMessageProps {
   isCurrentUser: boolean;
   // showAvatar?: boolean;
   onRetry?: (message: SingleChatMessageProps) => void;
-  onPrivateChat?: (userId: string) => void;
+  onPrivateChat: (userType: "host" | "attendee", participantA: string) => void;
   onEditMessage: (id: string, newMessage: string) => void;
   onDeleteMessage: (id: string) => void;
   isPrivate: boolean;
+  attendee: SingleAttendeeProps | undefined;
   // isUpdated: boolean;
 }
 
@@ -36,6 +37,7 @@ export interface SingleChatMessageProps {
   tempId?: string;
   chatType?: string;
   eventId?: string;
+  attendee_id: string | null | undefined;
   sender: {
     id: string;
     name: string;

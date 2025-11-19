@@ -7,6 +7,7 @@ import {
 } from "@/lib/types/chat";
 import { getAuthInfo } from "./auth";
 import { getAttendeeID } from "./attendee";
+import { getUserByID } from "./user";
 
 export const getEventChatroomByEventID = async (eventId: string) => {
   const url = `${EVENTS_API}${URLS.chat.event_chatroom.replace(
@@ -23,7 +24,7 @@ export const getEventChatroomByEventID = async (eventId: string) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BEARER}`,
       },
-      next: { revalidate: 20 },
+      // next: { revalidate: 20 },
     });
     const data = await res.json();
     console.log({ data });
@@ -72,41 +73,51 @@ export const getPrivateChatroomForUser = async (userId: string) => {
 export const getAttendeeInformationForChat = async ({
   participantA,
   participantB,
+  creatorId,
 }: {
   participantA: string;
   participantB: string;
+  creatorId: string | null;
 }) => {
   const auth = await getAuthInfo();
   const userId = auth.user?.id;
 
-  console.log({
-    participantA,
-    participantB,
-  });
-
   const attendeeA = await getAttendeeID(participantA);
   const attendeeB = await getAttendeeID(participantB);
+  const creator = await getUserByID(creatorId ?? "");
 
   if (userId !== attendeeA.userId) {
     return {
       name: attendeeA.name,
-      image: attendeeA.displayPicture,
+      image: attendeeA.displayPicture || attendeeA.image,
     };
   } else {
-    if (userId !== attendeeB.userId)
+    if (attendeeB === null) {
       return {
-        name: attendeeB.name,
-        image: attendeeB.displayPicture,
+        name: `${creator?.firstName} ${creator?.lastName}`,
+        image: creator?.displayPicture,
       };
+    } else {
+      if (userId !== attendeeB.userId) {
+        return {
+          name: attendeeB.name,
+          image: attendeeB.displayPicture || attendeeB.image,
+        };
+      }
+    }
   }
+
+  // return null;
 };
 
 export const getAttendeeInformationForChatroom = async ({
   participantA,
+  creatorId,
   participantB,
 }: {
   participantA: string;
   participantB: string;
+  creatorId: string | null;
 }) => {
   const auth = await getAuthInfo();
   const userId = auth.user?.id;
@@ -118,16 +129,23 @@ export const getAttendeeInformationForChatroom = async ({
 
   const attendeeA = await getAttendeeID(participantA);
   const attendeeB = await getAttendeeID(participantB);
+  const creator = await getUserByID(creatorId ?? "");
 
   if (userId === attendeeA.userId) {
     return {
       attendee: attendeeA,
     };
   } else {
-    if (userId === attendeeB.userId)
+    if (attendeeB === null) {
       return {
-        attendee: attendeeB,
+        attendee: creator,
       };
+    } else {
+      if (userId === attendeeB.userId)
+        return {
+          attendee: attendeeB,
+        };
+    }
   }
 };
 

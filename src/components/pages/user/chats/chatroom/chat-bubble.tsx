@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { SingleChatMessageProps, SingleMessageProps } from "@/lib/types/chat";
+import { SingleAttendeeProps } from "@/lib/types/event";
 import { getRandomTextColor } from "@/lib/utils";
 import { format } from "date-fns";
 import {
@@ -32,9 +33,11 @@ import {
   UserRound,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import { PiStarFourFill } from "react-icons/pi";
+import { useEffect, useState } from "react";
 import { GiQueenCrown } from "react-icons/gi";
+import { getAttendeesEventID } from "../../../../../../actions/attendee";
+import { getAuthInfo } from "../../../../../../actions/auth";
+import { useAuthInfo } from "@/hooks/use-auth-info";
 
 export default function ChatBubble({
   isCurrentUser,
@@ -44,11 +47,14 @@ export default function ChatBubble({
   onEditMessage,
   isPrivate,
   onRetry,
+  attendee,
 }: SingleMessageProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [inputText, setInputText] = useState(message.message);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // console.log({ attendee });
 
   const timestamp = message?.timestamp
     ? format(new Date(message.timestamp), "p")
@@ -272,12 +278,22 @@ export default function ChatBubble({
                 {!isPrivate && (
                   <>
                     {message.isFromCreator ? (
-                      <span className=" flex gap-2 items-center">
+                      <span
+                        onClick={() => {
+                          onPrivateChat("host", attendee?.id ?? "");
+                        }}
+                        className=" flex gap-2 items-center"
+                      >
                         <MessageCircleReply className=" w-4 h-4" />
                         <p>Private chat event host</p>
                       </span>
                     ) : (
-                      <span className=" flex gap-2 items-center">
+                      <span
+                        onClick={() => {
+                          onPrivateChat("attendee", message.attendee_id ?? "");
+                        }}
+                        className=" flex gap-2 items-center"
+                      >
                         <MessageCircleReply className=" w-4 h-4" />
                         <p>Private chat attendee</p>
                       </span>

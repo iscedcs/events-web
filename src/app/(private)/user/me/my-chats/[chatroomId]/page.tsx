@@ -25,18 +25,26 @@ export default async function Page(props: { params: Params }) {
   const attendee = await getAttendeeInformationForChatroom({
     participantA: chatroomInfo?.participantA ?? "",
     participantB: chatroomInfo?.participantB ?? "",
+    creatorId: chatroomInfo?.creatorId ?? "",
   });
 
   const singleAttendee = await getAttendeeInformationForChat({
     participantA: chatroomInfo?.participantA ?? "",
     participantB: chatroomInfo?.participantB ?? "",
+    creatorId: chatroomInfo?.creatorId ?? "",
   });
+
+  const creator = await getUserByID(chatroomInfo?.creatorId ?? "");
 
   return (
     <div>
       <Header
         hasBack
-        title={`Private Chat: ${singleAttendee?.name}`}
+        title={`Private Chat: ${
+          singleAttendee?.name
+            ? singleAttendee?.name
+            : `${creator?.firstName} ${creator?.lastName}`
+        }`}
         user={headerUser}
       />
       <div className=" w-full fixed mt-[55px]">
