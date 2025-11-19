@@ -1,8 +1,12 @@
 "use server";
 
 import { EVENTS_API, URLS } from "@/lib/const";
-import { SingleChatroomProps } from "@/lib/types/chat";
+import {
+  SingleChatroomProps,
+  SinglePrivateChatroomProps,
+} from "@/lib/types/chat";
 import { getAuthInfo } from "./auth";
+import { getAttendeeID } from "./attendee";
 
 export const getEventChatroomByEventID = async (eventId: string) => {
   const url = `${EVENTS_API}${URLS.chat.event_chatroom.replace(
@@ -33,5 +37,120 @@ export const getEventChatroomByEventID = async (eventId: string) => {
   } catch (e: any) {
     console.log("Unable to fetch chatroom by event ID", e);
     return null;
+  }
+};
+
+export const getPrivateChatroomForUser = async (userId: string) => {
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+  const url = `${EVENTS_API}${URLS.chat.private_chatroom_user.replace(
+    "{userId}",
+    userId
+  )}`;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${BEARER}`,
+      },
+      next: { revalidate: 20 },
+    });
+    const data = await res.json();
+    const info: SinglePrivateChatroomProps[] = data.data.data;
+    // console.log({ info });
+    if (res.ok) {
+      return info;
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to fetch private chatrooms for user", e);
+  }
+};
+
+export const getAttendeeInformationForChat = async ({
+  participantA,
+  participantB,
+}: {
+  participantA: string;
+  participantB: string;
+}) => {
+  const auth = await getAuthInfo();
+  const userId = auth.user?.id;
+
+  console.log({
+    participantA,
+    participantB,
+  });
+
+  const attendeeA = await getAttendeeID(participantA);
+  const attendeeB = await getAttendeeID(participantB);
+
+  if (userId !== attendeeA.userId) {
+    return {
+      name: attendeeA.name,
+      image: attendeeA.displayPicture,
+    };
+  } else {
+    if (userId !== attendeeB.userId)
+      return {
+        name: attendeeB.name,
+        image: attendeeB.displayPicture,
+      };
+  }
+};
+
+export const getAttendeeInformationForChatroom = async ({
+  participantA,
+  participantB,
+}: {
+  participantA: string;
+  participantB: string;
+}) => {
+  const auth = await getAuthInfo();
+  const userId = auth.user?.id;
+
+  console.log({
+    participantA,
+    participantB,
+  });
+
+  const attendeeA = await getAttendeeID(participantA);
+  const attendeeB = await getAttendeeID(participantB);
+
+  if (userId === attendeeA.userId) {
+    return {
+      attendee: attendeeA,
+    };
+  } else {
+    if (userId === attendeeB.userId)
+      return {
+        attendee: attendeeB,
+      };
+  }
+};
+
+export const getChatroomByID = async (id: string) => {
+  const auth = await getAuthInfo();
+  const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+  const url = `${EVENTS_API}${URLS.chat.chatroom_one.replace("{id}", id)}`;
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${BEARER}`,
+      },
+    });
+    const data = await res.json();
+    const info: SingleChatroomProps = data.data.data;
+    if (res.ok) {
+      return info;
+    }
+    return null;
+  } catch (e: any) {
+    console.log("Unable to get chatroom information by id", e);
   }
 };

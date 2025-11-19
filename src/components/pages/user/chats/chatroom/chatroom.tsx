@@ -592,6 +592,7 @@ export default function Chatroom({
                       onDeleteMessage={handleDeleting}
                       isCurrentUser={isCurrentUser(message)}
                       message={message}
+                      isPrivate={chatRoomType === "private"}
                       key={message.id || message.tempId}
                       onPrivateChat={(userId) => {
                         router.push(`/chat/${userId}`);

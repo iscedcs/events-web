@@ -1,14 +1,12 @@
+import Chatroom from "@/components/pages/user/chats/chatroom/chatroom";
 import Header from "@/components/shared/layout/header";
-import React from "react";
+import { SingleEventProps } from "@/lib/types/event";
 import { getAuthInfo, getCurrentUser } from "../../../../../../../actions/auth";
-import { getUserByID } from "../../../../../../../actions/user";
 import { getEventChatroomByEventID } from "../../../../../../../actions/chat";
 import {
-  getEventIdByCleanName,
-  getEventsByCleanName,
+  getEventsByCleanName
 } from "../../../../../../../actions/events";
-import Chatroom from "@/components/pages/user/chats/chatroom/chatroom";
-import { SingleEventProps } from "@/lib/types/event";
+import { getUserByID } from "../../../../../../../actions/user";
 
 type Params = Promise<{ slug: string }>;
 export default async function ChatRoom(props: { params: Params }) {

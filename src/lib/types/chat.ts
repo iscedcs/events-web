@@ -27,6 +27,7 @@ export interface SingleMessageProps {
   onPrivateChat?: (userId: string) => void;
   onEditMessage: (id: string, newMessage: string) => void;
   onDeleteMessage: (id: string) => void;
+  isPrivate: boolean;
   // isUpdated: boolean;
 }
 
@@ -67,4 +68,27 @@ export interface ChatInputProps {
   disabled?: boolean;
   placeholder?: string;
   onTyping?: (isTyping: boolean) => void;
+}
+
+export interface SinglePrivateChatroomProps {
+  chatRoomId: string;
+  eventId: string;
+  eventName: string;
+  eventTitle: string;
+  isPrivate: boolean;
+  participantA: {
+    id: string;
+    name: string;
+    displayPicture: string;
+    attendeeId: string;
+  };
+  participantB: {
+    id: string;
+    name: string;
+    displayPicture: string;
+    attendeeId: string;
+  };
+  creatorId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
