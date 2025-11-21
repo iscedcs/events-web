@@ -1,7 +1,8 @@
 import EventCard from "@/components/shared/event/event-card";
-import { SingleEventProps } from "@/lib/types/event";
-import { getAllEvents } from "../../../../actions/events";
 import { CloudAlert } from "lucide-react";
+import { getAllEvents } from "../../../../actions/events";
+
+export const dynamic = "force-dynamic";
 
 export default async function AvailableEvents() {
   const events = await getAllEvents({
@@ -9,10 +10,10 @@ export default async function AvailableEvents() {
     page: 1,
   });
 
-  // console.log({ events });
+  console.log({ events });
   return (
     <>
-      {events?.totalRecords === 0 ? (
+      {events?.totalRecords === 0 || events === null || events === undefined ? (
         <div className=" flex text-accent mt-[60px] justify-center items-center flex-col px-[10px]">
           <CloudAlert className=" w-[100px] h-[100px]" />
           <p>No available events yet</p>
