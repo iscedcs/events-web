@@ -18,7 +18,7 @@ export default function VisibilityField({
 }: ExternalFieldsProps) {
   return (
     <Select
-      onValueChange={onChange}
+      onValueChange={(val) => onChange(val === "true")}
       value={value !== undefined ? String(value) : undefined}
     >
       <SelectTrigger className="bg-secondary border-0 text-white px-3 py-5 rounded-[12px] flex items-center gap-2">

@@ -87,7 +87,7 @@ export default function UpcomingEvent() {
                     <p className=" capitalize text-accent">
                       {event?.title.toLowerCase()}
                     </p>
-                    <p className=" text-accent capitalize">
+                    <p className=" line-clamp-2 text-accent capitalize">
                       {event?.location.toLowerCase()}
                     </p>
                   </div>

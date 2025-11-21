@@ -41,18 +41,7 @@ export default function EventCard({
               </p>
               <p className=" text-[14px]"> {format(startDate, "LLL")}</p>
             </div>
-            {(time || time) && (
-              <p className=" mt-[10px] text-[18px]">
-                {cardType === "going" || cardType === "past"
-                  ? time
-                  : cardType === "interested"
-                  ? time
-                  : cardType === "hosting"
-                  ? time
-                  : null}{" "}
-                WAT
-              </p>
-            )}
+            <p className=" mt-[10px] text-[18px]">{time} WAT</p>
           </div>
           {cardType === "going" ? (
             <div className="">
@@ -102,23 +91,25 @@ export default function EventCard({
             </div>
           )}
         </div>
-        <div className=" mt-[10px] flex items-center gap-2">
-          <div className=" animate-caret-blink w-[8px] h-[8px] bg-white"></div>
-          <p className="text-[10px]">
-            {cardType === "going"
-              ? "Going for this event"
-              : (cardType === "hosting" && isBefore(today, eventEndDate)) ||
-                isBefore(today, eventStartDate)
-              ? "You are hosting this event"
-              : cardType === "hosting" && isAfter(today, eventEndDate)
-              ? "You hosted this event"
-              : cardType === "past"
-              ? "You already attended this event."
-              : cardType === "interested"
-              ? "Bookmarked this event"
-              : ""}
-          </p>
-        </div>
+        {cardType !== "public" && (
+          <div className=" mt-[10px] flex items-center gap-2">
+            <div className=" animate-caret-blink w-[8px] h-[8px] bg-white"></div>
+            <p className="text-[10px]">
+              {cardType === "going"
+                ? "Going for this event"
+                : (cardType === "hosting" && isBefore(today, eventEndDate)) ||
+                  isBefore(today, eventStartDate)
+                ? "You are hosting this event"
+                : cardType === "hosting" && isAfter(today, eventEndDate)
+                ? "You hosted this event"
+                : cardType === "past"
+                ? "You already attended this event."
+                : cardType === "interested"
+                ? "Bookmarked this event"
+                : ""}
+            </p>
+          </div>
+        )}
         <div className=" mt-[10px]">
           <p className=" capitalize text-[24px]">{title.toLowerCase()}</p>
         </div>

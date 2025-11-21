@@ -104,7 +104,7 @@ export interface EventCardProps
     SingleEventProps,
     "id" | "title" | "startDate" | "time" | "image" | "host" | "endDate"
   > {
-  cardType: "going" | "hosting" | "interested" | "past";
+  cardType: "going" | "hosting" | "interested" | "past" | "public";
   link: string;
   isClicked?: boolean;
   showBookmarkButton?: boolean;
@@ -112,7 +112,7 @@ export interface EventCardProps
 
 export interface ExternalFieldsProps {
   value?: string | number | undefined | boolean;
-  onChange: (value: string | number) => void;
+  onChange: (value: string | number | boolean) => void;
   placeholder?: string;
 }
 
