@@ -20,7 +20,6 @@ export const getAllEvents = async ({ limit, page }: PaginationType) => {
         Authorization: `Bearer ${BEARER}`,
         "Content-Type": "application/json",
       },
-      next: { revalidate: 20 },
     });
     const data = await res.json();
     // console.log({ data });
