@@ -1,5 +1,7 @@
+import EventChatButton from "@/components/shared/event/event-chat-button";
 import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
 import { SingleEventProps } from "@/lib/types/event";
+import { stripTime } from "@/lib/utils";
 import { format, isAfter, isBefore, isEqual } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,19 +9,17 @@ import { AiFillInstagram } from "react-icons/ai";
 import { BsGlobe } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { IoLogoLinkedin } from "react-icons/io";
-import { MdOutlineArrowOutward, MdOutlineChat } from "react-icons/md";
+import { MdOutlineArrowOutward } from "react-icons/md";
 import { PiMapPinFill } from "react-icons/pi";
 import { checkEventAttendee } from "../../../../../../../actions/attendee";
+import { getCurrentUser } from "../../../../../../../actions/auth";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { checkWatchList } from "../../../../../../../actions/watchlists";
 import BookmarkButton from "../../../../../ui/secondary/bookmark-button";
-import EventRegistrationCTA from "./event-registration-cta";
-import ViewTicket from "./view-ticket";
-import { getCurrentUser } from "../../../../../../../actions/auth";
-import EventChatButton from "@/components/shared/event/event-chat-button";
 import ClosedRegistration from "./closed-registration";
 import EventMapLocation from "./event-map-location";
-import { stripTime } from "@/lib/utils";
+import EventRegistrationCTA from "./event-registration-cta";
+import ViewTicket from "./view-ticket";
 
 export default async function EventRegistration({ slug }: { slug: string }) {
   const event: SingleEventProps = await getEventsByCleanName(slug ?? "");
@@ -92,7 +92,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
             src={
               event.image?.startsWith("http") || event.image?.startsWith("/")
                 ? event.image
-                : "/no-image.jpg"
+                : "/no-image.png"
             }
             alt="image"
             width={"1000"}

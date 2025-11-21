@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import BackButton from "@/components/ui/secondary/back-button";
 import {
   Sheet,
@@ -11,8 +10,8 @@ import { HEADERITEMS } from "@/lib/const";
 import { HederType } from "@/lib/types/layout";
 import Image from "next/image";
 import Link from "next/link";
-import { GoLinkExternal } from "react-icons/go";
 import { FaPowerOff } from "react-icons/fa";
+import { GoLinkExternal } from "react-icons/go";
 
 export default function Header({ title, user, hasBack }: HederType) {
   const fullName = `${user?.firstName} ${user?.lastName}`;
@@ -48,7 +47,7 @@ export default function Header({ title, user, hasBack }: HederType) {
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-2">
               <Image
-                src={user?.displayPicture ?? "/no-profile.png"}
+                src={user?.displayPicture ?? "/no-profile.jpg"}
                 width={"1000"}
                 height={"1000"}-6+-+
                 alt="image"
@@ -65,7 +64,7 @@ export default function Header({ title, user, hasBack }: HederType) {
         <Sheet>
           <SheetTrigger asChild>
             <Image
-              src={user?.displayPicture ?? "/no-profile.png"}
+              src={user?.displayPicture ?? "/no-profile.jpg"}
               width={"1000"}
               height={"1000"}
               alt="image"
@@ -76,7 +75,7 @@ export default function Header({ title, user, hasBack }: HederType) {
             <div className="">
               <div className=" flex items-center gap-4">
                 <Image
-                  src={user?.displayPicture ?? "/no-profile.png"}
+                  src={user?.displayPicture ?? "/no-profile.jpg"}
                   width={"1000"}
                   height={"1000"}
                   alt="image"

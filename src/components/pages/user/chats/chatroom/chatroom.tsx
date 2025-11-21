@@ -10,7 +10,7 @@ import {
   SingleChatRoomComponentProps,
   SingleChatroomProps,
 } from "@/lib/types/chat";
-import { ArrowDownToDot, LoaderCircle } from "lucide-react";
+import { ArrowDownToDot } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AiFillInfoCircle } from "react-icons/ai";
@@ -18,8 +18,6 @@ import { toast } from "sonner";
 import ChatBubble from "./chat-bubble";
 import ChatInput from "./chat-input";
 import TypingWatchBar from "./typing-watch-bar";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import Image from "next/image";
 
 export default function Chatroom({
   attendee,
@@ -707,7 +705,7 @@ export default function Chatroom({
               </svg>
               <Image
                 alt="image"
-                src={"/no-profile.png"}
+                src={"/no-profile.jpg"}
                 width={"1000"}
                 height={"1000"}
                 className=" w-[80px] top-1/2 -translate-x-1/2 left-1/2  -translate-y-1/2 absolute h-[80px] rounded-full object-cover"
@@ -730,7 +728,7 @@ export default function Chatroom({
               </svg>
               <Image
                 alt="image"
-                src={"/no-profile.png"}
+                src={"/no-profile.jpg"}
                 width={"1000"}
                 height={"1000"}
                 className=" w-[80px] top-1/2 -translate-x-1/2 left-1/2  -translate-y-1/2 absolute h-[80px] rounded-full object-cover"

@@ -1,6 +1,7 @@
 import EventChatButton from "@/components/shared/event/event-chat-button";
 import { Button } from "@/components/ui/button";
 import { formatWithCommas } from "@/lib/utils";
+import { isAfter, isBefore, isEqual } from "date-fns";
 import { format } from "date-fns/format";
 import { PencilLine } from "lucide-react";
 import Image from "next/image";
@@ -9,7 +10,6 @@ import { FaBagShopping, FaHourglass, FaTicketSimple } from "react-icons/fa6";
 import { MdFreeBreakfast } from "react-icons/md";
 import { getEventWithTenAttendeesByCleanName } from "../../../../../../../actions/events";
 import { getTicketsByEventID } from "../../../../../../../actions/tickets";
-import { isAfter, isBefore, isEqual } from "date-fns";
 
 export default async function CreatorEvent({ slug }: { slug: string }) {
   const formattedProps = encodeURIComponent(slug);
@@ -155,7 +155,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
                   >
                     <Image
                       className=" w-[32px] h-[32px] object-cover rounded-full"
-                      src={attendee.image ?? "/no-profile.png"}
+                      src={attendee.image ?? "/no-profile.jpg"}
                       alt=""
                       width={"32"}
                       height={"32"}

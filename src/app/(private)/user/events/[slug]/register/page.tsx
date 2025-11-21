@@ -5,9 +5,9 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { checkEventAttendee } from "../../../../../../../actions/attendee";
+import { getCurrentUser } from "../../../../../../../actions/auth";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { getUserByID } from "../../../../../../../actions/user";
-import { getCurrentUser } from "../../../../../../../actions/auth";
 
 type Params = Promise<{ slug: string }>;
 
@@ -39,7 +39,7 @@ export default async function Register(props: { params: Params }) {
               src={
                 event.image?.startsWith("http") || event.image?.startsWith("/")
                   ? event.image
-                  : "/no-image.jpg"
+                  : "/no-image.png"
               }
               alt="image"
               width={"1000"}

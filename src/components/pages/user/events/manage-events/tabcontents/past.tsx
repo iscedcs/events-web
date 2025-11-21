@@ -25,21 +25,21 @@ export default function Past({ userId }: { userId?: string }) {
     fetchPastEvents();
   }, [userId]);
 
-  if (!loading && pastTicket.length === 0) {
-    return <EmptyState />;
-  }
-
   return (
     <>
       <div className=" px-[10px] absolute top-0 right-0">
         <EventCalendar eventType="past" type="multiple" />
       </div>
 
-      {loading ? (
+      {loading && (
         <div className=" mt-[20px]">
           <EventCardSkeleton />
         </div>
-      ) : (
+      )}
+
+      {!loading && pastTicket.length === 0 && <EmptyState />}
+
+      {!loading && pastTicket.length > 0 && (
         <div className=" grid-cols-1 grid gap-[30px] mt-[20px] ">
           {pastTicket.map((ticket) => (
             <div key={ticket.id}>

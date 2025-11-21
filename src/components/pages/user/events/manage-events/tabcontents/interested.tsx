@@ -57,23 +57,21 @@ export default function Interested({ userId }: { userId?: string }) {
     checkWatchlistFetch();
   }, [clicked]);
 
-  console.log({ watchlists });
-
-  if (!loading && watchlists.length === 0) {
-    return <EmptyState />;
-  }
-
   return (
     <>
       <div className="px-[10px] absolute top-0 right-0">
         <EventCalendar eventType="interested" type="multiple" />
       </div>
 
-      {loading ? (
+      {loading && (
         <div className=" mt-[20px]">
           <EventCardSkeleton />
         </div>
-      ) : (
+      )}
+
+      {!loading && watchlists.length === 0 && <EmptyState />}
+
+      {!loading && watchlists.length > 0 && (
         <div className="grid-cols-1 grid gap-[30px] mt-[20px]">
           {watchlists.map((watchlist) => {
             return (

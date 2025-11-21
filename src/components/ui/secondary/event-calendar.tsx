@@ -1,6 +1,8 @@
 "use client";
 
+import { useAuthInfo } from "@/hooks/use-auth-info";
 import { shortenToThree } from "@/lib/utils";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi";
@@ -8,6 +10,11 @@ import {
   getEventsForCalendar,
   getUserEVentsForCalendar,
 } from "../../../../actions/events";
+import {
+  getFutureTicketsForCalendarByUserId,
+  getPastTicketsForCalendarByUserID,
+} from "../../../../actions/tickets";
+import { getWatchlistForCalendarUserID } from "../../../../actions/watchlists";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,13 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../select";
-import Image from "next/image";
-import {
-  getFutureTicketsForCalendarByUserId,
-  getPastTicketsForCalendarByUserID,
-} from "../../../../actions/tickets";
-import { useAuthInfo } from "@/hooks/use-auth-info";
-import { getWatchlistForCalendarUserID } from "../../../../actions/watchlists";
 
 type CalendarType = "multiple" | "single";
 type EventType = "featured" | "going" | "hosting" | "interested" | "past";
@@ -324,7 +324,7 @@ export default function EventCalendar({
                                               e.image?.startsWith("http") ||
                                               e.image?.startsWith("/")
                                                 ? e.image
-                                                : "/no-image.jpg"
+                                                : "/no-image.png"
                                             }
                                             alt="image"
                                             width={"20"}

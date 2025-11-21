@@ -1,11 +1,11 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SingleAttendeeProps } from "@/lib/types/event";
 import { SingleTicketProps } from "@/lib/types/ticket";
+import Image from "next/image";
 import Link from "next/link";
 import { MdCancel } from "react-icons/md";
 import { getTicketByID } from "../../../../../../../actions/tickets";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
 
 export default async function AttendeeCard({
   attendeeInfo,
@@ -48,7 +48,7 @@ export default async function AttendeeCard({
         <div className=" flex flex-col gap-3 py-[20px] justify-center  items-center">
           <Image
             alt="dp"
-            src={attendeeInfo.image ? attendeeInfo.image : "/no-profile.png"}
+            src={attendeeInfo.image ? attendeeInfo.image : "/no-profile.jpg"}
             width={"100"}
             height={"100"}
             className=" w-[100px] border-4 border-success h-[100px] rounded-full object-cover"
