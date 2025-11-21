@@ -4,7 +4,8 @@ import Hosting from "./tabcontents/hosting";
 import Interested from "./tabcontents/interested";
 import Past from "./tabcontents/past";
 
-export default function ManageEvents() {
+export default function ManageEvents({ userId }: { userId?: string }) {
+  // console.log({ userId });
   return (
     <div className=" relative px-[10px]">
       <div className=" w-full">
@@ -33,16 +34,16 @@ export default function ManageEvents() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="going">
-            <Going />
+            <Going userId={userId} />
           </TabsContent>
           <TabsContent value="hosting">
             <Hosting />
           </TabsContent>
           <TabsContent value="interested">
-            <Interested />
+            <Interested userId={userId} />
           </TabsContent>
           <TabsContent value="pastEvents">
-            <Past />  
+            <Past userId={userId} />
           </TabsContent>
         </Tabs>
       </div>

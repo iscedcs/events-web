@@ -1,30 +1,38 @@
+import EventChatButton from "@/components/shared/event/event-chat-button";
 import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
 import { SingleEventProps } from "@/lib/types/event";
-import { format } from "date-fns";
+import { stripTime } from "@/lib/utils";
+import { format, isAfter, isBefore, isEqual } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillInstagram } from "react-icons/ai";
 import { BsGlobe } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { IoLogoLinkedin } from "react-icons/io";
-import { MdOutlineArrowOutward, MdOutlineChat } from "react-icons/md";
+import { MdOutlineArrowOutward } from "react-icons/md";
 import { PiMapPinFill } from "react-icons/pi";
 import { checkEventAttendee } from "../../../../../../../actions/attendee";
+import { getCurrentUser } from "../../../../../../../actions/auth";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { checkWatchList } from "../../../../../../../actions/watchlists";
-import { auth } from "../../../../../../../auth";
 import BookmarkButton from "../../../../../ui/secondary/bookmark-button";
+import ClosedRegistration from "./closed-registration";
+import EventMapLocation from "./event-map-location";
 import EventRegistrationCTA from "./event-registration-cta";
 import ViewTicket from "./view-ticket";
 
 export default async function EventRegistration({ slug }: { slug: string }) {
   const event: SingleEventProps = await getEventsByCleanName(slug ?? "");
-  const session = await auth();
-  const userId = session?.user.id ?? "";
+  const me = await getCurrentUser();
+  const userId = me?.id ?? "";
 
   console.log({ userId });
 
   const check = await checkEventAttendee(userId, slug);
+
+  const now = stripTime(new Date());
+  const startDate = stripTime(new Date(event?.startDate ?? now));
+  const endDate = stripTime(new Date(event?.endDate ?? now));
 
   console.log({ check });
 
@@ -38,36 +46,16 @@ export default async function EventRegistration({ slug }: { slug: string }) {
   console.log({ watchListCheck });
 
   console.log(event.id);
+
+  console.log({
+    EndDate: endDate,
+    StartDate: startDate,
+  });
+
   return (
     <div className=" ">
-      {check?.check && (
-        <Link
-          href={""}
-          className=" flex gap-4 items-center bg-secondary mt-[56px] py-[10px]  px-[10px] "
-        >
-          <div className="">
-            <Image
-              src={
-                event.image?.startsWith("http") || event.image?.startsWith("/")
-                  ? event.image
-                  : "/no-image.jpg"
-              }
-              alt="image"
-              width={"1000"}
-              height={"1000"}
-              className=" w-[48px] border border-white h-[48px] rounded-full object-cover"
-            />
-          </div>
-          <div className="">
-            <p className=" text-[16px] font-medium">Event Chat</p>
-            <p className=" text-accent text-[12px]">
-              Join others and participate in event discussions.
-            </p>
-          </div>
-          <div className="">
-            <MdOutlineChat className=" w-[20px] h-[20px]" />
-          </div>
-        </Link>
+      {check?.check && isBefore(now, endDate) && (
+        <EventChatButton event={event} />
       )}
       <div className=" px-[10px] ">
         <div className="">
@@ -76,7 +64,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
               <div className="">
                 <Link
                   className=" text-[12px]  flex gap-2 items-center"
-                  href={""}
+                  href={"/user/events?tab=create"}
                 >
                   Host your event
                   <MdOutlineArrowOutward />
@@ -93,12 +81,18 @@ export default async function EventRegistration({ slug }: { slug: string }) {
           )}
         </div>
 
-        <div className=" mt-[20px]">
+        <div
+          className={`${
+            isEqual(now, startDate) || isBefore(now, endDate)
+              ? "mt-[20px]"
+              : " mt-[70px]"
+          }`}
+        >
           <Image
             src={
               event.image?.startsWith("http") || event.image?.startsWith("/")
                 ? event.image
-                : "/no-image.jpg"
+                : "/no-image.png"
             }
             alt="image"
             width={"1000"}
@@ -106,8 +100,18 @@ export default async function EventRegistration({ slug }: { slug: string }) {
             className=" w-full h-[300px] rounded-[24px] object-cover"
           />
           <div className=" mt-[10px] flex items-center gap-2">
-            <div className=" animate-caret-blink bg-white w-[8px] h-[8px] "></div>
-            <p className=" text-[10px]">Registration on-going</p>
+            <div
+              className={` ${
+                isAfter(now, startDate) || isAfter(now, endDate)
+                  ? " bg-error"
+                  : "animate-caret-blink bg-white"
+              }  w-[8px] h-[8px]`}
+            ></div>
+            {isAfter(now, startDate) || isAfter(now, endDate) ? (
+              <p className=" text-error text-[10px]">Registration closed</p>
+            ) : (
+              <p className=" text-[10px]">Registration on-going</p>
+            )}
           </div>
           <div className=" mt-[10px]   ">
             <p className="text-[24px] capitalize">
@@ -144,24 +148,27 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                 </p>
               </div>
             </div>
-            <div className=" flex items-center gap-2 mt-[10px]">
+            <div className="  flex items-center gap-2 mt-[10px]">
               <div className=" bg-secondary flex items-center justify-center w-[40px] border-accent h-[40px] border rounded-[12px] ">
                 <PiMapPinFill className=" w-[20px] h-[20px]" />
               </div>
-              <div className="">
-                <p className=" text-[16px] capitalize">
+              <div className="  w-[80%]">
+                <p className=" line-clamp-2 text-[16px] capitalize">
                   {event.location.toLowerCase()}
                 </p>
-                <p className=" text-[14px] capitalize">
+                <p className=" text-accent text-[14px] capitalize">
                   {event.town.toLowerCase()}
                 </p>
               </div>
             </div>
-            {check?.check ? (
+            {isAfter(now, startDate) || isAfter(now, endDate) ? (
+              <ClosedRegistration />
+            ) : check?.check ? (
               <ViewTicket slug={slug} ticketId={ticketId} />
             ) : (
               <EventRegistrationCTA slug={slug} />
             )}
+
             <div className=" mt-[10px]">
               <p className=" py-[20px]">About Event</p>
               <hr className=" h-[0.5px]" />
@@ -180,13 +187,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                   {event.town.toLowerCase()}
                 </p>
                 <div className=" mt-[10px]">
-                  <Image
-                    src={"/dummy-images/map.png"}
-                    alt="map"
-                    width={"1000"}
-                    height={"1000"}
-                    className=" rounded-[12px]"
-                  />
+                  <EventMapLocation event={event} />
                 </div>
                 <div className=" mt-[30px]">
                   <Link href={""} className=" underline">

@@ -1,5 +1,5 @@
+"use client";
 import BackButton from "@/components/ui/secondary/back-button";
-import SignOutButton from "@/components/ui/secondary/sign-out-ui";
 import {
   Sheet,
   SheetContent,
@@ -10,15 +10,35 @@ import { HEADERITEMS } from "@/lib/const";
 import { HederType } from "@/lib/types/layout";
 import Image from "next/image";
 import Link from "next/link";
+import { FaPowerOff } from "react-icons/fa";
 import { GoLinkExternal } from "react-icons/go";
 
 export default function Header({ title, user, hasBack }: HederType) {
   const fullName = `${user?.firstName} ${user?.lastName}`;
+
+  const onSignIn = () => {
+    // Where we came from (deep link safe)
+    const back = window.location.href;
+
+    // Build IdP sign-in URL with redirect_uri
+    const base = process.env.NEXT_PUBLIC_AUTH_BASE_URL!;
+    const path = process.env.NEXT_PUBLIC_AUTH_LOGIN_PATH || "/sign-in";
+    const authUrl = new URL(path, base);
+    authUrl.searchParams.set("redirect_uri", back);
+
+    window.location.href = authUrl.toString();
+  };
+
+  const onSignOut = () => {
+    window.location.href = "/api/auth/logout";
+  };
   return (
     <div className=" flex fixed z-50 w-full left-0 top-0 items-center justify-between px-[20px] py-[10px] bg-secondary">
       <div className=" flex gap-2 items-center">
         {hasBack && <BackButton className=" w-[18px] h-[18px]" />}
-        <p className=" line-clamp-1 capitalize text-[12px]">{title.toLowerCase()}</p>
+        <p className=" line-clamp-1 capitalize text-[12px]">
+          {title.toLowerCase()}
+        </p>
       </div>
 
       <div className=" flex items-center gap-4">
@@ -27,7 +47,7 @@ export default function Header({ title, user, hasBack }: HederType) {
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-2">
               <Image
-                src={user?.displayPicture ?? "/no-profile.png"}
+                src={user?.displayPicture ?? "/no-profile.jpg"}
                 width={"1000"}
                 height={"1000"}-6+-+
                 alt="image"
@@ -44,7 +64,7 @@ export default function Header({ title, user, hasBack }: HederType) {
         <Sheet>
           <SheetTrigger asChild>
             <Image
-              src={user?.displayPicture ?? "/no-profile.png"}
+              src={user?.displayPicture ?? "/no-profile.jpg"}
               width={"1000"}
               height={"1000"}
               alt="image"
@@ -55,7 +75,7 @@ export default function Header({ title, user, hasBack }: HederType) {
             <div className="">
               <div className=" flex items-center gap-4">
                 <Image
-                  src={user?.displayPicture ?? "/no-profile.png"}
+                  src={user?.displayPicture ?? "/no-profile.jpg"}
                   width={"1000"}
                   height={"1000"}
                   alt="image"
@@ -77,7 +97,17 @@ export default function Header({ title, user, hasBack }: HederType) {
                     <p>{item.title}</p>
                   </Link>
                 ))}
-                <SignOutButton />
+                {user ? (
+                  <div onClick={onSignOut} className=" flex gap-4 items-center">
+                    <FaPowerOff />
+                    <p>Sign out</p>
+                  </div>
+                ) : (
+                  <div onClick={onSignOut} className=" flex gap-4 items-center">
+                    <FaPowerOff />
+                    <p>Sign out</p>
+                  </div>
+                )}{" "}
               </div>
             </div>
             <div className=" flex flex-col gap-3">

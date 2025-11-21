@@ -5,18 +5,24 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { checkEventAttendee } from "../../../../../../../actions/attendee";
+import { getCurrentUser } from "../../../../../../../actions/auth";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { getUserByID } from "../../../../../../../actions/user";
-import { auth } from "../../../../../../../auth";
 
 type Params = Promise<{ slug: string }>;
 
 export default async function Register(props: { params: Params }) {
-  const session = await auth();
   const params = await props.params;
+
+  const me = await getCurrentUser(); // null if not logged in
+  const user = await getUserByID(me?.id ?? "");
+
+  // console.log({ user });
+
+  // console.log({ me });
+
   const event: SingleEventProps = await getEventsByCleanName(params.slug ?? "");
-  const user = await getUserByID(session?.user.id ?? "");
-  const check = await checkEventAttendee(session?.user.id ?? "", params.slug);
+  const check = await checkEventAttendee(me?.id ?? "", params.slug);
 
   if (check?.check) {
     redirect(`/user/events/${params.slug}`);
@@ -33,7 +39,7 @@ export default async function Register(props: { params: Params }) {
               src={
                 event.image?.startsWith("http") || event.image?.startsWith("/")
                   ? event.image
-                  : "/no-image.jpg"
+                  : "/no-image.png"
               }
               alt="image"
               width={"1000"}
@@ -51,7 +57,10 @@ export default async function Register(props: { params: Params }) {
           </div>
         </div>
         <div className=" px-[15px]">
-          <EventRegistrationForm slug={params.slug ?? ""} />
+          <EventRegistrationForm
+            slug={params.slug ?? ""}
+            user={user ?? undefined}
+          />
         </div>
       </div>
     </div>

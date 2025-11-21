@@ -1,8 +1,21 @@
+import {
+  Bell,
+  Bookmark,
+  Crown,
+  Headset,
+  LogOut,
+  Pencil,
+  ReceiptText,
+  ShieldAlert,
+  Ticket,
+  UserRoundPlus,
+} from "lucide-react";
 import { FaRegUser } from "react-icons/fa";
-import { LuMessageSquareText } from "react-icons/lu";
+import { LuMessageSquareText, LuTickets } from "react-icons/lu";
 import { MdEventNote } from "react-icons/md";
 import { TrendingEventsProps } from "./types/event";
 import { HeaderItemsTypes } from "./types/layout";
+import { InitialTicketProps } from "./types/ticket";
 
 export const AUTH_API = process.env.NEXT_PUBLIC_LIVE_ISCEAUTH_BACKEND_URL;
 export const EVENTS_API = process.env.NEXT_PUBLIC_LIVE_EVENTS_BACKEND_URL;
@@ -34,6 +47,7 @@ export const URLS = {
     updelete: "/events/{id}/updelete",
     one_slug: "/events/clean-name/{cleanName}",
     event_search: "/events/search",
+    nearby_events: "/events/nearby",
   },
   chat: {
     create: "/chat/create",
@@ -50,8 +64,11 @@ export const URLS = {
     post_chatroom_messages: "/chat/{id}/messages",
     update_message: "/chat/{id}/update-message",
     search: "/chat/search",
-    delete_message: "/chat/{id}/delete-message",
+    softdelete_message: "/chat/{id}/delete-message",
     harddelete_message: "/chat/{id}/harddelete-message",
+    private_chatroom_user: "/chat/private-user-chatrooms/{userId}",
+    create_private_room_attendees: "/chat/chatroom/private/attendee",
+    create_private_room_host: "/chat/chatroom/private/creator",
   },
   gallery: {
     gallery: "/gallery/event/{event_id}",
@@ -61,11 +78,15 @@ export const URLS = {
     one: "/attendees/{id}/one",
     create: "/attendees/create",
     attendee_check: "/attendees/{cleanName}/with-attendee-check",
+    check_in_with_attendeeId: "/attendees/{id}/check-in",
+    check_in_with_token: "/attendees/check-in-by-token",
+    one_token: "/attendees/get-by-token",
   },
   tickets: {
     all_ticket_for_event: "/tickets/event/{eventId}",
     ticket_by_id: "/tickets/{id}",
     all_ticket_user: "/tickets/user/{userId}",
+    register_via_tickets: "/tickets/access",
   },
   watchlist: {
     add_watchlist: "/watchlist/add",
@@ -592,21 +613,33 @@ export const CATEGORIES = [
 export const HEADERITEMS: HeaderItemsTypes[] = [
   {
     icon: <FaRegUser className=" w-[16px] h-[16px]" />,
-    path: "",
+    path: "/user/me",
     title: "Your profile",
     value: "profile",
   },
   {
     icon: <MdEventNote className=" w-[16px] h-[16px]" />,
-    path: "",
+    path: "/user/me/my-events",
     title: "Your events",
     value: "events",
   },
   {
+    icon: <LuTickets className=" w-[16px] h-[16px]" />,
+    path: "/user/me/my-tickets",
+    title: "Your tickets",
+    value: "tickets",
+  },
+  {
     icon: <LuMessageSquareText className=" w-[16px] h-[16px]" />,
-    path: "",
+    path: "/user/me/my-chats",
     title: "Your chats",
-    value: "events",
+    value: "chats",
+  },
+  {
+    icon: <Bookmark className=" w-[16px] h-[16px]" />,
+    path: "/user/me/my-events",
+    title: "Your bookmarks",
+    value: "bookmarks",
   },
 ];
 
@@ -682,4 +715,76 @@ export const TICKETTANDC = [
   "A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
   "No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
   "A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
+];
+
+export const INITIALTICKETS: InitialTicketProps[] = [
+  {
+    icon: <Ticket className=" w-5 h-5" />,
+    amount: 0,
+    currency: "NGN",
+    isFree: true,
+    title: "Regular Ticket",
+    quantity: 0,
+  },
+  {
+    icon: <Crown className=" w-5 h-5" />,
+    amount: 0,
+    currency: "NGN",
+    isFree: true,
+    title: "VIP Ticket",
+    quantity: 0,
+  },
+];
+
+export const DUMMYATTENDEES = [
+  {
+    image: "/no-profile.jpg",
+    name: "John Doe",
+  },
+  {
+    image: "/no-profile.jpg",
+    name: "John Doe 1",
+  },
+  {
+    image: "/no-profile.jpg",
+    name: "John Doe 2",
+  },
+];
+
+export const ACCOUNTSETTINGS = [
+  {
+    icon: <Pencil />,
+    label: "Edit profile",
+    path: "me/edit",
+  },
+  {
+    icon: <Bell />,
+    label: "Notification settings",
+    path: "",
+  },
+  {
+    icon: <UserRoundPlus />,
+    label: "Invite a friend",
+    path: "",
+  },
+  {
+    icon: <Headset />,
+    label: "Contact support",
+    path: "",
+  },
+  {
+    icon: <ReceiptText />,
+    label: "Terms of service",
+    path: "",
+  },
+  {
+    icon: <ShieldAlert />,
+    label: "Privacy policy",
+    path: "",
+  },
+  {
+    icon: <LogOut />,
+    label: "Sign out from this device",
+    path: "",
+  },
 ];

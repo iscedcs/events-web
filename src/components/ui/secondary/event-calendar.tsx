@@ -1,10 +1,20 @@
 "use client";
 
+import { useAuthInfo } from "@/hooks/use-auth-info";
 import { shortenToThree } from "@/lib/utils";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { PiCaretDownBold, PiCaretUpBold } from "react-icons/pi";
-import { getEventsForCalendar } from "../../../../actions/events";
+import {
+  getEventsForCalendar,
+  getUserEVentsForCalendar,
+} from "../../../../actions/events";
+import {
+  getFutureTicketsForCalendarByUserId,
+  getPastTicketsForCalendarByUserID,
+} from "../../../../actions/tickets";
+import { getWatchlistForCalendarUserID } from "../../../../actions/watchlists";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,16 +46,51 @@ export default function EventCalendar({
   const [month, setMonth] = useState(currentMonth);
   const [openDialog, setOpenDialog] = useState(isOpen);
   const [event, setEvent] = useState<
-    { image: string; cleanName: string; startDate: Date }[] | undefined
+    | {
+        image: string | undefined;
+        title: string | undefined;
+        cleanName: string | undefined;
+        startDate: Date | undefined;
+      }[]
+    | undefined
   >();
+
+  const session = useAuthInfo();
+
+  const userId = session.auth?.user.id;
 
   useEffect(() => {
     const displayEvent = async () => {
-      const event = await getEventsForCalendar({});
-      setEvent(event);
+      const events = await getEventsForCalendar({});
+      const going = await getFutureTicketsForCalendarByUserId(userId ?? "");
+      const hosting = await getUserEVentsForCalendar({});
+      const interested = await getWatchlistForCalendarUserID(userId ?? "");
+      const past = await getPastTicketsForCalendarByUserID(userId ?? "");
+
+      switch (eventType) {
+        case "featured":
+          setEvent(events);
+          break;
+        case "going":
+          setEvent(going);
+          break;
+        case "hosting":
+          setEvent(hosting);
+          break;
+        case "interested":
+          setEvent(interested);
+          break;
+        case "past":
+          setEvent(past);
+          break;
+        default:
+          setEvent(undefined);
+          break;
+      }
     };
+
     displayEvent();
-  }, []);
+  }, [eventType, userId]);
 
   const years = useMemo(() => {
     const startYear = currentYear;
@@ -201,8 +246,11 @@ export default function EventCalendar({
                             day
                           );
 
-                          const eventForDay = event?.find((eventItem) => {
-                            const e = new Date(eventItem.startDate);
+                          // ----- NOTE: use filter to get all events for this day -----
+                          const eventsForDay = event?.filter((eventItem) => {
+                            const e = new Date(
+                              eventItem?.startDate ?? new Date()
+                            );
                             return (
                               e.getFullYear() === fullDay.getFullYear() &&
                               e.getMonth() === fullDay.getMonth() &&
@@ -210,28 +258,89 @@ export default function EventCalendar({
                             );
                           });
 
-                          const bgImage = eventForDay?.image;
-                          const link = eventForDay?.cleanName;
+                          const eventCount = eventsForDay?.length ?? 0;
 
+                          // ---- 0 events: plain day ----
+                          if (eventCount === 0) {
+                            return (
+                              <div
+                                key={`${monthObj.number}-${i}`}
+                                className="min-h-[36px] flex items-center justify-center px-3 py-2 rounded-full"
+                              >
+                                {day}
+                              </div>
+                            );
+                          }
+
+                          // ---- 1 event: use image as background (preserve original behavior) ----
+                          if (eventCount === 1) {
+                            const singleEvent = eventsForDay![0];
+                            const bgImage = singleEvent.image;
+                            const link = singleEvent.cleanName;
+                            const title = singleEvent.title;
+
+                            return (
+                              <Link
+                                href={`/user/events/${link?.toLowerCase()}`}
+                                key={`${monthObj.number}-${i}`}
+                                className="min-h-[36px] flex items-center justify-center px-3 py-2 rounded-full hover:bg-primary hover:text-white transition relative"
+                                style={{
+                                  backgroundImage: bgImage
+                                    ? `url(${bgImage})`
+                                    : undefined,
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center",
+                                  color: bgImage ? "white" : undefined,
+                                }}
+                              >
+                                {bgImage && (
+                                  <div className="absolute inset-0 bg-black/70 rounded-full"></div>
+                                )}
+                                <span className="relative z-10">{day}</span>
+                              </Link>
+                            );
+                          }
+
+                          // ---- 2+ events: show dropdown with list ----
                           return (
-                            <Link
-                              href={`/user/events/${link?.toLowerCase()}`}
-                              key={`${monthObj.number}-${i}`}
-                              className="min-h-[36px] flex items-center justify-center px-3 py-2 rounded-full hover:bg-primary hover:text-white transition relative"
-                              style={{
-                                backgroundImage: bgImage
-                                  ? `url(${bgImage})`
-                                  : undefined,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                                color: bgImage ? "white" : undefined,
-                              }}
-                            >
-                              {bgImage && (
-                                <div className="absolute inset-0 bg-black/70 rounded-md"></div>
-                              )}
-                              <span className="relative z-10">{day}</span>
-                            </Link>
+                            <DropdownMenu key={`${monthObj.number}-${i}`}>
+                              <DropdownMenuTrigger className="flex items-center min-h-[36px] px-3 py-2   justify-center rounded-full hover:bg-primary hover:text-white transition relative">
+                                <div className="absolute inset-0 bg-black/70 rounded-full"></div>
+                                <span className="relative z-10">{day}</span>
+                              </DropdownMenuTrigger>
+
+                              <DropdownMenuContent className="bg-black text-white rounded-lg p-2 w-[220px]">
+                                <div className="space-y-2">
+                                  {eventsForDay!.map((e, idx) => (
+                                    <Link
+                                      href={`/user/events/${e.cleanName?.toLowerCase()}`}
+                                      key={idx}
+                                      className="flex items-center gap-3 px-2 py-1 rounded-md hover:bg-primary transition"
+                                    >
+                                      <span className="text-sm">
+                                        <div className=" flex items-center gap-3">
+                                          <Image
+                                            src={
+                                              e.image?.startsWith("http") ||
+                                              e.image?.startsWith("/")
+                                                ? e.image
+                                                : "/no-image.png"
+                                            }
+                                            alt="image"
+                                            width={"20"}
+                                            height={"20"}
+                                            className=" w-[25px] h-[25px] rounded-full object-cover"
+                                          />
+                                          <p className=" w-[60%] truncate capitalize">
+                                            {e.title?.toLowerCase()}
+                                          </p>
+                                        </div>
+                                      </span>
+                                    </Link>
+                                  ))}
+                                </div>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           );
                         })}
                       </div>

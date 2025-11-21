@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import BookmarkButton from "@/components/ui/secondary/bookmark-button";
 import { EventCardProps } from "@/lib/types/event";
-import { format } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillInstagram } from "react-icons/ai";
@@ -16,11 +16,20 @@ export default function EventCard({
   cardType,
   link,
   title,
+  isClicked,
   image,
   time,
   host,
+  showBookmarkButton,
+  endDate,
   startDate,
 }: EventCardProps) {
+  const today = new Date();
+  const eventStartDate = new Date(startDate);
+  const eventEndDate = new Date(endDate);
+
+  // console.log({ startDate: new Date(startDate), today });
+
   return (
     <>
       <div className="">
@@ -38,6 +47,8 @@ export default function EventCard({
                   ? time
                   : cardType === "interested"
                   ? time
+                  : cardType === "hosting"
+                  ? time
                   : null}{" "}
                 WAT
               </p>
@@ -52,10 +63,16 @@ export default function EventCard({
           ) : cardType === "hosting" ? (
             <div className="">
               <Button asChild>
-                <Link href={link}>My event</Link>
+                <Link href={link}>Details</Link>
               </Button>
             </div>
-          ) : cardType === "interested" ? null : cardType === "past" ? (
+          ) : cardType === "interested" ? (
+            <div className="">
+              <Button asChild>
+                <Link href={link}>Event Details</Link>
+              </Button>
+            </div>
+          ) : cardType === "past" ? (
             <div className="">
               <Link className=" text-[14px] underline" href={link}>
                 Past events
@@ -66,64 +83,51 @@ export default function EventCard({
         <div className=" relative mt-[10px]">
           <Image
             src={
-              cardType === "going" || cardType === "past"
-                ? image?.startsWith("http") || image?.startsWith("/")
-                  ? image
-                  : "/no-image.jpg"
-                : cardType === "interested"
-                ? image?.startsWith("http") || image?.startsWith("/")
-                  ? image
-                  : "/no-image.jpg"
-                : ""
+              image?.startsWith("http") || image?.startsWith("/")
+                ? image
+                : "/no-image.png"
             }
             alt="image"
             width={"1000"}
             height={"1000"}
             className=" w-full h-[300px] rounded-[24px] object-cover "
           />
-          {cardType === "interested" && (
+          {cardType === "interested" && showBookmarkButton && (
             <div className=" p-[10px] rounded-full bg-[#0000008f] right-0 bottom-0 mr-[20px] mb-[20px] absolute">
               <BookmarkButton
                 eventDate={new Date(startDate)}
                 eventId={id ?? ""}
-                isClicked
+                isClicked={isClicked ?? false}
               />
             </div>
           )}
         </div>
         <div className=" mt-[10px] flex items-center gap-2">
           <div className=" animate-caret-blink w-[8px] h-[8px] bg-white"></div>
-          <p className=" text-[10px]">
-            {cardType === "going" || cardType === "interested"
+          <p className="text-[10px]">
+            {cardType === "going"
               ? "Going for this event"
-              : cardType === "hosting"
+              : (cardType === "hosting" && isBefore(today, eventEndDate)) ||
+                isBefore(today, eventStartDate)
               ? "You are hosting this event"
+              : cardType === "hosting" && isAfter(today, eventEndDate)
+              ? "You hosted this event"
               : cardType === "past"
               ? "You already attended this event."
+              : cardType === "interested"
+              ? "Bookmarked this event"
               : ""}
           </p>
         </div>
         <div className=" mt-[10px]">
-          <p className=" capitalize text-[24px]">
-            {cardType === "going" || cardType === "past"
-              ? title.toLowerCase()
-              : cardType === "interested"
-              ? title.toLowerCase()
-              : ""}
-          </p>
+          <p className=" capitalize text-[24px]">{title.toLowerCase()}</p>
         </div>
         <div className=" flex justify-between items-center">
           <div className=" flex mt-[10px] items-center gap-3">
             <FaUserCircle className=" w-[30px] h-[30px]" />
             <div className="">
               <p className=" text-[10px] text-accent">Presented by</p>
-              <p className=" text-[14px]">
-                {cardType === "going" || cardType === "past"
-                  ? host ?? "No host name"
-                  : cardType === "interested"
-                  ? host ?? "No host name"
-                  : null}
-              </p>
+              <p className=" text-[14px]">{host ?? "No host name"}</p>
             </div>
           </div>
           <div className=" flex gap-2">
