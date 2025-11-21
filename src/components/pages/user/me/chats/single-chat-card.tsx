@@ -1,4 +1,4 @@
-import { MoveRight, UserRound } from "lucide-react";
+import { MoveRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaUser } from "react-icons/fa";
@@ -25,7 +25,7 @@ export default function SingleChatCard({
           <div className=" w-full flex items-center flex-row gap-2">
             {image !== null ? (
               <Image
-                src={image ?? "/no-profile.png"}
+                src={image ?? "/no-profile.jpg"}
                 alt="image"
                 width={"50"}
                 height={"50"}

@@ -11,7 +11,7 @@ import {
   UserRoundPlus,
 } from "lucide-react";
 import { FaRegUser } from "react-icons/fa";
-import { LuMessageSquareText } from "react-icons/lu";
+import { LuMessageSquareText, LuTickets } from "react-icons/lu";
 import { MdEventNote } from "react-icons/md";
 import { TrendingEventsProps } from "./types/event";
 import { HeaderItemsTypes } from "./types/layout";
@@ -624,16 +624,22 @@ export const HEADERITEMS: HeaderItemsTypes[] = [
     value: "events",
   },
   {
-    icon: <Bookmark className=" w-[16px] h-[16px]" />,
-    path: "/user/me/my-events",
-    title: "Your bookmarks",
-    value: "events",
+    icon: <LuTickets className=" w-[16px] h-[16px]" />,
+    path: "/user/me/my-tickets",
+    title: "Your tickets",
+    value: "tickets",
   },
   {
     icon: <LuMessageSquareText className=" w-[16px] h-[16px]" />,
     path: "/user/me/my-chats",
     title: "Your chats",
-    value: "events",
+    value: "chats",
+  },
+  {
+    icon: <Bookmark className=" w-[16px] h-[16px]" />,
+    path: "/user/me/my-events",
+    title: "Your bookmarks",
+    value: "bookmarks",
   },
 ];
 
@@ -732,15 +738,15 @@ export const INITIALTICKETS: InitialTicketProps[] = [
 
 export const DUMMYATTENDEES = [
   {
-    image: "/no-profile.png",
+    image: "/no-profile.jpg",
     name: "John Doe",
   },
   {
-    image: "/no-profile.png",
+    image: "/no-profile.jpg",
     name: "John Doe 1",
   },
   {
-    image: "/no-profile.png",
+    image: "/no-profile.jpg",
     name: "John Doe 2",
   },
 ];

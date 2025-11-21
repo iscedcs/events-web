@@ -1,4 +1,3 @@
-import { SingleEventProps } from "@/lib/types/event";
 import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,7 +53,7 @@ export default function NearbyEventCard({
               src={
                 image?.startsWith("http") || image?.startsWith("/")
                   ? image
-                  : "/no-image.jpg"
+                  : "/no-image.png"
               }
               alt="image"
               width={"1000"}

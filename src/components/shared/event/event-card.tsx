@@ -85,7 +85,7 @@ export default function EventCard({
             src={
               image?.startsWith("http") || image?.startsWith("/")
                 ? image
-                : "/no-image.jpg"
+                : "/no-image.png"
             }
             alt="image"
             width={"1000"}

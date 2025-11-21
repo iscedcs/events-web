@@ -1,10 +1,10 @@
-import EventCalendar from "@/components/ui/secondary/event-calendar";
-import EmptyState from "../empty-state";
-import { useEffect, useState } from "react";
-import { SingleEventProps } from "@/lib/types/event";
-import { getUserEVents } from "../../../../../../../actions/events";
-import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCard from "@/components/shared/event/event-card";
+import EventCardSkeleton from "@/components/skeletons/event-card";
+import EventCalendar from "@/components/ui/secondary/event-calendar";
+import { SingleEventProps } from "@/lib/types/event";
+import { useEffect, useState } from "react";
+import { getUserEVents } from "../../../../../../../actions/events";
+import EmptyState from "../empty-state";
 
 export default function Hosting() {
   const [events, setEvents] = useState<SingleEventProps[]>([]);
@@ -32,21 +32,21 @@ export default function Hosting() {
     };
   }, []);
 
-  if (!loading && events.length === 0) {
-    return <EmptyState />;
-  }
-
   return (
     <>
       <div className=" px-[10px] absolute top-0 right-0">
         <EventCalendar eventType="hosting" type="multiple" />
       </div>
 
-      {loading ? (
+      {loading && (
         <div className=" mt-[20px]">
           <EventCardSkeleton />
         </div>
-      ) : (
+      )}
+
+      {!loading && events.length === 0 && <EmptyState />}
+
+      {!loading && events.length > 0 && (
         <div className=" grid-cols-1 grid gap-[30px] mt-[20px] ">
           {events.map((event) => (
             <div key={event.id}>

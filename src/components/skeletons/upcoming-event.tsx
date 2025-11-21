@@ -3,9 +3,7 @@ import { Skeleton } from "../ui/skeleton";
 export default function UpcomingEventSkeleton() {
   return (
     <div>
-      <div className="mt-[40px]">
-        <Skeleton className="h-[29px] w-[180px]" />
-
+      <div className="">
         <div className="mt-[10px] bg-secondary p-[20px] w-full rounded-[20px]">
           <div className="flex flex-col gap-3">
             <Skeleton className="w-[90px] h-[90px] rounded-[20px]" />

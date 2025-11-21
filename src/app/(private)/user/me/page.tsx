@@ -1,12 +1,10 @@
-import React from "react";
+import AccountSettings from "@/components/pages/user/me/profile/account-settings";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, MessageCircle } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { getAuthInfo } from "../../../../../actions/auth";
 import { getUserByID } from "../../../../../actions/user";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronRight, MessageCircle } from "lucide-react";
-import { ACCOUNTSETTINGS } from "@/lib/const";
-import AccountSettings from "@/components/pages/user/me/profile/account-settings";
-import Link from "next/link";
 
 export default async function Profile() {
   const session = await getAuthInfo();
@@ -20,7 +18,7 @@ export default async function Profile() {
       <div className=" w-full h-[100px] bg-linear-to-b from-[#6600FF] to-[#000000]"></div>
       <div className=" -mt-[40px] px-[10px]">
         <Image
-          src={user?.displayPicture ?? "no-profile"}
+          src={user?.displayPicture ?? "/no-profile.jpg"}
           alt="displayPicture"
           width={"1000"}
           height={"1000"}

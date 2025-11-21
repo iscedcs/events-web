@@ -51,9 +51,11 @@ export default function EventsNearYou() {
           lat?.toString() ?? "",
           radius.toString() ?? ""
         );
-        if (eventInfo !== null) {
-          setEvents(eventInfo?.events ?? undefined);
+        if (eventInfo === null) {
           setLoading(false);
+        } else {
+          setLoading(false);
+          setEvents(eventInfo.events);
         }
       } catch (e: any) {
         console.log("Unable to fetch nearby events", e);
@@ -95,7 +97,7 @@ export default function EventsNearYou() {
           <div className="flex flex-col gap-5">
             <NearbyEventSkeleton />
           </div>
-        ) : events.length === 0 ? (
+        ) : events.length === 0 || events === null ? (
           <div className="rounded-[20px] bg-secondary py-[30px] flex items-center justify-center flex-col gap-3 text-center">
             <div className="bg-white flex items-center rounded-full justify-center w-[50px] h-[50px]">
               <Frown className="w-6 h-6 text-secondary" />

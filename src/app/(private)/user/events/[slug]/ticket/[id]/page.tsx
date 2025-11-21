@@ -1,9 +1,12 @@
+import QrCodeGenerator from "@/components/pages/user/events/single-event/attendee-check-in/qr-code-gen";
 import Header from "@/components/shared/layout/header";
 import { Button } from "@/components/ui/button";
 import CopyButton from "@/components/ui/secondary/copy-button";
 import { TICKETTANDC } from "@/lib/const";
 import { SingleAttendeeProps } from "@/lib/types/event";
 import { SingleTicketProps } from "@/lib/types/ticket";
+import { stripTime } from "@/lib/utils";
+import { isBefore } from "date-fns";
 import { format } from "date-fns/format";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,9 +21,6 @@ import {
 import { getCurrentUser } from "../../../../../../../../actions/auth";
 import { getTicketByID } from "../../../../../../../../actions/tickets";
 import { getUserByID } from "../../../../../../../../actions/user";
-import QrCodeGenerator from "@/components/pages/user/events/single-event/attendee-check-in/qr-code-gen";
-import { stripTime } from "@/lib/utils";
-import { isAfter, isBefore, isEqual } from "date-fns";
 
 type Params = Promise<{ id: string }>;
 
@@ -67,7 +67,7 @@ export default async function Ticket(props: { params: Params }) {
                 ticket.event?.image?.startsWith("http") ||
                 ticket.event?.image?.startsWith("/")
                   ? ticket.event?.image
-                  : "/no-image.jpg"
+                  : "/no-image.png"
               }
               width={1000}
               height={1000}

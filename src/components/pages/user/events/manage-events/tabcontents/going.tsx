@@ -36,22 +36,22 @@ export default function Going({ userId }: { userId?: string }) {
 
   // console.log({ tickets });
 
-  if (!loading && tickets.length === 0) {
-    return <EmptyState />;
-  }
-
   return (
     <>
-      <div className=" px-[10px] absolute top-0 right-0">
+      <div className="px-[10px] absolute top-0 right-0">
         <EventCalendar eventType="going" type="multiple" />
       </div>
 
-      {loading ? (
-        <div className=" mt-[20px]">
+      {loading && (
+        <div className="mt-[20px]">
           <EventCardSkeleton />
         </div>
-      ) : (
-        <div className=" grid-cols-1 grid gap-[30px] mt-[20px] ">
+      )}
+
+      {!loading && tickets.length === 0 && <EmptyState />}
+
+      {!loading && tickets.length > 0 && (
+        <div className="grid-cols-1 grid gap-[30px] mt-[20px]">
           {tickets.map((ticket) => (
             <div key={ticket.id}>
               <EventCard
@@ -67,7 +67,7 @@ export default function Going({ userId }: { userId?: string }) {
                 }`}
                 cardType="going"
               />
-              <hr className=" mt-[25px]" />
+              <hr className="mt-[25px]" />
             </div>
           ))}
         </div>

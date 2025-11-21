@@ -75,38 +75,42 @@ model ChatRoom {
 }
 
 model Event {
-  id             String       @id
-  title          String
-  description    String?
-  location       String
-  town           String
-  image          String?
-  cleanName      String?      @unique
-  startDate      DateTime
-  endDate        DateTime?
-  userId         String?
-  createdAt      DateTime     @default(now())
-  deletedAt      DateTime?
-  updatedAt      DateTime
-  audienceSize   Int?         @default(0)
-  categories     String[]     @default([])
-  hasFreeTickets Boolean      @default(false)
-  platformLink   String?
-  platformName   String?
-  galleryLink    String?
-  qrCode         String?      @unique
-  qrCodeUrl      String?
-  capacity       Int?         @default(0)
-  host           String?
-  time           String?
-  latitude       Float?
-  longitude      Float?
-  Attendee       Attendee[]
-  ChatRoom       ChatRoom[]
-  Gallery        Gallery[]
-  Invitation     Invitation[]
-  Ticket         Ticket[]
-  Watchlist      Watchlist[]
+  id                 String       @id
+  title              String
+  description        String?
+  location           String
+  town               String
+  image              String?
+  cleanName          String?      @unique
+  startDate          DateTime
+  endDate            DateTime?
+  userId             String?
+  createdAt          DateTime     @default(now())
+  deletedAt          DateTime?
+  updatedAt          DateTime
+  audienceSize       Int?         @default(0)
+  categories         String[]     @default([])
+  hasFreeTickets     Boolean      @default(false)
+  platformLink       String?
+  platformName       String?
+  galleryLink        String?
+  qrCode             String?      @unique
+  qrCodeUrl          String?
+  capacity           Int?         @default(0)
+  host               String?
+  time               String?
+  latitude           Float?
+  longitude          Float?
+  isPublic           Boolean      @default(true)
+  registrationClosed Boolean      @default(false)
+  Attendee           Attendee[]
+  ChatRoom           ChatRoom[]
+  FeedPost           FeedPost[]
+  Gallery            Gallery[]
+  Invitation         Invitation[]
+  Moment             Moment[]
+  Ticket             Ticket[]
+  Watchlist          Watchlist[]
 }
 
 model EventUrl {
@@ -218,6 +222,77 @@ model Watchlist {
   @@index([userId])
 }
 
+model FeedComment {
+  id         String    @id
+  feedPostId String
+  userId     String
+  content    String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime
+  deletedAt  DateTime?
+  FeedPost   FeedPost  @relation(fields: [feedPostId], references: [id], onDelete: Cascade)
+
+  @@index([feedPostId])
+  @@index([userId])
+}
+
+model FeedPost {
+  id          String        @id
+  eventId     String
+  userId      String
+  content     String?
+  mediaUrl    String?
+  mediaType   MediaType?
+  caption     String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime
+  deletedAt   DateTime?
+  FeedComment FeedComment[]
+  Event       Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  Like        Like[]
+
+  @@index([eventId])
+  @@index([userId])
+}
+
+model Like {
+  id         String    @id
+  userId     String
+  likeType   LikeType
+  momentId   String?
+  feedPostId String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime
+  FeedPost   FeedPost? @relation(fields: [feedPostId], references: [id], onDelete: Cascade)
+  Moment     Moment?   @relation(fields: [momentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, feedPostId])
+  @@unique([userId, momentId])
+  @@index([likeType])
+  @@index([userId])
+}
+
+model Moment {
+  id        String       @id
+  eventId   String
+  userId    String
+  mediaUrl  String
+  mediaType MediaType
+  caption   String?
+  duration  DurationType @default(TWENTY_FOUR_HOURS)
+  expiresAt DateTime?
+  isPinned  Boolean      @default(false)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime
+  deletedAt DateTime?
+  Like      Like[]
+  Event     Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([expiresAt])
+  @@index([userId])
+}
+
 enum PaymentStatus {
   PENDING
   PAID
@@ -229,4 +304,19 @@ enum TicketStatus {
   PAID
   USED
   CANCELLED
+}
+
+enum DurationType {
+  TWENTY_FOUR_HOURS
+  UNTIL_EVENT_END
+}
+
+enum LikeType {
+  STORY
+  FEED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
 }
