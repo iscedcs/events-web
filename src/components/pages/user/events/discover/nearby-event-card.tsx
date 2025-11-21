@@ -58,7 +58,7 @@ export default function NearbyEventCard({
               alt="image"
               width={"1000"}
               height={"1000"}
-              className=" w-[90px] h-[90px] rounded-[20px]"
+              className=" w-[90px] h-[90px] object-cover rounded-[20px]"
             />
           </div>
         </div>

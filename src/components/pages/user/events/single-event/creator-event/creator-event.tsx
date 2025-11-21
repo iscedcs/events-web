@@ -180,6 +180,11 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
               </Button>
             </div>
           ))}
+        <div className="">
+          <Button className=" bg-error text-white mt-[10px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]">
+            Delete Event
+          </Button>
+        </div>
       </div>
     </>
   );

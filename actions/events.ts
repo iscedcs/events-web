@@ -4,7 +4,7 @@ import { EVENTS_API, URLS } from "@/lib/const";
 import { MiniSingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
 import { PaginationType } from "@/lib/types/layout";
 import { getAuthInfo } from "./auth";
-import { isBefore } from "date-fns";
+import { isBefore, isEqual } from "date-fns";
 
 const today = new Date();
 
@@ -23,20 +23,23 @@ export const getAllEvents = async ({ limit, page }: PaginationType) => {
       next: { revalidate: 20 },
     });
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     const events: SingleEventProps[] = data.data.events;
     // console.log(data.data.events);
 
     const sortedEvents = [...events].sort(
       (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
     );
     const totalRecords = data.data.total;
     const currentPage = data.data.currentPage;
     const totalPages = data.data.totalPages;
+
+    const publicEvents = sortedEvents.filter((e) => e.isPublic === true);
+
     if (data.success === true) {
       return {
-        event: sortedEvents,
+        event: publicEvents,
         totalPages: totalPages,
         currentPage: currentPage,
         totalRecords: totalRecords,
@@ -168,22 +171,26 @@ export const getTrendingEvents = async () => {
     const events: SingleEventProps[] = data.data.events;
     // console.log(data.data.events);
 
-    const sortedEvents = [...events].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    const sortedEvents = events.filter(
+      (e) =>
+        isBefore(new Date(), e.startDate) || isEqual(new Date(), e.startDate)
     );
 
-    const slicedEvents = sortedEvents.slice(1, 10);
+    const publicEvent = sortedEvents.filter((e) => e.isPublic === true);
+
+    const slicedEvents = publicEvent.slice(1, 10);
 
     const totalRecords = data.data.total;
     const currentPage = data.data.currentPage;
     const totalPages = data.data.totalPages;
+
     if (data.success === true) {
       return {
         event: slicedEvents,
         totalPages: totalPages,
         currentPage: currentPage,
         totalRecords: totalRecords,
+        // hasLimit: hasLimit ? slicedEvents : sortedEvents,
       };
     }
     return null;
@@ -210,17 +217,24 @@ export const getMostRecentEvent = async ({ limit, page }: PaginationType) => {
     const events: SingleEventProps[] = data.data.events;
     const recentEvent = events.reduce((closest, current) => {
       const currentDiff = Math.abs(
-        new Date(current.createdAt).getTime() - today.getTime()
+        new Date(current.startDate).getTime() - today.getTime()
       );
       const closestDiff = Math.abs(
-        new Date(closest.createdAt).getTime() - today.getTime()
+        new Date(closest.startDate).getTime() - today.getTime()
       );
       return currentDiff < closestDiff ? current : closest;
     });
+
+    const publicCheck = recentEvent.isPublic === true;
+
     // console.log(data.data.events);
     // console.log({ recentEvent });
     if (data.success === true) {
-      return recentEvent;
+      if (publicCheck) {
+        return recentEvent;
+      } else {
+        return recentEvent;
+      }
     }
   } catch (e: any) {
     console.log("Unable to fetch event", e);
@@ -436,7 +450,10 @@ export const getNearbyEvents = async (
     const events: SingleEventProps[] = data.data;
     const now = new Date();
     const filteredEvents = events.filter(
-      (e) => isBefore(now, e.startDate) && isBefore(now, e.endDate)
+      (e) =>
+        isBefore(now, e.startDate) &&
+        isBefore(now, e.endDate) &&
+        e.isPublic === true
     );
 
     if (res.ok) {
