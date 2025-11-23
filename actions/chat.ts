@@ -122,10 +122,10 @@ export const getAttendeeInformationForChatroom = async ({
   const auth = await getAuthInfo();
   const userId = auth.user?.id;
 
-  console.log({
-    participantA,
-    participantB,
-  });
+  // console.log({
+  //   participantA,
+  //   participantB,
+  // });
 
   const attendeeA = await getAttendeeID(participantA);
   const attendeeB = await getAttendeeID(participantB);

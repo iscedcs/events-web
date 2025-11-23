@@ -238,7 +238,7 @@ export const getFutureTicketsForCalendarByUserId = async (id: string) => {
   )}`;
   const auth = await getAuthInfo();
   const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
-  console.log({ url });
+  // console.log({ url });
   try {
     const res = await fetch(url, {
       method: "GET",

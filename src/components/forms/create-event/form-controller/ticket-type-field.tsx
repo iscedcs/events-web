@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { INITIALTICKETS } from "@/lib/const";
+import { SETTINGS } from "@/lib/settings-config";
 import { CreateTicketProps, InitialTicketProps } from "@/lib/types/ticket";
 import {
   ArrowRight,
@@ -29,7 +30,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { LuTicket } from "react-icons/lu";
 
 export default function TicketTypeField() {
-  const [freeTicket, setFreeTicket] = useState(false);
+  const [freeTicket, setFreeTicket] = useState(true);
   const [customTicket, setCustomTicket] = useState(false);
   const [step, setStep] = useState(0);
   const [selectedTicketIndex, setSelectedTicketIndex] = useState<number | null>(
@@ -72,12 +73,12 @@ export default function TicketTypeField() {
   const [existingInitialTicketInfo, setExistingInitialTicketInfo] =
     useState<InitialTicketProps[]>(INITIALTICKETS);
 
-  console.log({ step });
-  console.log({ ticketInfo });
-  console.log({ fields });
-  console.log({ existingInitialTicketInfo });
-  console.log({ customTicketData });
-  console.log({ customTicket });
+  // console.log({ step });
+  // console.log({ ticketInfo });
+  // console.log({ fields });
+  // console.log({ existingInitialTicketInfo });
+  // console.log({ customTicketData });
+  // console.log({ customTicket });
 
   const watchedTickets = watch("tickets");
 
@@ -91,8 +92,14 @@ export default function TicketTypeField() {
       quantity: ticket.quantity,
     });
     setSelectedTicketIndex(index);
-    setTicketInfo(ticket);
-    setCustomTicket(false);
+    const isCustom = !INITIALTICKETS.some((t) => t.title === ticket.title);
+    if (isCustom) {
+      setCustomTicket(true);
+      setTicketInfo(ticket);
+    } else {
+      setCustomTicket(false);
+      setTicketInfo(ticket);
+    }
     setStep(2);
   };
 
@@ -118,6 +125,23 @@ export default function TicketTypeField() {
   //   setStep(2);
   // };
   // const ticketWatch: InitialTicketProps[] = watch("tickets");
+
+  const handleTicketChange = (field: keyof CreateTicketProps, value: any) => {
+    if (selectedTicketIndex === null) return;
+
+    const updatedTicket = {
+      ...fields[selectedTicketIndex],
+      [field]: value,
+      // Automatically set isFree if the amount changes
+      ...(field === "amount" ? { isFree: Number(value) === 0 } : {}),
+    };
+
+    // Update local state
+    setTicketInfo(updatedTicket);
+
+    // Update the ticket in the field array
+    update(selectedTicketIndex, updatedTicket);
+  };
 
   const handleTicketEditInfo = (ticket: CreateTicketProps, index: number) => {
     setIsEditing(true);
@@ -237,9 +261,13 @@ export default function TicketTypeField() {
               </div>
               <div
                 onClick={() => {
-                  setFreeTicket(false);
+                  SETTINGS.payment.allow_payment && setFreeTicket(false);
                 }}
-                className=" flex mt-[20px] gap-3 items-start"
+                className={` flex mt-[20px] gap-3 items-start ${
+                  SETTINGS.payment.allow_payment
+                    ? " text-white"
+                    : " text-accent"
+                }`}
               >
                 <Banknote />
                 <div className=" flex items-center gap-3">
@@ -358,10 +386,13 @@ export default function TicketTypeField() {
                     </div>
 
                     <div className="flex flex-col gap-3">
-                      <Label className="text-accent">Price (₦)</Label>
+                      <Label className="text-accent">
+                        Price (₦) - Leave at 0 for free tickets
+                      </Label>
                       <Input
                         type="number"
                         placeholder="0"
+                        disabled={!SETTINGS.payment.allow_payment}
                         value={customTicketData.amount || ""}
                         onChange={(e) =>
                           setCustomTicketData({
@@ -442,8 +473,11 @@ export default function TicketTypeField() {
                               <Input
                                 {...field}
                                 type="text"
-                                disabled={!customTicket || isEditing}
-                                value={field.value ?? ""}
+                                // disabled={customTicket || isEditing}
+                                value={ticketInfo.title}
+                                onChange={(e) =>
+                                  handleTicketChange("title", e.target.value)
+                                }
                                 className={`bg-[#151515] rounded-[8px] px-[15px] ${
                                   errors.tickets?.[selectedTicketIndex]?.title
                                     ? "border-red-500 focus-visible:ring-red-500"
@@ -468,12 +502,20 @@ export default function TicketTypeField() {
                           name={`tickets.${selectedTicketIndex}.amount`}
                           render={({ field }) => (
                             <div className="flex flex-col gap-2">
-                              <Label className="text-accent">Price (₦)</Label>
+                              <Label className="text-accent">
+                                Price (₦) - Leave at 0 for free tickets
+                              </Label>
                               <Input
                                 {...field}
                                 type="number"
                                 disabled={freeTicket || isEditing}
-                                value={field.value ?? ""}
+                                value={ticketInfo.amount}
+                                onChange={(e) =>
+                                  handleTicketChange(
+                                    "amount",
+                                    Number(e.target.value)
+                                  )
+                                }
                                 className={`bg-[#151515] rounded-[8px] px-[15px] ${
                                   errors.tickets?.[selectedTicketIndex]?.amount
                                     ? "border-red-500 focus-visible:ring-red-500"
@@ -502,8 +544,13 @@ export default function TicketTypeField() {
                               <Input
                                 {...field}
                                 type="number"
-                                disabled={freeTicket || isEditing}
-                                value={field.value ?? ""}
+                                value={ticketInfo.quantity}
+                                onChange={(e) =>
+                                  handleTicketChange(
+                                    "quantity",
+                                    Number(e.target.value)
+                                  )
+                                }
                                 className={`bg-[#151515] rounded-[8px] px-[15px] ${
                                   errors.tickets?.[selectedTicketIndex]
                                     ?.quantity
@@ -734,18 +781,17 @@ export default function TicketTypeField() {
                       }
 
                       // CASE 4: Step 2 → 3 (if not custom ticket)
-                      if (step === 2 && !customTicket) {
-                        // 🔥 Validate the "tickets" field before moving forward
-                        const isValid = await trigger("tickets");
+                      // if (step === 2 && !customTicket) {
+                      //   const isValid = await trigger("tickets");
 
-                        if (!isValid) {
-                          console.log("Ticket validation failed");
-                          return; // stops progression if invalid
-                        }
+                      //   // if (!isValid) {
+                      //   //   console.log("Ticket validation failed");
+                      //   //   return; // stops progression if invalid
+                      //   // }
 
-                        setStep(3);
-                        return;
-                      }
+                      //   setStep(3);
+                      //   return;
+                      // }
 
                       // CASE 5: Default fallback (if something unexpected)
                       setStep((prev) => prev + 1);

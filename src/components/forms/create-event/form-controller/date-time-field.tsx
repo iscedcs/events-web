@@ -83,6 +83,7 @@ export default function DateTimeField() {
                   >
                     <Calendar
                       mode="single"
+                      fromDate={new Date()}
                       selected={field.value ? new Date(field.value) : undefined}
                       onSelect={(date) => {
                         if (date) field.onChange(format(date, "yyyy-MM-dd"));
@@ -101,6 +102,11 @@ export default function DateTimeField() {
                 <Input
                   type="time"
                   step="1"
+                  min={
+                    startDate === format(new Date(), "yyyy-MM-dd")
+                      ? format(new Date(), "HH:mm")
+                      : "00:00"
+                  }
                   {...field}
                   value={field.value ? convertTo24Hour(field.value) : ""}
                   onChange={(e) => {
@@ -143,6 +149,7 @@ export default function DateTimeField() {
                   >
                     <Calendar
                       mode="single"
+                      fromDate={new Date()}
                       selected={field.value ? new Date(field.value) : undefined}
                       onSelect={(date) => {
                         if (date) field.onChange(format(date, "yyyy-MM-dd"));

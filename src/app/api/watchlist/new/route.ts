@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       },
     });
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     if (!res.ok) {
       return NextResponse.json(
         { error: "Failed to add watchlist" },
@@ -61,7 +61,7 @@ export async function DELETE(req: Request) {
       },
     });
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     if (!res.ok) {
       return NextResponse.json(
         { error: "Failed to add watchlist" },

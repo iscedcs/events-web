@@ -27,7 +27,7 @@ export default function Categories() {
     fetchCategory();
   }, []);
 
-  console.log({ category });
+  // console.log({ category });
   return (
     <>
       {loading === true ? (

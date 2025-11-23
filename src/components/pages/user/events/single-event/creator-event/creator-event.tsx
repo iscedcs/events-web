@@ -1,19 +1,27 @@
 import EventChatButton from "@/components/shared/event/event-chat-button";
 import { Button } from "@/components/ui/button";
 import { formatWithCommas } from "@/lib/utils";
-import { isAfter, isBefore, isEqual } from "date-fns";
+import { isAfter, isBefore, isEqual, isSameDay } from "date-fns";
 import { format } from "date-fns/format";
-import { PencilLine } from "lucide-react";
+import { PencilLine, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaBagShopping, FaHourglass, FaTicketSimple } from "react-icons/fa6";
 import { MdFreeBreakfast } from "react-icons/md";
-import { getEventWithTenAttendeesByCleanName } from "../../../../../../../actions/events";
+import {
+  getEventsByID,
+  getEventWithTenAttendeesByCleanName,
+} from "../../../../../../../actions/events";
 import { getTicketsByEventID } from "../../../../../../../actions/tickets";
+import CloseRegistration from "./close-registration";
+import DeleteEvent from "./delete-event";
+import ShareButton from "./share-button";
+import { SingleEventProps } from "@/lib/types/event";
 
 export default async function CreatorEvent({ slug }: { slug: string }) {
   const formattedProps = encodeURIComponent(slug);
   const data = await getEventWithTenAttendeesByCleanName(formattedProps ?? "");
+  const extraInfo: SingleEventProps = await getEventsByID(data?.event.id);
   const tickets = await getTicketsByEventID(data?.event.id);
   const today = new Date();
   const eventStartDate = new Date(data?.event?.startDate);
@@ -23,21 +31,29 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
   var message = "";
   var isToday;
 
-  console.log({ eventStartDate });
-  console.log({ eventEndDate });
-  console.log("Event time", data?.event.time);
+  // console.log({ eventStartDate });
+  // console.log({ eventEndDate });
+  // console.log("Event time", data?.event.time);
 
-  console.log("Current time", format(new Date(), "p"));
+  // console.log("Current time", format(new Date(), "p"));
 
   const isTime = currentTime === eventTime;
 
+  // console.log(isTime);
+
   switch (true) {
-    case isBefore(today, eventStartDate) && isBefore(today, eventEndDate):
+    case isBefore(today, eventStartDate) &&
+      isBefore(today, eventEndDate) &&
+      !isTime:
       message = `Event is not today`;
       isToday = false;
       break;
-    case isAfter(today, eventEndDate) && isAfter(today, eventStartDate):
+    case isAfter(eventEndDate, today) || isSameDay(eventEndDate, today):
       message = "Event is over";
+      isToday = false;
+      break;
+    case isAfter(today, eventStartDate) && isBefore(today, eventEndDate):
+      message = `Event is ongoing`;
       isToday = false;
       break;
     default:
@@ -45,18 +61,14 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
       isToday = true;
       break;
   }
+
   return (
     <>
-      {isEqual(today, eventStartDate) ||
-        (isBefore(today, eventEndDate) && (
-          <EventChatButton event={data?.event} />
-        ))}
+      {isBefore(eventEndDate, today) && <EventChatButton event={data?.event} />}
       <div
         className={`
         ${
-          isEqual(today, eventStartDate) || isBefore(today, eventEndDate)
-            ? " py-[20px]"
-            : " pt-[70px]"
+          isBefore(eventEndDate, today) ? " py-[20px]" : " pt-[70px]"
         } px-[10px]`}
       >
         <div className="">
@@ -66,15 +78,32 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
           <p className=" text-[16px]">
             {message}, {format(data?.event?.startDate ?? new Date(), "PPPP")}
           </p>
+          {(isAfter(eventEndDate, today) || isSameDay(eventEndDate, today)) && (
+            <p className=" text-[15px] text-error">
+              End Time: {format(data?.event?.endDate ?? new Date(), "PPPP")}
+            </p>
+          )}
           {data?.event?.time && (
             <p className=" text-accent text-[14px]">
               {data?.event?.time} GMT +1
             </p>
           )}
         </div>
-        {(isEqual(today, eventStartDate) ||
-          (isBefore(today, eventEndDate) &&
-            isAfter(today, eventStartDate))) && (
+        {!extraInfo.isPublic && (
+          <div className=" rounded-[20px] px-[20px] py-[20px] my-[20px] bg-secondary">
+            <p className=" text-[20px] font-bold">Private event</p>
+            <p className=" text-accent">
+              This event is a private event, share event link to get more
+              attendees
+            </p>
+            <ShareButton
+              eventTitle={data?.event.title}
+              text="Check this event out!!"
+            />
+          </div>
+        )}
+        {(isSameDay(today, eventStartDate) ||
+          (!isAfter(eventEndDate, today) && isTime)) && (
           <div className="">
             <Button
               asChild
@@ -88,11 +117,12 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
             </Button>
           </div>
         )}
+
         <div className="">
           <div className=" flex mt-[20px] items-center justify-between">
             <p className=" text-[24px]">Tickets</p>
-            {isEqual(today, eventStartDate) ||
-              (isBefore(today, eventEndDate) && (
+            {isSameDay(today, eventStartDate) ||
+              (isBefore(today, eventStartDate) && (
                 <Button asChild>
                   <Link
                     href={`/user/events/${data?.event.cleanName.toLowerCase()}/edit`}
@@ -172,19 +202,12 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
           </>
         </div>
 
-        {isEqual(today, eventStartDate) ||
-          (isBefore(today, eventEndDate) && (
-            <div className="">
-              <Button className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]">
-                Close Registration
-              </Button>
-            </div>
-          ))}
-        <div className="">
-          <Button className=" bg-error text-white mt-[10px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]">
-            Delete Event
-          </Button>
-        </div>
+        <CloseRegistration />
+        {(isEqual(today, eventStartDate) || isBefore(today, eventEndDate)) && (
+          <div className=" pb-[24px]">
+            <DeleteEvent id={data?.event.id} />
+          </div>
+        )}
       </div>
     </>
   );
