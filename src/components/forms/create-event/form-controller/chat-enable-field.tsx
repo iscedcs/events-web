@@ -15,7 +15,7 @@ export default function ChatEnableField() {
       <div className=" mt-[10px] flex items-center justify-between">
         <div className=" flex items-center gap-2">
           <MdOutlineMessage />
-          <p className=" text-white">Event chat</p>
+          <p className=" text-white">Event Chatroom</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
@@ -26,7 +26,7 @@ export default function ChatEnableField() {
           </DialogTrigger>
           <DialogContent className=" bg-secondary border-0">
             <DialogTitle hidden>Content</DialogTitle>
-            <p className="">Event Host Name</p>
+            <p className="">Event Chatroom</p>
 
             <p className=" text-accent text-[12px]">
               A group chat can be created for every event in order for attendees

@@ -1,7 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormMessage } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Form } from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -10,10 +19,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { eventCreationSchema } from "@/lib/schema/event-creation";
+import { SingleEventProps } from "@/lib/types/event";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LoaderCircle, TriangleAlert } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Controller, FieldErrors, useForm } from "react-hook-form";
 import { FaCalendarDay } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
+import { toast } from "sonner";
 import z from "zod";
 import AudienceCapacity from "./form-controller/audience-capacity";
 import CategoriesField from "./form-controller/categories-field";
@@ -26,21 +40,6 @@ import LocationField from "./form-controller/location-field";
 import TicketTypeField from "./form-controller/ticket-type-field";
 import TitleField from "./form-controller/title-field";
 import VisibilityField from "./form-controller/visibility-field";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { LoaderCircle, TriangleAlert } from "lucide-react";
-import { SingleEventProps } from "@/lib/types/event";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 export type eventCreationFormValues = z.infer<typeof eventCreationSchema>;
 export default function EventCreationForm() {

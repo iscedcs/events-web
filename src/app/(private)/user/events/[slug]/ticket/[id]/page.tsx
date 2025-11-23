@@ -40,7 +40,7 @@ export default async function Ticket(props: { params: Params }) {
 
   const attendee: SingleAttendeeProps = await getAttendeeID(singleAttendeeID);
 
-  console.log({ singleAttendeeID });
+  // console.log({ singleAttendeeID });
 
   const token = attendee.token;
 

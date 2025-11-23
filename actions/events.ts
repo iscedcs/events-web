@@ -4,7 +4,8 @@ import { EVENTS_API, URLS } from "@/lib/const";
 import { MiniSingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
 import { PaginationType } from "@/lib/types/layout";
 import { getAuthInfo } from "./auth";
-import { isBefore, isEqual } from "date-fns";
+import { isAfter, isBefore, isEqual, isSameDay } from "date-fns";
+import { getAttendeesEventID } from "./attendee";
 
 const today = new Date();
 
@@ -138,7 +139,7 @@ export const getEventIdByCleanName = async (slug: string) => {
       next: { revalidate: 20 },
     });
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     if (data.success) {
       // console.log(data.data);
       return {
@@ -151,7 +152,7 @@ export const getEventIdByCleanName = async (slug: string) => {
 };
 
 export const getTrendingEvents = async () => {
-  //TODO: GET TRENDING EVENTS WHERE THERE ARE ATTENDEES, MOMENTS, FEEDS
+  //TODO: GET TRENDING EVENTS WHERE THERE ARE ATTENDEES
   const url = `${EVENTS_API}${URLS.events.all}`;
   const auth = await getAuthInfo();
   const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
@@ -166,18 +167,21 @@ export const getTrendingEvents = async () => {
       next: { revalidate: 20 },
     });
     const data = await res.json();
-    console.log({ data });
     const events: SingleEventProps[] = data.data.events;
     // console.log(data.data.events);
 
-    const sortedEvents = events.filter(
-      (e) =>
-        isBefore(new Date(), e.startDate) || isEqual(new Date(), e.startDate)
-    );
+    const sortedEvents = events.filter((e) => {
+      // const start = new Date(e.startDate);
+      // const end = new Date(e.endDate);
+
+      return (
+        isBefore(new Date(), e.startDate) || isSameDay(e.startDate, e.endDate)
+      );
+    });
 
     const publicEvent = sortedEvents.filter((e) => e.isPublic === true);
 
-    const slicedEvents = publicEvent.slice(1, 10);
+    const slicedEvents = publicEvent.slice(0, 10);
 
     const totalRecords = data.data.total;
     const currentPage = data.data.currentPage;
@@ -232,7 +236,7 @@ export const getMostRecentEvent = async ({ limit, page }: PaginationType) => {
       if (publicCheck) {
         return recentEvent;
       } else {
-        return recentEvent;
+        return null;
       }
     }
   } catch (e: any) {
@@ -299,7 +303,7 @@ export const getEventsByCleanName = async (slug: string) => {
       // next: { revalidate: 20 },
     });
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     if (data.success) {
       // console.log(data.data);
       return data.data;
@@ -327,7 +331,7 @@ export const getEventWithTenAttendeesByCleanName = async (slug: string) => {
       next: { revalidate: 20 },
     });
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     const event = data.event;
     const attendees: MiniSingleAttendeeProps[] = data.attendees;
     const totalAttendees = data.totalAttendees;
@@ -359,7 +363,7 @@ export const getEventsByID = async (id: string) => {
       next: { revalidate: 20 },
     });
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     if (data.success) {
       // console.log(data.data);
       return data.data;
@@ -413,9 +417,12 @@ export const searchForEvents = async (value: string) => {
     });
     const data = await res.json();
     const item: SingleEventProps[] = data.data.events.data;
-    console.log({ item });
+
+    const showPublic = item.filter((e) => {
+      e.isPublic;
+    });
     if (data.success === true) {
-      return item;
+      return { item: showPublic };
     }
     return null;
   } catch (e: any) {
@@ -450,8 +457,8 @@ export const getNearbyEvents = async (
     const now = new Date();
     const filteredEvents = events.filter(
       (e) =>
-        isBefore(now, e.startDate) &&
-        isBefore(now, e.endDate) &&
+        (isBefore(new Date(), e.startDate) ||
+          isSameDay(e.startDate, e.endDate)) &&
         e.isPublic === true
     );
 

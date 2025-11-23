@@ -1,3 +1,4 @@
+import { format, isBefore, isSameDay, parse } from "date-fns";
 import z from "zod";
 
 // export const eventCreationSchema = z.object({
@@ -39,7 +40,7 @@ export const eventCreationSchema = z
       .string()
       .url("Please provide a valid image URL")
       .optional()
-      .or(z.literal("")), // allow empty if optional
+      .or(z.literal("")),
     title: z
       .string()
       .min(3, "Event title must be at least 3 characters long")
@@ -50,8 +51,7 @@ export const eventCreationSchema = z
       .max(100, "Host name is too long"),
     description: z
       .string()
-      .min(10, "Event description must be at least 10 characters long")
-      .max(1000, "Description is too long"),
+      .min(10, "Event description must be at least 10 characters long"),
     latitude: z.number().refine((val) => val >= -90 && val <= 90, {
       message: "Latitude must be between -90 and 90",
     }),
@@ -72,13 +72,20 @@ export const eventCreationSchema = z
       .max(100, "Town name is too long"),
     startDate: z
       .string()
-      .refine(
-        (val) => !isNaN(Date.parse(val)),
-        "Event start date is not valid"
-      ),
+      .refine((val) => !isNaN(Date.parse(val)), "Event start date is not valid")
+      .refine((val) => {
+        const selected = new Date(val + "T23:59:59");
+        const now = new Date();
+        return selected >= now;
+      }, "Start date must be in the future"),
     endDate: z
       .string()
-      .refine((val) => !isNaN(Date.parse(val)), "Event end date is not valid"),
+      .refine((val) => !isNaN(Date.parse(val)), "Event end date is not valid")
+      .refine((val) => {
+        const selected = new Date(val + "T23:59:59");
+        const now = new Date();
+        return selected >= now;
+      }, "End date must be in the future"),
     time: z.string().min(2, "Event time is not valid"),
     tickets: z
       .array(
@@ -110,21 +117,44 @@ export const eventCreationSchema = z
     (data) => {
       const start = new Date(data.startDate);
       const end = new Date(data.endDate);
-      return end > start;
+      return end >= start;
     },
     {
-      message: "End date must be after start date",
+      message: "End date cannot be before start date",
       path: ["endDate"],
     }
   )
   .refine(
-    (data) =>
-      data.tickets?.every(
-        (ticket) => ticket?.isFree || (ticket && ticket.amount > 0)
-      ),
+    (data) => {
+      const now = new Date();
+
+      const start = data.startDate;
+      const end = data.endDate;
+
+      const eventTime = parse(data.time, "h:mm a", new Date());
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (isBefore(start, today)) {
+        return false;
+      }
+
+      if (isSameDay(start, now)) {
+        if (isBefore(eventTime, now)) {
+          return false;
+        }
+      }
+
+      if (isBefore(end, start)) {
+        return false;
+      }
+
+      return true;
+    },
     {
-      message: "Paid tickets must have an amount greater than 0",
-      path: ["tickets"],
+      message: "Event cannot be in the past.",
+      path: ["time"],
     }
   )
   .refine((data) => data.tickets && data.tickets.length > 0, {

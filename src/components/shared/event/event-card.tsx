@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import BookmarkButton from "@/components/ui/secondary/bookmark-button";
 import { EventCardProps } from "@/lib/types/event";
-import { format, isAfter, isBefore } from "date-fns";
+import { format, isAfter, isBefore, isSameDay } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillInstagram } from "react-icons/ai";
@@ -92,21 +92,38 @@ export default function EventCard({
           )}
         </div>
         {cardType !== "public" && (
-          <div className=" mt-[10px] flex items-center gap-2">
-            <div className=" animate-caret-blink w-[8px] h-[8px] bg-white"></div>
+          <div className="mt-[10px] flex items-center gap-2">
+            <div className="animate-caret-blink w-[8px] h-[8px] bg-white"></div>
             <p className="text-[10px]">
-              {cardType === "going"
-                ? "Going for this event"
-                : (cardType === "hosting" && isBefore(today, eventEndDate)) ||
-                  isBefore(today, eventStartDate)
-                ? "You are hosting this event"
-                : cardType === "hosting" && isAfter(today, eventEndDate)
-                ? "You hosted this event"
-                : cardType === "past"
-                ? "You already attended this event."
-                : cardType === "interested"
-                ? "Bookmarked this event"
-                : ""}
+              {(() => {
+                if (cardType === "going") {
+                  return "Going for this event";
+                }
+
+                if (cardType === "hosting") {
+                  if (isBefore(today, eventStartDate)) {
+                    return "You are hosting this event";
+                  } else if (
+                    isSameDay(eventStartDate, today) ||
+                    (isAfter(today, eventStartDate) &&
+                      isBefore(today, eventEndDate))
+                  ) {
+                    return "You are hosting this event";
+                  } else if (isAfter(today, eventEndDate)) {
+                    return "You hosted this event";
+                  }
+                }
+
+                if (cardType === "past") {
+                  return "You already attended this event.";
+                }
+
+                if (cardType === "interested") {
+                  return "Bookmarked this event";
+                }
+
+                return "";
+              })()}
             </p>
           </div>
         )}

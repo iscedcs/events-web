@@ -1,17 +1,18 @@
 "use client";
 
-import React from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { SingleEventProps } from "@/lib/types/event";
-import { Ban, Locate } from "lucide-react";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { Ban } from "lucide-react";
+import Link from "next/link";
+import React from "react";
 
 interface EventMapLocationProps {
   event: SingleEventProps;
 }
 
 const mapOptions = {
-  disableDefaultUI: true, // hides all default controls
-  zoomControl: false, // hides zoom control buttons
+  disableDefaultUI: true,
+  zoomControl: false,
   streetViewControl: true,
   mapTypeControl: false,
   fullscreenControl: false,
@@ -19,7 +20,7 @@ const mapOptions = {
     {
       featureType: "all",
       elementType: "labels",
-      stylers: [{ visibility: "on" }], // hides all text labels
+      stylers: [{ visibility: "on" }],
     },
   ],
 };
@@ -31,13 +32,13 @@ const EventMapLocation: React.FC<EventMapLocationProps> = React.memo(
       width: "100%",
     };
 
-    // Safely convert lat/lng to numbers
     const latitude = Number(event?.latitude);
     const longitude = Number(event?.longitude);
     // const latitude = 6.47903;
     // const longitude = 3.06122;
 
-    // Validate coordinates
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
     if (isNaN(latitude) || isNaN(longitude)) {
       return <p className="text-gray-500">Invalid or missing location data.</p>;
     }
@@ -55,20 +56,29 @@ const EventMapLocation: React.FC<EventMapLocationProps> = React.memo(
         </div>
       );
     }
+
+    // const url = isIOS
+    //   ? `http://maps.apple.com/?q=${latitude},${longitude}`
+    //   : `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+
+    const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+
     return (
       <div className=" rounded-[20px] overflow-hidden">
         <LoadScript
           googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}
         >
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={center}
-            zoom={15}
-            options={mapOptions}
-          >
-            {/* Marker showing event location */}
-            <Marker position={center} />
-          </GoogleMap>
+          <Link target="_blank" href={url}>
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              center={center}
+              zoom={15}
+              options={mapOptions}
+            >
+              {/* Marker showing event location */}
+              <Marker position={center} />
+            </GoogleMap>
+          </Link>
         </LoadScript>
       </div>
     );

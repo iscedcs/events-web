@@ -37,6 +37,7 @@ export const URLS = {
   },
   events: {
     new: "/events/create",
+    delete: "/events/{id}/delete",
     update: "/events/{id}/update",
     all: "/events/all",
     all_events_user: "/events/events",

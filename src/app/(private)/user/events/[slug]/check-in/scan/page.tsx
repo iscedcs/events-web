@@ -52,7 +52,7 @@ export default function QrCodeScanner(props: { params: Params }) {
         attendeeId: data,
         eventId: event?.id ?? "",
       });
-      console.log({ checkIn });
+      // console.log({ checkIn });
       if (checkIn?.statusCode === "409") {
         redirect(
           `${baseUrl}/user/events/${event?.cleanName.toLowerCase()}/check-in/${data}?checked=true`

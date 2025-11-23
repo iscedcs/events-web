@@ -76,7 +76,7 @@ export default function ChatsDisplay() {
     fetchData();
   }, [userId, session]);
 
-  console.log({ attendeeInfoMap, privateChatrooms });
+  // console.log({ attendeeInfoMap, privateChatrooms });
 
   return (
     <div className="w-full relative min-h-[300px]">

@@ -57,7 +57,7 @@ export const useChatSocket = ({
 
     // console.log({ userId });
 
-    console.log({ token });
+    // console.log({ token });
 
     // Connect to the /chat-socket namespace
     const socket = io(

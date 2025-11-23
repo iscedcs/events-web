@@ -26,7 +26,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
   const me = await getCurrentUser();
   const userId = me?.id ?? "";
 
-  console.log({ userId });
+  // console.log({ userId });
 
   const check = await checkEventAttendee(userId, slug);
 
@@ -34,23 +34,24 @@ export default async function EventRegistration({ slug }: { slug: string }) {
   const startDate = stripTime(new Date(event?.startDate ?? now));
   const endDate = stripTime(new Date(event?.endDate ?? now));
 
-  console.log({ check });
+
+  // console.log({ check });
 
   const ticketId =
     event.attendees.find((attendee) => attendee.userId === userId)?.ticketId ??
     "";
   const watchListCheck: boolean = await checkWatchList(event.id);
 
-  console.log({ ticketId });
+  // console.log({ ticketId });
 
-  console.log({ watchListCheck });
+  // console.log({ watchListCheck });
 
-  console.log(event.id);
+  // console.log(event.id);
 
-  console.log({
-    EndDate: endDate,
-    StartDate: startDate,
-  });
+  // console.log({
+  //   EndDate: endDate,
+  //   StartDate: startDate,
+  // });
 
   return (
     <div className=" ">

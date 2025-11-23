@@ -31,7 +31,7 @@ export default function EventSearch() {
       setLoading(true);
       try {
         const results = await searchForEvents(searchValue);
-        setEvents(results || []);
+        setEvents(results?.item || []);
       } catch (e) {
         console.error("Error searching events:", e);
         setEvents([]);
@@ -81,7 +81,7 @@ export default function EventSearch() {
             {loading ? (
               <EventSearchList />
             ) : (
-              <ScrollArea className=" h-[530px]">
+              <ScrollArea className=" h-[100svh]">
                 <div className="   flex gap-5 flex-col ">
                   {events && events.length > 0 ? (
                     events?.map((item) => (

@@ -57,10 +57,10 @@ export default function Chatroom({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const session = useAuthInfo();
 
-  console.log({ session });
+  // console.log({ session });
   const router = useRouter();
 
-  console.log({ attendee });
+  // console.log({ attendee });
 
   const scrollToBottom = useCallback((smooth = true) => {
     const scrollEl = scrollContainerRef.current;
@@ -97,9 +97,9 @@ export default function Chatroom({
       deletedAt: messagePayload.deletedAt ?? null,
     };
 
-    console.log({ message });
+    // console.log({ message });
 
-    console.log({ messagePayload });
+    // console.log({ messagePayload });
 
     setMessages((prev) => {
       // Avoid duplicates
@@ -123,8 +123,8 @@ export default function Chatroom({
     setLastFetchTime(new Date().toISOString());
   }, []);
 
-  console.log({ messages });
-  console.log({ pendingMessages });
+  // console.log({ messages });
+  // console.log({ pendingMessages });
 
   const handleUserJoined = useCallback(
     (data: any) => {
