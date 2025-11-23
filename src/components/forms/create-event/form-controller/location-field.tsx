@@ -116,7 +116,7 @@ export default function LocationField({
             town,
           });
 
-          console.log("Selected Town:", town);
+          // console.log("Selected Town:", town);
         } else {
           onChange({
             address: description,

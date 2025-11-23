@@ -70,7 +70,7 @@ export default function EventRegistrationForm({
     () => `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(),
     [user?.firstName, user?.lastName]
   );
-  console.log({ user });
+  // console.log({ user });
 
   const form = useForm<eventRegistrationFormValues>({
     resolver: zodResolver(eventRegistrationFormSchema),
@@ -99,8 +99,8 @@ export default function EventRegistrationForm({
   }, [user, form]);
 
   const eventTicket: SingleTicketProps[] = event?.tickets ?? [];
-  console.log({ eventTicket });
-  console.log({ selectedTicket });
+  // console.log({ eventTicket });
+  // console.log({ selectedTicket });
 
   const handleSubmit = async (data: eventRegistrationFormValues) => {
     const payload = {
@@ -124,7 +124,7 @@ export default function EventRegistrationForm({
         },
       });
       const data = await res.json();
-      console.log(payload, data);
+      // console.log(payload, data);
       if (res.ok && selectedTicket !== "") {
         toast.success(`You are now an attendee`, {
           description: `You have joined ${ticketInfo?.event?.title} successfully`,

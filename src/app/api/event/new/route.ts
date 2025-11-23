@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       },
     });
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     if (!res.ok) {
       return NextResponse.json(
         { error: "Failed to join event" },

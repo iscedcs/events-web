@@ -17,9 +17,8 @@ export default function UpcomingEvent() {
     setIsLoading(true);
     const fetchEvent = async () => {
       try {
-        const event: SingleEventProps | undefined = await getMostRecentEvent(
-          {}
-        );
+        const event: SingleEventProps | undefined | null =
+          await getMostRecentEvent({});
         if (event === undefined || event === null) {
           setIsLoading(false);
         } else {
@@ -46,7 +45,7 @@ export default function UpcomingEvent() {
         ) : (
           <div className="">
             <div className=" mt-[10px] bg-secondary p-[20px] w-full rounded-[20px] ">
-              {event === undefined ? (
+              {event === undefined || null ? (
                 <div className=" flex items-center flex-col gap-3">
                   <p>No upcoming event yet</p>
                   <Button asChild>

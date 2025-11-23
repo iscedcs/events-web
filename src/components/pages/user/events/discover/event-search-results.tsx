@@ -17,7 +17,7 @@ export default function EventSearchResults({
   return (
     <Link
       href={`/user/events/${cleanName.toLowerCase()}`}
-      className="px-[20px] py-[25px] flex justify-between items-center rounded-[20px] bg-secondary"
+      className="px-[20px] py-[25px] flex justify-between gap-2 items-center rounded-[20px] bg-secondary"
     >
       <div className="">
         <p className=" text-accent text-[14px]">{time}</p>
@@ -34,7 +34,7 @@ export default function EventSearchResults({
           <div className="">
             <PiMapPinFill />
           </div>
-          <p className=" text-[14px] capitalize text-accent">
+          <p className=" line-clamp-2 text-[14px] capitalize text-accent">
             {location.toLowerCase()}
           </p>
         </span>
@@ -60,19 +60,17 @@ export default function EventSearchResults({
           </div>
         )}
       </div>
-      <div className="">
-        <Image
-          src={
-            image?.startsWith("http") || image?.startsWith("/")
-              ? image
-              : "/no-image.png"
-          }
-          alt="image"
-          className=" w-[90px] h-[90px] object-cover rounded-[20px]"
-          width={"1000"}
-          height={"1000"}
-        />
-      </div>
+      <Image
+        src={
+          image?.startsWith("http") || image?.startsWith("/")
+            ? image
+            : "/no-image.png"
+        }
+        alt="image"
+        className=" w-[90px] h-[90px] object-cover rounded-[20px]"
+        width={"1000"}
+        height={"1000"}
+      />
     </Link>
   );
 }

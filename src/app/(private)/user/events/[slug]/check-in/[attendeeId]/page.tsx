@@ -26,8 +26,8 @@ export default async function CheckIn(props: {
 
   // const checkin
 
-  console.log({ attendeeInfo });
-  console.log({ checked });
+  // console.log({ attendeeInfo });
+  // console.log({ checked });
 
   return (
     <div className=" px-[10px] ">

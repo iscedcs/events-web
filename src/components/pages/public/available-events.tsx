@@ -10,7 +10,7 @@ export default async function AvailableEvents() {
     page: 1,
   });
 
-  console.log({ events });
+  // console.log({ events });
   return (
     <>
       {events?.totalRecords === 0 || events === null || events === undefined ? (

@@ -23,7 +23,7 @@ export default async function SingleEvent(props: { params: Params }) {
   const headerUser = userId ? await getUserByID(userId) : null;
 
   const isOwner: boolean = !!userId && userId === event.userId;
-  console.log({ isOwner });
+  // console.log({ isOwner });
   return (
     <div>
       <Header hasBack title={event?.title.toLowerCase()} user={headerUser} />

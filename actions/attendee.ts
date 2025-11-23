@@ -107,7 +107,7 @@ export const checkInAttendeeWithID = async ({
     });
 
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
 
     if (data) {
       if (data.statusCode === 409) {
@@ -151,7 +151,7 @@ export const checkInAttendeeWithToken = async ({
     token,
   };
 
-  console.log({ payload });
+  // console.log({ payload });
 
   try {
     const res = await fetch(url, {
@@ -165,7 +165,7 @@ export const checkInAttendeeWithToken = async ({
 
     const data = await res.json();
     const attendee: SingleAttendeeProps = data.data;
-    console.log({ data });
+    // console.log({ data });
 
     if (data) {
       if (data.statusCode === 409) {
@@ -214,7 +214,7 @@ export const getAttendeeByToken = async (token: string) => {
     });
 
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     const attendee: SingleAttendeeProps = data.data;
     const event: SingleEventProps = data.data.event;
 
