@@ -28,7 +28,7 @@ export async function PATCH(req: Request) {
     time: requestPayload.time,
     host: requestPayload.host,
     categories: requestPayload.categories,
-    audienceSize: requestPayload.audienceSize,
+    capacity: requestPayload.capacity,
     tickets: requestPayload.tickets?.map((ticket) => ({
       amount: ticket?.amount,
       title: ticket?.title,
