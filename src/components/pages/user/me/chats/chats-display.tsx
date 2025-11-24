@@ -92,7 +92,7 @@ export default function ChatsDisplay() {
             className="data-[state=active]:bg-white data-[state=active]:text-black py-[8px] rounded-full"
             value="group"
           >
-            Event Chats
+            Group Chats
           </TabsTrigger>
         </TabsList>
 
@@ -126,7 +126,7 @@ export default function ChatsDisplay() {
         <TabsContent value="group">
           <div className="flex flex-col items-center justify-center gap-3 mt-10 text-accent">
             <MessageCircleDashed className="w-14 h-14" />
-            <p>No event chatrooms yet</p>
+            <p>No group chatrooms yet</p>
           </div>
         </TabsContent>
       </Tabs>

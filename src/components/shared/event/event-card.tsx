@@ -55,7 +55,7 @@ export default function EventCard({
                 <Link href={link}>Details</Link>
               </Button>
             </div>
-          ) : cardType === "interested" ? (
+          ) : cardType === "interested" || cardType === "public" ? (
             <div className="">
               <Button asChild>
                 <Link href={link}>Event Details</Link>

@@ -56,6 +56,7 @@ export default function EditEventForm({ event }: { event: SingleEventProps }) {
       longitude: event.longitude ?? 0,
       town: event.town ?? "",
       image: event.image ?? "",
+      endTime: event.endTime ?? "",
       startDate: event.startDate.toString() ?? "",
       endDate: event.endDate.toString() ?? "",
       isPublic: event.isPublic ?? true,
@@ -63,7 +64,7 @@ export default function EditEventForm({ event }: { event: SingleEventProps }) {
       host: event.host ?? "",
       categories: event.categories ?? [],
       hasFreeTickets: true,
-      audienceSize: event.audienceSize ?? 0,
+      capacity: event.capacity ?? 0,
       tickets: event.tickets ?? [],
     },
     resolver: zodResolver(eventCreationSchema),
@@ -79,7 +80,7 @@ export default function EditEventForm({ event }: { event: SingleEventProps }) {
     // console.log("Form submitted", data);
     const payload = {
       id: event.id,
-      audienceSize: data.audienceSize,
+      capacity: data.capacity,
       categories: data.categories,
       description: data.description,
       endDate: data.endDate,
@@ -294,7 +295,7 @@ export default function EditEventForm({ event }: { event: SingleEventProps }) {
 
               <Controller
                 control={form.control}
-                name="audienceSize"
+                name="capacity"
                 render={({ field }) => (
                   <AudienceCapacity
                     onChange={field.onChange}
