@@ -94,8 +94,6 @@ model Event {
   platformLink       String?
   platformName       String?
   galleryLink        String?
-  qrCode             String?      @unique
-  qrCodeUrl          String?
   capacity           Int?         @default(0)
   host               String?
   time               String?
@@ -103,6 +101,7 @@ model Event {
   longitude          Float?
   isPublic           Boolean      @default(true)
   registrationClosed Boolean      @default(false)
+  endTime            String?
   Attendee           Attendee[]
   ChatRoom           ChatRoom[]
   FeedPost           FeedPost[]

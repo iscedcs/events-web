@@ -29,6 +29,7 @@ export interface SingleEventProps {
   isPublic: boolean;
   galleryLink: string;
   createdAt: Date;
+  endTime: string;
   deletedAt: Date;
   updatedAt: Date;
   audienceSize: number;
@@ -39,6 +40,7 @@ export interface SingleEventProps {
   platformName: string;
   galleries: SingleGallaryProps[];
   tickets: SingleTicketProps[];
+  attendeeCount: number;
   attendees: SingleAttendeeProps[];
 }
 
