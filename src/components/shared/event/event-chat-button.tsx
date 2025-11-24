@@ -12,9 +12,9 @@ export default function EventChatButton({
     <div>
       <Link
         href={`/user/events/${event?.cleanName.toLowerCase()}/chat`}
-        className=" flex gap-4 items-center justify-between bg-secondary mt-[56px] py-[10px]  px-[10px] "
+        className=" flex gap-4 items-center justify-between  bg-secondary mt-[56px] py-[10px]  px-[10px] "
       >
-        <div className="">
+        <div className=" flex gap-4 items-center">
           <Image
             src={
               event?.image?.startsWith("http") || event?.image?.startsWith("/")
@@ -26,12 +26,12 @@ export default function EventChatButton({
             height={"1000"}
             className=" w-[48px] border border-white h-[48px] rounded-full object-cover"
           />
-        </div>
-        <div className="">
-          <p className=" text-[16px] font-medium">Event Chat</p>
-          <p className=" text-accent text-[12px]">
-            Join others and participate in event discussions.
-          </p>
+          <div className="">
+            <p className=" text-[16px] font-medium">Event Chat</p>
+            <p className=" text-accent text-[12px]">
+              Join others and participate in event discussions.
+            </p>
+          </div>
         </div>
         <div className="">
           <MdOutlineChat className=" w-[20px] h-[20px]" />
