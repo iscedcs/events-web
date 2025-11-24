@@ -242,8 +242,12 @@ export default function ChatBubble({
               {message.sender.name}
             </p>
           )}
-          {message.isFromCreator && (
-            <GiQueenCrown className=" w-3 h-3 text-[#F5BC0D]" />
+          {!isPrivate && (
+            <>
+              {message.isFromCreator && (
+                <GiQueenCrown className=" w-3 h-3 text-[#F5BC0D]" />
+              )}
+            </>
           )}
           <p className="text-accent text-[12px]">{timestamp}</p>
         </div>
