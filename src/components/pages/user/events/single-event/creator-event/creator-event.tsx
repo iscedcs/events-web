@@ -64,11 +64,11 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
 
   return (
     <>
-      {isBefore(eventEndDate, today) && <EventChatButton event={data?.event} />}
+      {isBefore(today, eventEndDate) && <EventChatButton event={data?.event} />}
       <div
         className={`
         ${
-          isBefore(eventEndDate, today) ? " py-[20px]" : " pt-[70px]"
+          isBefore(today, eventEndDate) ? " py-[20px]" : " pt-[70px]"
         } px-[10px]`}
       >
         <div className="">
