@@ -39,7 +39,7 @@ export default function EventDescriptionField({
               value={value?.toString() || ""}
               onChange={(e) => onChange(e.target.value)}
               placeholder={placeholder}
-              className="focus-visible:ring-0 border border-[#2a2a2a] rounded-[8px] h-[300px] mt-[10px] w-full break-all bg-[#151515] resize-none overflow-hidden"
+              className=" overflow-scroll focus-visible:ring-0 border border-[#2a2a2a] rounded-[8px] h-[300px] mt-[10px] w-full break-all bg-[#151515] resize-none"
             />
           </div>
         </DialogContent>

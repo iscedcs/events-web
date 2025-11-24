@@ -28,7 +28,7 @@ export default async function AvailableEvents() {
                 id={event.id}
                 endDate={event.endDate}
                 image={event.image}
-                link={`/user/events/${event.cleanName.toLowerCase()}`}
+                link={`/event/${event.cleanName.toLowerCase()}`}
                 startDate={event.startDate}
                 time={event.time}
                 title={event.title}

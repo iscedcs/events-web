@@ -58,7 +58,7 @@ export const eventCreationSchema = z
     longitude: z.number().refine((val) => val >= -180 && val <= 180, {
       message: "Longitude must be between -180 and 180",
     }),
-    audienceSize: z
+    capacity: z
       .number()
       .int("Capacity must be a whole number")
       .positive("Capacity must be greater than 0"),
@@ -74,19 +74,20 @@ export const eventCreationSchema = z
       .string()
       .refine((val) => !isNaN(Date.parse(val)), "Event start date is not valid")
       .refine((val) => {
-        const selected = new Date(val + "T23:59:59");
+        const selected = new Date(val);
         const now = new Date();
-        return selected >= now;
+        return isBefore(now, selected);
       }, "Start date must be in the future"),
     endDate: z
       .string()
       .refine((val) => !isNaN(Date.parse(val)), "Event end date is not valid")
       .refine((val) => {
-        const selected = new Date(val + "T23:59:59");
+        const selected = new Date(val);
         const now = new Date();
-        return selected >= now;
+        return isBefore(now, selected);
       }, "End date must be in the future"),
     time: z.string().min(2, "Event time is not valid"),
+    endTime: z.string().min(2, "Event end time is not valid"),
     tickets: z
       .array(
         z

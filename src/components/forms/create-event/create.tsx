@@ -63,8 +63,9 @@ export default function EventCreationForm() {
       host: "",
       categories: [],
       hasFreeTickets: true,
-      audienceSize: 0,
+      capacity: 0,
       tickets: [],
+      endTime: "",
     },
     resolver: zodResolver(eventCreationSchema),
     mode: "all",
@@ -78,7 +79,7 @@ export default function EventCreationForm() {
     setIsLoading(true);
     // console.log("Form submitted", data);
     const payload: eventCreationFormValues = {
-      audienceSize: data.audienceSize,
+      capacity: data.capacity,
       categories: data.categories,
       description: data.description,
       endDate: data.endDate,
@@ -94,6 +95,7 @@ export default function EventCreationForm() {
       image: data.image,
       tickets: data.tickets,
       hasFreeTickets: true,
+      endTime: data.endTime,
     };
 
     try {
@@ -294,7 +296,7 @@ export default function EventCreationForm() {
 
               <Controller
                 control={form.control}
-                name="audienceSize"
+                name="capacity"
                 render={({ field }) => (
                   <AudienceCapacity
                     onChange={field.onChange}

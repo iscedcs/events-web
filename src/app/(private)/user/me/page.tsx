@@ -33,7 +33,7 @@ export default async function Profile() {
         <div className=" flex flex-row justify-between items-center  mt-[10px] ">
           <div className="flex flex-row gap-2">
             <Button asChild>
-              <Link href="events?tab=create">Host Events</Link>
+              <Link href="events?tab=create">Host Event</Link>
             </Button>
             <Button asChild className=" bg-[#86868643]" variant={"outline"}>
               <Link href="events?tab=discover">Discover Events</Link>

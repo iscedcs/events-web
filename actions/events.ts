@@ -419,9 +419,12 @@ export const searchForEvents = async (value: string) => {
     const item: SingleEventProps[] = data.data.events.data;
 
     const showPublic = item.filter((e) => {
-      e.isPublic;
+      return e.isPublic === true;
     });
-    if (data.success === true) {
+
+    // console.log({ showPublic });
+
+    if (res.ok) {
       return { item: showPublic };
     }
     return null;

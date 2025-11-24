@@ -22,9 +22,10 @@ export async function POST(req: Request) {
     startDate: requestPayload.startDate,
     endDate: requestPayload.endDate,
     time: requestPayload.time,
+    endTime: requestPayload.endTime,
     host: requestPayload.host,
     categories: requestPayload.categories,
-    audienceSize: requestPayload.audienceSize,
+    capacity: requestPayload.capacity,
     tickets: requestPayload.tickets?.map((ticket) => ({
       amount: ticket?.amount,
       title: ticket?.title,
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
       },
     });
     const data = await res.json();
-    // console.log({ data });
+    console.log({ data });
     if (!res.ok) {
       return NextResponse.json(
         { error: "Failed to join event" },
