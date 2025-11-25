@@ -63,7 +63,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
         unoptimized
         className=" relative w-screen h-screen object-cover"
       />
-      <div className=" absolute top-0 h-screen left-0 w-full z-40 bg-[#000000e7] ">
+      <div className=" absolute top-0 h-screen left-0 w-full z-40 bg-[#000000f3] ">
         <ScrollArea className=" h-[100svh]">
           <div className=" ">
             {check?.check && isBefore(now, endDate) && (
