@@ -62,6 +62,8 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
       break;
   }
 
+  const totalValue = tickets?.total - data?.totalAttendees;
+
   return (
     <>
       {isBefore(today, eventEndDate) && <EventChatButton event={data?.event} />}
@@ -157,7 +159,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
                 <MdFreeBreakfast className=" w-[25px] h-[25px]" />
               </div>
               <div className="">
-                <p>{formatWithCommas(tickets?.free ?? 0)}</p>
+                <p>{formatWithCommas(totalValue)}</p>
                 <p className=" text-accent">Free tickets</p>
               </div>
             </div>
@@ -166,7 +168,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
                 <FaHourglass className=" w-[25px] h-[25px]" />
               </div>
               <div className="">
-                <p>{formatWithCommas(tickets?.available ?? 0)}</p>
+                <p>{formatWithCommas(totalValue)}</p>
                 <p className=" text-accent">Pending tickets</p>
               </div>
             </div>
@@ -174,7 +176,14 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
         </div>
 
         <div className=" mt-[20px]">
-          <p className=" text-[24px]">Attendees</p>
+          <div className=" flex justify-between items-center">
+            <p className=" text-[24px]">Attendees</p>
+            {data?.attendees.length === 10 && (
+              <Link href={`${extraInfo.cleanName.toLowerCase()}/attendees`}>
+                <Button>View all</Button>
+              </Link>
+            )}
+          </div>
           <>
             {data?.attendees.length !== 0 ? (
               <div className=" mt-[5px] flex  flex-col">

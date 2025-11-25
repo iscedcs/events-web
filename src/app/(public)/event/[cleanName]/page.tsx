@@ -1,22 +1,58 @@
-import React from "react";
-import { getEventsByCleanName } from "../../../../../actions/events";
+import EventMapLocation from "@/components/pages/user/events/single-event/event-registration/event-map-location";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
 import { SingleEventProps } from "@/lib/types/event";
 import { stripTime } from "@/lib/utils";
 import { format, isAfter, isBefore, isEqual } from "date-fns";
 import Image from "next/image";
-import { FaUserCircle } from "react-icons/fa";
 import Link from "next/link";
-import { AiFillInstagram } from "react-icons/ai";
-import { BsGlobe } from "react-icons/bs";
-import { IoLogoLinkedin } from "react-icons/io";
-import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
-import { PiMapPinFill } from "react-icons/pi";
-import { Button } from "@/components/ui/button";
-import EventMapLocation from "@/components/pages/user/events/single-event/event-registration/event-map-location";
+import { FaUserCircle } from "react-icons/fa";
 import { HiTicket } from "react-icons/hi";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { PiMapPinFill } from "react-icons/pi";
+import { getEventsByCleanName } from "../../../../../actions/events";
+import { Metadata, ResolvingMetadata } from "next";
 
 type Params = Promise<{ cleanName: string }>;
+
+export const generateMetadata = async (
+  props: { params: Params },
+  parent: ResolvingMetadata
+) => {
+  const params = await props.params;
+  const formattedProps = encodeURIComponent(params.cleanName);
+  const event: SingleEventProps = await getEventsByCleanName(
+    formattedProps ?? ""
+  );
+
+  if (event === null || event === undefined) {
+    return {
+      title: "Page not found",
+      description: "This page you are trying to access does not exist.",
+    };
+  }
+
+  return {
+    title: event.title,
+    description: `Read more about this event by tapping the link.`,
+    openGraph: {
+      images: [
+        {
+          url: event.image,
+          width: 1200,
+          height: 630,
+        },
+      ],
+      twitter: {
+        card: "summary_large_image",
+        title: event.title,
+        description: `Read more about this event by tapping the link.`,
+        images: [event.image],
+      },
+    },
+  };
+};
+
 export default async function SingleEventPage(props: { params: Params }) {
   const params = await props.params;
   const formattedProps = encodeURIComponent(params.cleanName);
@@ -38,7 +74,7 @@ export default async function SingleEventPage(props: { params: Params }) {
         unoptimized
         className=" relative w-screen h-screen object-cover"
       />
-      <div className=" absolute top-0 h-screen left-0 w-full z-50 bg-[#000000e7] ">
+      <div className=" absolute top-0 h-screen left-0 w-full z-50 bg-[#000000f3] ">
         <ScrollArea className=" h-[100svh]">
           <div className=" px-[10px]">
             <div
@@ -88,7 +124,7 @@ export default async function SingleEventPage(props: { params: Params }) {
                       </p>
                     </div>
                   </div>
-                  <div className=" flex gap-2">
+                  {/* <div className=" flex gap-2">
                     <Link href={""}>
                       <AiFillInstagram />
                     </Link>
@@ -98,7 +134,7 @@ export default async function SingleEventPage(props: { params: Params }) {
                     <Link href={""}>
                       <IoLogoLinkedin />
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
                 <div className=" flex items-center gap-2 mt-[20px]">
                   <SingleDayDisplay date={event.startDate} />

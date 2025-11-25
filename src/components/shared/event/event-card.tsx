@@ -32,7 +32,7 @@ export default function EventCard({
 
   return (
     <>
-      <div className="">
+      <Link href={link} className="">
         <div className=" flex items-center justify-between">
           <div className=" flex flex-col">
             <div className=" flex gap-2 items-start">
@@ -46,26 +46,24 @@ export default function EventCard({
           {cardType === "going" ? (
             <div className="">
               <Button asChild>
-                <Link href={link}>My ticket</Link>
+                <p>My ticket</p>
               </Button>
             </div>
           ) : cardType === "hosting" ? (
             <div className="">
               <Button asChild>
-                <Link href={link}>Details</Link>
+                <p>Details</p>
               </Button>
             </div>
           ) : cardType === "interested" || cardType === "public" ? (
             <div className="">
               <Button asChild>
-                <Link href={link}>Event Details</Link>
+                <p>Event Details</p>
               </Button>
             </div>
           ) : cardType === "past" ? (
             <div className="">
-              <Link className=" text-[14px] underline" href={link}>
-                Past events
-              </Link>
+              <p className=" text-[14px] underline">Past events</p>
             </div>
           ) : null}
         </div>
@@ -138,7 +136,7 @@ export default function EventCard({
               <p className=" text-[14px]">{host ?? "No host name"}</p>
             </div>
           </div>
-          <div className=" flex gap-2">
+          {/* <div className=" flex gap-2">
             <Link href={""}>
               <AiFillInstagram />
             </Link>
@@ -148,9 +146,9 @@ export default function EventCard({
             <Link href={""}>
               <IoLogoLinkedin />
             </Link>
-          </div>
+          </div> */}
         </div>
-      </div>
+      </Link>
     </>
   );
 }

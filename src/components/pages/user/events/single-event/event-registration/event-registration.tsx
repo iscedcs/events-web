@@ -63,7 +63,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
         unoptimized
         className=" relative w-screen h-screen object-cover"
       />
-      <div className=" absolute top-0 h-screen left-0 w-full z-40 bg-[#000000e7] ">
+      <div className=" absolute top-0 h-screen left-0 w-full z-40 bg-[#000000f3] ">
         <ScrollArea className=" h-[100svh]">
           <div className=" ">
             {check?.check && isBefore(now, endDate) && (
@@ -142,7 +142,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                         </p>
                       </div>
                     </div>
-                    <div className=" flex gap-2">
+                    {/* <div className=" flex gap-2">
                       <Link href={""}>
                         <AiFillInstagram />
                       </Link>
@@ -152,7 +152,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                       <Link href={""}>
                         <IoLogoLinkedin />
                       </Link>
-                    </div>
+                    </div> */}
                   </div>
                   <div className=" flex items-center gap-2 mt-[20px]">
                     <SingleDayDisplay date={event.startDate} />
