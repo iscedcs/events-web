@@ -88,7 +88,7 @@ export default async function SingleEventPage(props: { params: Params }) {
                       </p>
                     </div>
                   </div>
-                  <div className=" flex gap-2">
+                  {/* <div className=" flex gap-2">
                     <Link href={""}>
                       <AiFillInstagram />
                     </Link>
@@ -98,7 +98,7 @@ export default async function SingleEventPage(props: { params: Params }) {
                     <Link href={""}>
                       <IoLogoLinkedin />
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
                 <div className=" flex items-center gap-2 mt-[20px]">
                   <SingleDayDisplay date={event.startDate} />

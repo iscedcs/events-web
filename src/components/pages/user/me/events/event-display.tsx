@@ -20,8 +20,12 @@ export default function EventDisplay() {
         if (data) {
           setLoading(false);
           setEvent(data.events as SingleEventProps[]);
+        } else {
+          setLoading(false);
         }
       } catch (e: any) {
+        setLoading(false);
+      } finally {
         setLoading(false);
       }
     };
