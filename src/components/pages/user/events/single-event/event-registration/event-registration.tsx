@@ -142,7 +142,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                         </p>
                       </div>
                     </div>
-                    <div className=" flex gap-2">
+                    {/* <div className=" flex gap-2">
                       <Link href={""}>
                         <AiFillInstagram />
                       </Link>
@@ -152,7 +152,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                       <Link href={""}>
                         <IoLogoLinkedin />
                       </Link>
-                    </div>
+                    </div> */}
                   </div>
                   <div className=" flex items-center gap-2 mt-[20px]">
                     <SingleDayDisplay date={event.startDate} />
