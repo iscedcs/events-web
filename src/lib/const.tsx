@@ -756,7 +756,7 @@ export const ACCOUNTSETTINGS = [
   {
     icon: <Pencil />,
     label: "Edit profile",
-    path: "me/edit",
+    path: "",
   },
   {
     icon: <Bell />,

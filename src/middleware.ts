@@ -1,6 +1,5 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-import { buildAuthLoginUrl } from "./lib/auth-urls";
 import {
   authRoutes,
   defaultBusinessUserRoute,
@@ -8,6 +7,7 @@ import {
   protectedRoutes,
   publicRoutes,
 } from "../routes";
+import { buildAuthLoginUrl } from "./lib/auth-urls";
 
 function isProtectedPath(pathname: string) {
   return protectedRoutes.some(
