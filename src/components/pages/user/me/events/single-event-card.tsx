@@ -29,7 +29,7 @@ export default function SingleEventCard({
     >
       <Image
         className=" w-[100px] rounded-[20px] h-[100px] object-cover"
-        src={image ? image : "/no-image.png"}
+        src={image ? image : "/resources/no-image.png"}
         alt="image"
         width={"1000"}
         height={"1000"}

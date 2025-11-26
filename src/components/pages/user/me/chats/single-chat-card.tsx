@@ -25,7 +25,7 @@ export default function SingleChatCard({
           <div className=" w-full flex items-center flex-row gap-2">
             {image !== null ? (
               <Image
-                src={image ?? "/no-profile.jpg"}
+                src={image ?? "/resources/no-profile.jpg"}
                 alt="image"
                 width={"50"}
                 height={"50"}

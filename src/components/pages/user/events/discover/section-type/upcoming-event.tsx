@@ -65,7 +65,7 @@ export default function UpcomingEvent() {
                       event?.image?.startsWith("http") ||
                       event?.image?.startsWith("/")
                         ? event?.image
-                        : "/no-image.png"
+                        : "/resources/no-image.png"
                     }
                     width={"1000"}
                     height={"1000"}

@@ -47,7 +47,7 @@ export default function Header({ title, user, hasBack }: HederType) {
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-2">
               <Image
-                src={user?.displayPicture ?? "/no-profile.jpg"}
+                src={user?.displayPicture ?? "/resources/no-profile.jpg"}
                 width={"1000"}
                 height={"1000"}-6+-+
                 alt="image"
@@ -64,7 +64,7 @@ export default function Header({ title, user, hasBack }: HederType) {
         <Sheet>
           <SheetTrigger asChild>
             <Image
-              src={user?.displayPicture ?? "/no-profile.jpg"}
+              src={user?.displayPicture ?? "/resources/no-profile.jpg"}
               width={"1000"}
               height={"1000"}
               alt="image"
@@ -75,7 +75,7 @@ export default function Header({ title, user, hasBack }: HederType) {
             <div className="">
               <div className=" flex items-center gap-4">
                 <Image
-                  src={user?.displayPicture ?? "/no-profile.jpg"}
+                  src={user?.displayPicture ?? "/resources/no-profile.jpg"}
                   width={"1000"}
                   height={"1000"}
                   alt="image"

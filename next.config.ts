@@ -1,24 +1,20 @@
 import type { NextConfig } from "next";
 
+const withPWA = require("next-pwa")({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+  skipWaiting: true,
+});
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ["@repo/ui"],
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-        port: "",
-        pathname: "/**",
-      },
+      { protocol: "https", hostname: "**", port: "", pathname: "/**" },
     ],
-  },
-  webpack: (config) => {
-    config.cache = {
-      type: "memory", // default is 'filesystem'
-    };
-    return config;
   },
 };
 
-export default nextConfig;
+module.exports = withPWA(nextConfig);

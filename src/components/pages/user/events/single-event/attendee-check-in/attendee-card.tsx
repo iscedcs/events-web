@@ -48,7 +48,11 @@ export default async function AttendeeCard({
         <div className=" flex flex-col gap-3 py-[20px] justify-center  items-center">
           <Image
             alt="dp"
-            src={attendeeInfo.image ? attendeeInfo.image : "/no-profile.jpg"}
+            src={
+              attendeeInfo.image
+                ? attendeeInfo.image
+                : "/resources/no-profile.jpg"
+            }
             width={"100"}
             height={"100"}
             className=" w-[100px] border-4 border-success h-[100px] rounded-full object-cover"
