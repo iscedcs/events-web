@@ -6,10 +6,7 @@ import { EventCardProps } from "@/lib/types/event";
 import { format, isAfter, isBefore, isSameDay } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { AiFillInstagram } from "react-icons/ai";
-import { BsGlobe } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
-import { IoLogoLinkedin } from "react-icons/io";
 
 export default function EventCard({
   id,
@@ -72,7 +69,7 @@ export default function EventCard({
             src={
               image?.startsWith("http") || image?.startsWith("/")
                 ? image
-                : "/no-image.png"
+                : "/resources/no-image.png"
             }
             alt="image"
             width={"1000"}

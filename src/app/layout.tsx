@@ -2,8 +2,9 @@ import DesktopView from "@/components/shared/layout/desktop-view";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Inter_Tight } from "next/font/google";
-import "./globals.css";
 import NextTopLoader from "nextjs-toploader";
+import "./globals.css";
+import WebAppDownload from "@/components/shared/layout/web-app-download";
 
 const interTight = Inter_Tight({
   variable: "--inter-tight",
@@ -12,9 +13,13 @@ const interTight = Inter_Tight({
 });
 
 export const metadata: Metadata = {
-  title: "Welcome to ISCE Events",
+  manifest: "/manifest.json",
+  title: {
+    default: "Welcome to ISCE Events",
+    template: "%s | ISCE Events",
+  },
   description:
-    "Your go to for hosting events and joining events of your choice",
+    "Plan, organize, and track events with ease using ISCE Events. A modern event management platform designed for seamless ticketing, promotion, and real-time analytics.",
 };
 
 export default function RootLayout({
@@ -34,6 +39,7 @@ export default function RootLayout({
           <div className=" md:hidden lg:hidden xl:hidden 2xl:hidden">
             {children}
           </div>
+          <WebAppDownload />
         </div>
       </body>
     </html>

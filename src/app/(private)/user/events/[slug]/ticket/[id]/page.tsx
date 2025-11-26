@@ -67,7 +67,7 @@ export default async function Ticket(props: { params: Params }) {
                 ticket.event?.image?.startsWith("http") ||
                 ticket.event?.image?.startsWith("/")
                   ? ticket.event?.image
-                  : "/no-image.png"
+                  : "/resources/no-image.png"
               }
               width={1000}
               height={1000}

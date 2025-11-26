@@ -1,14 +1,12 @@
 import EventChatButton from "@/components/shared/event/event-chat-button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
 import { SingleEventProps } from "@/lib/types/event";
 import { stripTime } from "@/lib/utils";
 import { format, isAfter, isBefore, isEqual } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { AiFillInstagram } from "react-icons/ai";
-import { BsGlobe } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
-import { IoLogoLinkedin } from "react-icons/io";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { PiMapPinFill } from "react-icons/pi";
 import { checkEventAttendee } from "../../../../../../../actions/attendee";
@@ -20,7 +18,6 @@ import ClosedRegistration from "./closed-registration";
 import EventMapLocation from "./event-map-location";
 import EventRegistrationCTA from "./event-registration-cta";
 import ViewTicket from "./view-ticket";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default async function EventRegistration({ slug }: { slug: string }) {
   const event: SingleEventProps = await getEventsByCleanName(slug ?? "");
@@ -56,7 +53,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
   return (
     <div className=" relative">
       <Image
-        src={"/background-screen.gif"}
+        src={"/resources/background-screen.gif"}
         alt="image"
         width={"1000"}
         height={"1000"}
@@ -105,7 +102,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                     event.image?.startsWith("http") ||
                     event.image?.startsWith("/")
                       ? event.image
-                      : "/no-image.png"
+                      : "/resources/no-image.png"
                   }
                   alt="image"
                   width={"1000"}

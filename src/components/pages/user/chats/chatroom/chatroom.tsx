@@ -404,7 +404,7 @@ export default function Chatroom({
         createdAt: tempTimestamp,
         creator_id: userId,
         deletedAt: null,
-        isFromCreator: attendee === null,
+        isFromCreator: attendee === null || attendee === undefined,
       };
 
       console.log({ optimisticMessage });
@@ -705,7 +705,7 @@ export default function Chatroom({
               </svg>
               <Image
                 alt="image"
-                src={"/no-profile.jpg"}
+                src={"/resources/no-profile.jpg"}
                 width={"1000"}
                 height={"1000"}
                 className=" w-[80px] top-1/2 -translate-x-1/2 left-1/2  -translate-y-1/2 absolute h-[80px] rounded-full object-cover"
@@ -728,7 +728,7 @@ export default function Chatroom({
               </svg>
               <Image
                 alt="image"
-                src={"/no-profile.jpg"}
+                src={"/resources/no-profile.jpg"}
                 width={"1000"}
                 height={"1000"}
                 className=" w-[80px] top-1/2 -translate-x-1/2 left-1/2  -translate-y-1/2 absolute h-[80px] rounded-full object-cover"

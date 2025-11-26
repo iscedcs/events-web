@@ -64,7 +64,7 @@ export default function ChatBubble({
           width={30}
           height={30}
           className="rounded-full w-[30px] h-[30px] object-cover"
-          src={message.sender.displayPicture ?? "/no-profile.jpg"}
+          src={message.sender.displayPicture ?? "/resources/no-profile.jpg"}
         /> */}
         <div className="flex flex-col items-end">
           <div className="flex gap-3">
@@ -228,7 +228,7 @@ export default function ChatBubble({
           width={20}
           height={20}
           className="rounded-full w-[20px] h-[20px] object-cover"
-          src={message.sender.displayPicture ?? "/no-profile.jpg"}
+          src={message.sender.displayPicture ?? "/resources/no-profile.jpg"}
         />
       )}
       <div className="">

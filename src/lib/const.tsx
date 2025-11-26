@@ -739,15 +739,15 @@ export const INITIALTICKETS: InitialTicketProps[] = [
 
 export const DUMMYATTENDEES = [
   {
-    image: "/no-profile.jpg",
+    image: "/resources/no-profile.jpg",
     name: "John Doe",
   },
   {
-    image: "/no-profile.jpg",
+    image: "/resources/no-profile.jpg",
     name: "John Doe 1",
   },
   {
-    image: "/no-profile.jpg",
+    image: "/resources/no-profile.jpg",
     name: "John Doe 2",
   },
 ];
