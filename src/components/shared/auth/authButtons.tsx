@@ -31,7 +31,7 @@ export function SignUp() {
 
     // Build IdP sign-in URL with redirect_uri
     const base = process.env.NEXT_PUBLIC_AUTH_BASE_URL!;
-    const path = "/sign-up";
+    const path = "/register";
     const authUrl = new URL(path, base);
     authUrl.searchParams.set("redirect_uri", back);
 

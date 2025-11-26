@@ -1,7 +1,7 @@
 ///lib/auth-urls.ts
 export function buildAuthLoginUrl(redirectTo: string) {
   const base = process.env.NEXT_PUBLIC_AUTH_BASE_URL!;
-  const path = process.env.NEXT_PUBLIC_AUTH_LOGIN_PATH || "/sign-in";
+  const path = "/register ";
 
   // Allowlist domain check (prevent open redirect)
   const appBase = process.env.NEXT_PUBLIC_URL!;
