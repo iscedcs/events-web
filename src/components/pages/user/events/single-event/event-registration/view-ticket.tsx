@@ -22,7 +22,7 @@ export default function ViewTicket({
           <div className="">
             <Image
               alt="image"
-              src={"/loading-screen.gif"}
+              src={"/resources/loading-screen.gif"}
               width={"1000"}
               height={"1000"}
               className=" w-[40px] h-[40px] object-cover rounded-full"

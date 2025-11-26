@@ -46,7 +46,7 @@ export default function EventSearchResults({
                 src={
                   image?.startsWith("http") || image?.startsWith("/")
                     ? image
-                    : "/no-image.png"
+                    : "/resources/no-image.png"
                 }
                 alt="image"
                 width={"1000"}
@@ -64,7 +64,7 @@ export default function EventSearchResults({
         src={
           image?.startsWith("http") || image?.startsWith("/")
             ? image
-            : "/no-image.png"
+            : "/resources/no-image.png"
         }
         alt="image"
         className=" w-[90px] h-[90px] object-cover rounded-[20px]"

@@ -53,7 +53,7 @@ export default function NearbyEventCard({
               src={
                 image?.startsWith("http") || image?.startsWith("/")
                   ? image
-                  : "/no-image.png"
+                  : "/resources/no-image.png"
               }
               alt="image"
               width={"1000"}

@@ -22,7 +22,7 @@ export default function TrendingEventCard({
           src={
             image?.startsWith("http") || image?.startsWith("/")
               ? image
-              : "/no-image.png"
+              : "/resources/no-image.png"
           }
           width={1000}
           height={1000}

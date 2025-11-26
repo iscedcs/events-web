@@ -5,13 +5,13 @@ import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
 import { SingleEventProps } from "@/lib/types/event";
 import { stripTime } from "@/lib/utils";
 import { format, isAfter, isBefore, isEqual } from "date-fns";
+import { ResolvingMetadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { FaUserCircle } from "react-icons/fa";
 import { HiTicket } from "react-icons/hi";
 import { PiMapPinFill } from "react-icons/pi";
 import { getEventsByCleanName } from "../../../../../actions/events";
-import { Metadata, ResolvingMetadata } from "next";
 
 type Params = Promise<{ cleanName: string }>;
 
@@ -67,7 +67,7 @@ export default async function SingleEventPage(props: { params: Params }) {
   return (
     <div className=" relative">
       <Image
-        src={"/background-screen.gif"}
+        src={"/resources/background-screen.gif"}
         alt="image"
         width={"1000"}
         height={"1000"}
@@ -89,7 +89,7 @@ export default async function SingleEventPage(props: { params: Params }) {
                   event.image?.startsWith("http") ||
                   event.image?.startsWith("/")
                     ? event.image
-                    : "/no-image.png"
+                    : "/resources/no-image.png"
                 }
                 alt="image"
                 width={"1000"}

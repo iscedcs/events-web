@@ -19,7 +19,7 @@ export default function EventChatButton({
             src={
               event?.image?.startsWith("http") || event?.image?.startsWith("/")
                 ? event.image
-                : "/no-image.png"
+                : "/resources/no-image.png"
             }
             alt="image"
             width={"1000"}

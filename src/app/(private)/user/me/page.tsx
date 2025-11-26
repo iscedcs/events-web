@@ -18,7 +18,7 @@ export default async function Profile() {
       <div className=" w-full h-[100px] bg-linear-to-b from-[#6600FF] to-[#000000]"></div>
       <div className=" -mt-[40px] px-[10px]">
         <Image
-          src={user?.displayPicture ?? "/no-profile.jpg"}
+          src={user?.displayPicture ?? "/resources/no-profile.jpg"}
           alt="displayPicture"
           width={"1000"}
           height={"1000"}
@@ -45,7 +45,7 @@ export default async function Profile() {
         </div>
         <div className=" mt-[20px] flex flex-col items-start justify-between w-full rounded-[24px] px-[20px] py-[20px] h-[280px] bg-secondary">
           <Image
-            src={"/3d-pin-location.png"}
+            src={"/resources/3d-pin-location.png"}
             alt="resource"
             width={"1000"}
             height={"1000"}

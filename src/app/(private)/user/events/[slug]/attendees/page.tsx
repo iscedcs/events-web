@@ -1,11 +1,10 @@
-import React from "react";
-import { getCurrentUser } from "../../../../../../../actions/auth";
+import Header from "@/components/shared/layout/header";
 import { SingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
+import Image from "next/image";
+import { getAttendeesEventID } from "../../../../../../../actions/attendee";
+import { getCurrentUser } from "../../../../../../../actions/auth";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { getUserByID } from "../../../../../../../actions/user";
-import Header from "@/components/shared/layout/header";
-import { getAttendeesEventID } from "../../../../../../../actions/attendee";
-import Image from "next/image";
 
 type Params = Promise<{ slug: string }>;
 export default async function Attendees(props: { params: Params }) {
@@ -38,7 +37,7 @@ export default async function Attendees(props: { params: Params }) {
             >
               <Image
                 className=" w-[32px] h-[32px] object-cover rounded-full"
-                src={attendee.image ?? "/no-profile.jpg"}
+                src={attendee.image ?? "/resources/no-profile.jpg"}
                 alt=""
                 width={"32"}
                 height={"32"}

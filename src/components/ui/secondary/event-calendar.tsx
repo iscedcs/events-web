@@ -324,7 +324,7 @@ export default function EventCalendar({
                                               e.image?.startsWith("http") ||
                                               e.image?.startsWith("/")
                                                 ? e.image
-                                                : "/no-image.png"
+                                                : "/resources/no-image.png"
                                             }
                                             alt="image"
                                             width={"20"}
