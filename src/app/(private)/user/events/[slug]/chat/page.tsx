@@ -25,6 +25,8 @@ export default async function ChatRoom(props: { params: Params }) {
     (attendee) => attendee.userId === auth.user?.id
   );
 
+  console.log({ attendee })
+
   return (
     <div>
       <Header
