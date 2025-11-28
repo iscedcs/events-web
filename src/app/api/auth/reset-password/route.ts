@@ -4,34 +4,24 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
 	try {
-		const url = `${AUTH_API}${URLS.auth.request_verification_code}`;
-		//   const payload = { email };
-		const { email } = await req.json();
+		const url = `${AUTH_API}${URLS.auth.reset_password}`;
+		const { newPassword, resetCode } = await req.json();
 		const res = await fetch(url, {
 			method: "POST",
 			body: JSON.stringify({
-				email,
+				resetCode,
+				newPassword,
 			}),
 			headers: {
 				"Content-Type": "application/json",
 			},
 		});
 		const data = await res.json();
-		// console.log({ data });
-		if (data.statusCode === 500) {
-			return NextResponse.json(
-				{
-					error: "This email is already being used.",
-				},
-				{
-					status: 500,
-				}
-			);
-		}
+		console.log({ data });
 		if (!res.ok) {
 			return NextResponse.json(
 				{
-					error: "Failed to send OTP",
+					error: "Failed to reset password",
 				},
 				{
 					status: 400,
@@ -41,7 +31,7 @@ export async function POST(req: Request) {
 
 		return NextResponse.json(data);
 	} catch (e) {
-		console.log("Email OTP Request POST error", e);
+		console.log("Reset password request POST error", e);
 		return NextResponse.json(
 			{
 				error: "Invalid request",
