@@ -13,6 +13,10 @@ import Link from "next/link";
 import { FaPowerOff } from "react-icons/fa";
 import { GoLinkExternal } from "react-icons/go";
 
+export const onSignOut = () => {
+  window.location.href = "/api/auth/logout";
+};
+
 export default function Header({ title, user, hasBack }: HederType) {
   const fullName = `${user?.firstName} ${user?.lastName}`;
 
@@ -29,9 +33,7 @@ export default function Header({ title, user, hasBack }: HederType) {
     window.location.href = authUrl.toString();
   };
 
-  const onSignOut = () => {
-    window.location.href = "/api/auth/logout";
-  };
+
   return (
     <div className=" flex fixed z-50 w-full left-0 top-0 items-center justify-between px-[20px] py-[10px] bg-secondary">
       <div className=" flex gap-2 items-center">
