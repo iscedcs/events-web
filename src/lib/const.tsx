@@ -1,6 +1,7 @@
 import {
   Bell,
   Bookmark,
+  CircleUserRound,
   Crown,
   Headset,
   LogOut,
@@ -756,7 +757,12 @@ export const ACCOUNTSETTINGS = [
   {
     icon: <Pencil />,
     label: "Edit profile",
-    path: "",
+    path: "me/edit-profile",
+  },
+  {
+    icon: <CircleUserRound />,
+    label: "Account settings",
+    path: "me/account-settings",
   },
   {
     icon: <Bell />,
@@ -789,3 +795,4 @@ export const ACCOUNTSETTINGS = [
     path: "",
   },
 ];
+

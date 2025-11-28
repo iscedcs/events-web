@@ -6,7 +6,7 @@ import { TICKETTANDC } from "@/lib/const";
 import { SingleAttendeeProps } from "@/lib/types/event";
 import { SingleTicketProps } from "@/lib/types/ticket";
 import { stripTime } from "@/lib/utils";
-import { isBefore } from "date-fns";
+import { isBefore, isSameDay } from "date-fns";
 import { format } from "date-fns/format";
 import Image from "next/image";
 import Link from "next/link";
@@ -65,7 +65,7 @@ export default async function Ticket(props: { params: Params }) {
               className="w-[90px] rounded-[20px] h-[90px] object-cover"
               src={
                 ticket.event?.image?.startsWith("http") ||
-                ticket.event?.image?.startsWith("/")
+                  ticket.event?.image?.startsWith("/")
                   ? ticket.event?.image
                   : "/resources/no-image.png"
               }
@@ -133,7 +133,7 @@ export default async function Ticket(props: { params: Params }) {
             <div className=" rounded-[8px] py-[8px] px-[9px] bg-white">
               <QrCodeGenerator size={100} value={`${attendee.id}`} />
             </div>
-            {isBefore(now, endDate) && (
+            {(isBefore(now, endDate) || isSameDay(now, endDate)) && (
               <div className="">
                 <Button className=" text-white bg-[#6600FF]" asChild>
                   <Link
