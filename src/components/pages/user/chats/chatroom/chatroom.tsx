@@ -52,7 +52,7 @@ export default function Chatroom({
     );
   }, [messages, pendingMessages]);
 
-  console.log("MESSAGES", { messages });
+  // console.log("MESSAGES", { messages });
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const session = useAuthInfo();
@@ -479,8 +479,7 @@ export default function Chatroom({
     (isTyping: boolean) => {
       if (chatRoomId && session.auth?.user.id && isConnected) {
         console.log(
-          `Broadcasting typing ${
-            isTyping ? "start" : "stop"
+          `Broadcasting typing ${isTyping ? "start" : "stop"
           } to other users in room ${chatRoomId}`
         );
         sendTyping(chatRoomId, session.auth?.user.id ?? "", isTyping);
@@ -489,7 +488,7 @@ export default function Chatroom({
     [chatRoomId, session.auth?.user.id, isConnected, sendTyping]
   );
 
-  console.log({ typingUsers });
+  // console.log({ typingUsers });
 
   const isCurrentUser = useCallback(
     (message: SingleChatMessageProps) =>
@@ -536,9 +535,9 @@ export default function Chatroom({
         prev.map((msg) =>
           msg.id === id
             ? {
-                ...msg,
-                deletedAt: new Date().toISOString(),
-              }
+              ...msg,
+              deletedAt: new Date().toISOString(),
+            }
             : msg
         )
       );
@@ -627,7 +626,7 @@ export default function Chatroom({
             ref={scrollContainerRef}
             className=" h-full"
           >
-            <div className=" ">
+            <div className=" w-full">
               {allMessages.length === 0 ? (
                 <div className=" absolute top-1/2 -translate-x-[50%] -translate-y-[50%] text-center  left-1/2">
                   <p className=" text-accent text-[12px]">
@@ -635,7 +634,7 @@ export default function Chatroom({
                   </p>
                 </div>
               ) : (
-                <div className="flex pb-[120px]  gap-5 flex-col">
+                <div className="flex pb-[120px] w-full  gap-5 flex-col">
                   {allMessages.map((message) => (
                     <ChatBubble
                       onEditMessage={handleEditing}
