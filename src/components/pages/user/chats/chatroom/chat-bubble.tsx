@@ -81,7 +81,7 @@ export default function ChatBubble({
           </div>
           <div className=" flex flex-row-reverse gap-1 items-center ">
             <div className=" ">
-              <div className="w-full text-[12px] mt-[3px] rounded-tr-0 bg-secondary px-[25px] rounded-l-[20px] rounded-br-[20px] py-[12px]">
+              <div className="w-full text-[12px] break-words mt-[3px] rounded-tr-0 bg-secondary px-[25px] rounded-l-[20px] rounded-br-[20px] py-[12px]">
                 {message.deletedAt !== null ? (
                   <p className=" text-accent italic">
                     This message has been deleted
@@ -242,18 +242,18 @@ export default function ChatBubble({
               {message.sender.name}
             </p>
           )}
-          {!isPrivate && (
+          {/* {!isPrivate && (
             <>
               {message.isFromCreator && (
                 <GiQueenCrown className=" w-3 h-3 text-[#F5BC0D]" />
               )}
             </>
-          )}
+          )} */}
           <p className="text-accent text-[12px]">{timestamp}</p>
         </div>
         <div className=" flex gap-1 items-center ">
           <div className="">
-            <div className="w-full text-[12px] mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
+            <div className="w-full text-[12px] break-words mt-[3px] rounded-tl-0 bg-secondary px-[25px] rounded-r-[20px] rounded-bl-[20px] py-[12px]">
               {message.deletedAt !== null ? (
                 <p className=" text-accent italic">
                   This message has been deleted
