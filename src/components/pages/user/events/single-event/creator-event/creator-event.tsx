@@ -66,12 +66,11 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
 
   return (
     <>
-      {isBefore(today, eventEndDate) && <EventChatButton event={data?.event} />}
+      {(isBefore(today, eventEndDate) || isSameDay(today, eventEndDate)) && <EventChatButton event={data?.event} />}
       <div
         className={`
-        ${
-          isBefore(today, eventEndDate) ? " py-[20px]" : " pt-[70px]"
-        } px-[10px]`}
+        ${(isBefore(today, eventEndDate) || isSameDay(today, eventEndDate)) ? " py-[20px]" : " pt-[70px]"
+          } px-[10px]`}
       >
         <div className="">
           <p className=" text-[24px] font-extrabold capitalize ">
@@ -106,19 +105,19 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
         )}
         {(isSameDay(today, eventStartDate) ||
           (!isAfter(eventEndDate, today) && isTime)) && (
-          <div className="">
-            <Button
-              asChild
-              className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
-            >
-              <Link
-                href={`/user/events/${data?.event.cleanName.toLowerCase()}/check-in`}
+            <div className="">
+              <Button
+                asChild
+                className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
               >
-                Begin Contactless Entry
-              </Link>
-            </Button>
-          </div>
-        )}
+                <Link
+                  href={`/user/events/${data?.event.cleanName.toLowerCase()}/check-in`}
+                >
+                  Begin Contactless Entry
+                </Link>
+              </Button>
+            </div>
+          )}
 
         <div className="">
           <div className=" flex mt-[20px] items-center justify-between">

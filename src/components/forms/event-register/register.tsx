@@ -172,6 +172,7 @@ export default function EventRegistrationForm({
                     <FormControl>
                       <Input
                         {...field}
+                        disabled
                         placeholder="Name"
                         className=" py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[20px] border-r-0 border-t-0 "
                       />
@@ -188,6 +189,7 @@ export default function EventRegistrationForm({
                     <FormControl>
                       <Input
                         {...field}
+                        disabled
                         placeholder="Email"
                         className=" py-[20px] text-[20px] outline-0 rounded-none border-l-0 placeholder:text-[20px] border-r-0 border-t-0 "
                       />
