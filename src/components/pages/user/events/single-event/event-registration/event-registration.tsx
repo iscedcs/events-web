@@ -3,7 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
 import { SingleEventProps } from "@/lib/types/event";
 import { stripTime } from "@/lib/utils";
-import { format, isAfter, isBefore, isEqual } from "date-fns";
+import { format, isAfter, isBefore, isEqual, isSameDay } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { FaUserCircle } from "react-icons/fa";
@@ -27,6 +27,10 @@ export default async function EventRegistration({ slug }: { slug: string }) {
   // console.log({ userId });
 
   const check = await checkEventAttendee(userId, slug);
+
+  console.log({ userId })
+
+  console.log({ check })
 
   const now = stripTime(new Date());
   const startDate = stripTime(new Date(event?.startDate ?? now));
@@ -63,7 +67,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
       <div className=" absolute top-0 h-screen left-0 w-full z-40 bg-[#000000f3] ">
         <ScrollArea className=" h-[100svh]">
           <div className=" ">
-            {check?.check && isBefore(now, endDate) && (
+            {check?.check && (isBefore(now, endDate) || isSameDay(now, endDate)) && (
               <EventChatButton event={event} />
             )}
             <div className=" px-[10px] ">
@@ -91,16 +95,15 @@ export default async function EventRegistration({ slug }: { slug: string }) {
               </div>
 
               <div
-                className={`${
-                  isEqual(now, startDate) || isBefore(now, endDate)
-                    ? "mt-[20px]"
-                    : " mt-[70px]"
-                }`}
+                className={`${isEqual(now, startDate) || isBefore(now, endDate)
+                  ? "mt-[20px]"
+                  : " mt-[70px]"
+                  }`}
               >
                 <Image
                   src={
                     event.image?.startsWith("http") ||
-                    event.image?.startsWith("/")
+                      event.image?.startsWith("/")
                       ? event.image
                       : "/resources/no-image.png"
                   }
@@ -111,11 +114,10 @@ export default async function EventRegistration({ slug }: { slug: string }) {
                 />
                 <div className=" mt-[10px] flex items-center gap-2">
                   <div
-                    className={` ${
-                      isAfter(now, startDate) || isAfter(now, endDate)
-                        ? " bg-error"
-                        : "animate-caret-blink bg-white"
-                    }  w-[8px] h-[8px]`}
+                    className={` ${isAfter(now, startDate) || isAfter(now, endDate)
+                      ? " bg-error"
+                      : "animate-caret-blink bg-white"
+                      }  w-[8px] h-[8px]`}
                   ></div>
                   {isAfter(now, startDate) || isAfter(now, endDate) ? (
                     <p className=" text-error text-[10px]">
