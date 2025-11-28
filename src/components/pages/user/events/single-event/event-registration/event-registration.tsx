@@ -28,9 +28,9 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 
   const check = await checkEventAttendee(userId, slug);
 
-  console.log({ userId })
+  // console.log({ userId })
 
-  console.log({ check })
+  // console.log({ check })
 
   const now = stripTime(new Date());
   const startDate = stripTime(new Date(event?.startDate ?? now));
@@ -95,7 +95,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
               </div>
 
               <div
-                className={`${isEqual(now, startDate) || isBefore(now, endDate)
+                className={`${isEqual(now, startDate) || isBefore(now, endDate) || isAfter(now,endDate)
                   ? "mt-[20px]"
                   : " mt-[70px]"
                   }`}
