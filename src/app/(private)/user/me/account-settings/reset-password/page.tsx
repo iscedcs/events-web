@@ -1,11 +1,7 @@
-import React from 'react'
+import ResetPasswordForm from '@/components/forms/reset-password/reset-password-form';
+import Header from '@/components/shared/layout/header';
 import { getAuthInfo, getCurrentUser } from '../../../../../../../actions/auth';
 import { getUserByID } from '../../../../../../../actions/user';
-import Header from '@/components/shared/layout/header';
-import { Input } from '@/components/ui/input';
-import { comparePassowrd } from '@/lib/utils';
-import { useAuthInfo } from '@/hooks/use-auth-info';
-import ResetPasswordForm from '@/components/forms/reset-password/reset-password-form';
 
 export default async function ResetPassword() {
     const me = await getCurrentUser();
