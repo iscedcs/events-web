@@ -2,361 +2,376 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from "@/components/ui/select";
-import { eventCreationSchema } from "@/lib/schema/event-creation";
+import { eventEditSchema } from "@/lib/schema/event-creation";
 import { SingleEventProps } from "@/lib/types/event";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, FieldErrors, useForm } from "react-hook-form";
 import { FaCalendarDay } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { toast } from "sonner";
 import z from "zod";
-import ImageField from "../create-event/form-controller/image-field";
-import VisibilityField from "../create-event/form-controller/visibility-field";
-import TitleField from "../create-event/form-controller/title-field";
-import DateTimeField from "../create-event/form-controller/date-time-field";
-import LocationField from "../create-event/form-controller/location-field";
-import HostNameField from "../create-event/form-controller/host-name";
-import EventDescriptionField from "../create-event/form-controller/event-description-field";
-import TicketTypeField from "../create-event/form-controller/ticket-type-field";
 import AudienceCapacity from "../create-event/form-controller/audience-capacity";
 import CategoriesField from "../create-event/form-controller/categories-field";
 import ChatEnableField from "../create-event/form-controller/chat-enable-field";
+import DateTimeField from "../create-event/form-controller/date-time-field";
+import EventDescriptionField from "../create-event/form-controller/event-description-field";
+import HostNameField from "../create-event/form-controller/host-name";
+import ImageField from "../create-event/form-controller/image-field";
+import LocationField from "../create-event/form-controller/location-field";
+import TicketTypeField from "../create-event/form-controller/ticket-type-field";
+import TitleField from "../create-event/form-controller/title-field";
+import VisibilityField from "../create-event/form-controller/visibility-field";
 
-export type eventCreationFormValues = z.infer<typeof eventCreationSchema>;
+export type eventCreationFormValues = z.infer<typeof eventEditSchema>;
 export default function EditEventForm({ event }: { event: SingleEventProps }) {
-  const [loading, setIsLoading] = useState(false);
-  const [oepnErrorDialog, setOpenErrorDialog] = useState(false);
-  const [error, setErrors] = useState<FieldErrors<eventCreationFormValues>>();
+	const [loading, setIsLoading] = useState(false);
+	const [oepnErrorDialog, setOpenErrorDialog] = useState(false);
+	const [error, setErrors] = useState<FieldErrors<eventCreationFormValues>>();
 
-  const form = useForm<eventCreationFormValues>({
-    defaultValues: {
-      title: event.title ?? "",
-      description: event.description ?? "",
-      location: event.location ?? "",
-      latitude: event.latitude ?? 0,
-      longitude: event.longitude ?? 0,
-      town: event.town ?? "",
-      image: event.image ?? "",
-      endTime: event.endTime ?? "",
-      startDate: event.startDate.toString() ?? "",
-      endDate: event.endDate.toString() ?? "",
-      isPublic: event.isPublic ?? true,
-      time: event.time ?? "",
-      host: event.host ?? "",
-      categories: event.categories ?? [],
-      hasFreeTickets: true,
-      capacity: event.capacity ?? 0,
-      tickets: event.tickets ?? [],
-    },
-    resolver: zodResolver(eventCreationSchema),
-    mode: "all",
-  });
+	const form = useForm<eventCreationFormValues>({
+		defaultValues: {
+			title: event.title ?? "",
+			description: event.description ?? "",
+			location: event.location ?? "",
+			latitude: event.latitude ?? 0,
+			longitude: event.longitude ?? 0,
+			town: event.town ?? "",
+			image: event.image ?? "",
+			endTime: event.endTime ?? "",
+			startDate: event.startDate.toString() ?? "",
+			endDate: event.endDate.toString() ?? "",
+			isPublic: event.isPublic ?? true,
+			time: event.time ?? "",
+			host: event.host ?? "",
+			categories: event.categories ?? [],
+			hasFreeTickets: true,
+			capacity: event.capacity ?? 0,
+			tickets: event.tickets ?? [],
+		},
+		resolver: zodResolver(eventEditSchema),
+		mode: "all",
+	});
 
-  const router = useRouter();
+	const router = useRouter();
 
-  const handleSubmit = async (data: eventCreationFormValues) => {
-    const isValid = await form.trigger();
+	const handleSubmit = async (data: eventCreationFormValues) => {
+		const isValid = await form.trigger();
 
-    setIsLoading(true);
-    // console.log("Form submitted", data);
-    const payload = {
-      id: event.id,
-      capacity: data.capacity,
-      categories: data.categories,
-      description: data.description,
-      endDate: data.endDate,
-      host: data.host,
-      isPublic: data.isPublic,
-      latitude: data.latitude,
-      location: data.location,
-      longitude: data.longitude,
-      startDate: data.startDate,
-      time: data.time,
-      title: data.title,
-      town: data.town,
-      image: data.image,
-      tickets: data.tickets,
-      hasFreeTickets: true,
-    };
+		setIsLoading(true);
+		// console.log("Form submitted", data);
+		const payload = {
+			id: event.id,
+			capacity: data.capacity,
+			categories: data.categories,
+			description: data.description,
+			endDate: data.endDate,
+			host: data.host,
+			isPublic: data.isPublic,
+			latitude: data.latitude,
+			location: data.location,
+			longitude: data.longitude,
+			startDate: data.startDate,
+			time: data.time,
+			title: data.title,
+			town: data.town,
+			image: data.image,
+			tickets: data.tickets,
+			hasFreeTickets: true,
+		};
 
-    try {
-      const response = await fetch("/api/event/update", {
-        method: "PATCH",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      const event: SingleEventProps = data.data.updatedEvent;
+		try {
+			const response = await fetch("/api/event/update", {
+				method: "PATCH",
+				body: JSON.stringify(payload),
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+			const data = await response.json();
+			const event: SingleEventProps = data.data.updatedEvent;
 
-      if (response.ok) {
-        setIsLoading(false);
-        toast.success("Your event was updated successfully");
-        router.push(`/user/events/${event.cleanName.toLowerCase()}`);
-      } else {
-        setIsLoading(false);
-        toast.error("Something went wrong with updating your event");
-        form.reset();
-        router.refresh();
-      }
-    } catch (e: any) {
-      setIsLoading(false);
-      toast.error("Something went wrong");
-      form.reset();
-      console.log("Event not updated successfully", e);
-    }
-  };
+			if (response.ok) {
+				setIsLoading(false);
+				toast.success("Your event was updated successfully");
+				router.push(`/user/events/${event.cleanName.toLowerCase()}`);
+			} else {
+				setIsLoading(false);
+				toast.error("Something went wrong with updating your event");
+				form.reset();
+				router.refresh();
+			}
+		} catch (e: any) {
+			setIsLoading(false);
+			toast.error("Something went wrong");
+			form.reset();
+			console.log("Event not updated successfully", e);
+		}
+	};
 
-  const onInvalid = (errors: FieldErrors<eventCreationFormValues>) => {
-    setErrors(errors);
-    setOpenErrorDialog(true);
-  };
+	const onInvalid = (errors: FieldErrors<eventCreationFormValues>) => {
+		setErrors(errors);
+		setOpenErrorDialog(true);
+	};
 
-  const checkValidity = async () => {
-    const isValid = await form.trigger();
-    console.log("Form is valid?", isValid);
+	const checkValidity = async () => {
+		const isValid = await form.trigger();
+		console.log("Form is valid?", isValid);
 
-    if (!isValid) {
-      console.log("There are validation errors:", form.formState.errors);
-    }
-  };
+		if (!isValid) {
+			console.log("There are validation errors:", form.formState.errors);
+		}
+	};
 
-  return (
-    <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit, onInvalid)}
-          className="mt-[20px]"
-        >
-          <Controller
-            name="image"
-            control={form.control}
-            render={({ field }) => (
-              <ImageField onChange={field.onChange} value={field.value} />
-            )}
-          />
-          <div className="mt-[20px] flex justify-between">
-            <Select>
-              <SelectTrigger className="bg-secondary border-0 text-white px-[10px] py-[20px] rounded-[12px] flex items-center gap-2">
-                <FaCalendarDay className="w-[18px] h-[18px]" />
-                <SelectValue placeholder="My Calendar" />
-              </SelectTrigger>
-              <SelectContent className=" w-[60%] rounded-[20px] px-[15px] py-[10px] text-white border-0 bg-secondary">
-                <p className=" text-accent text-[13px]">
-                  Choose the calendar of the event:
-                </p>
-                <div className=" mt-[10px]">
-                  <SelectItem value="apple">Google Calendar</SelectItem>
-                  <SelectItem value="banana">Apple Calendar</SelectItem>
-                </div>
-                <div className=" text-accent mt-[20px] flex gap-3 items-center">
-                  <div className="">
-                    <IoIosInformationCircleOutline className=" w-[20px] h-[20px]" />
-                  </div>
-                  <p className=" text-[13px]">
-                    Creating the event under a calendar grants its admins manage
-                    access.
-                  </p>
-                </div>
-              </SelectContent>
-            </Select>
+	return (
+		<>
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit(handleSubmit, onInvalid)}
+					className="mt-[20px]"
+				>
+					<Controller
+						name="image"
+						control={form.control}
+						render={({ field }) => (
+							<ImageField
+								onChange={field.onChange}
+								value={field.value}
+							/>
+						)}
+					/>
+					<div className="mt-[20px] flex justify-between">
+						<Select>
+							<SelectTrigger className="bg-secondary border-0 text-white px-[10px] py-[20px] rounded-[12px] flex items-center gap-2">
+								<FaCalendarDay className="w-[18px] h-[18px]" />
+								<SelectValue placeholder="My Calendar" />
+							</SelectTrigger>
+							<SelectContent className=" w-[60%] rounded-[20px] px-[15px] py-[10px] text-white border-0 bg-secondary">
+								<p className=" text-accent text-[13px]">
+									Choose the calendar of the event:
+								</p>
+								<div className=" mt-[10px]">
+									<SelectItem value="apple">
+										Google Calendar
+									</SelectItem>
+									<SelectItem value="banana">
+										Apple Calendar
+									</SelectItem>
+								</div>
+								<div className=" text-accent mt-[20px] flex gap-3 items-center">
+									<div className="">
+										<IoIosInformationCircleOutline className=" w-[20px] h-[20px]" />
+									</div>
+									<p className=" text-[13px]">
+										Creating the event under a calendar
+										grants its admins manage access.
+									</p>
+								</div>
+							</SelectContent>
+						</Select>
 
-            <Controller
-              name="isPublic"
-              control={form.control}
-              render={({ field }) => (
-                <VisibilityField
-                  onChange={field.onChange}
-                  value={field.value}
-                  placeholder="Visibility"
-                />
-              )}
-            />
-          </div>
+						<Controller
+							name="isPublic"
+							control={form.control}
+							render={({ field }) => (
+								<VisibilityField
+									onChange={field.onChange}
+									value={field.value}
+									placeholder="Visibility"
+								/>
+							)}
+						/>
+					</div>
 
-          <div className="">
-            <Controller
-              name="title"
-              control={form.control}
-              render={({ field }) => (
-                <TitleField
-                  onChange={field.onChange}
-                  value={field.value}
-                  placeholder="Event Name"
-                />
-              )}
-            />
-            <p className=" text-error text-[12px] mt-[10px]">
-              {form.formState.errors.title?.message}
-            </p>
-          </div>
+					<div className="">
+						<Controller
+							name="title"
+							control={form.control}
+							render={({ field }) => (
+								<TitleField
+									onChange={field.onChange}
+									value={field.value}
+									placeholder="Event Name"
+								/>
+							)}
+						/>
+						<p className=" text-error text-[12px] mt-[10px]">
+							{form.formState.errors.title?.message}
+						</p>
+					</div>
 
-          <div className="">
-            <DateTimeField />
-            {form.formState.errors.startDate?.message &&
-              form.formState.errors.endDate?.message &&
-              form.formState.errors.time?.message && (
-                <p className=" text-error text-[12px] mt-[10px]">
-                  {form.formState.errors.startDate?.message},{" "}
-                  {form.formState.errors.endDate?.message},{" "}
-                  {form.formState.errors.time?.message}
-                </p>
-              )}
-          </div>
+					<div className="">
+						<DateTimeField />
+						{form.formState.errors.startDate?.message &&
+							form.formState.errors.endDate?.message &&
+							form.formState.errors.time?.message && (
+								<p className=" text-error text-[12px] mt-[10px]">
+									{form.formState.errors.startDate?.message},{" "}
+									{form.formState.errors.endDate?.message},{" "}
+									{form.formState.errors.time?.message}
+								</p>
+							)}
+					</div>
 
-          <div className="">
-            <Controller
-              name="location"
-              control={form.control}
-              render={({ field }) => (
-                <LocationField
-                  value={field.value}
-                  placeholder="Start typing to view locations"
-                  onChange={({ address, town, lat, lng }) => {
-                    field.onChange(address);
-                    form.setValue("town", town ?? "");
-                    const parsedLat = parseFloat(lat?.toString() ?? "0");
-                    const parsedLng = parseFloat(lng?.toString() ?? "0");
-                    form.setValue(
-                      "latitude",
-                      !isNaN(parsedLat) ? parsedLat : 0
-                    );
-                    form.setValue(
-                      "longitude",
-                      !isNaN(parsedLng) ? parsedLng : 0
-                    );
-                  }}
-                />
-              )}
-            />
-            <p className=" text-error text-[12px] mt-[10px]">
-              {form.formState.errors.location?.message}
-            </p>
-          </div>
+					<div className="">
+						<Controller
+							name="location"
+							control={form.control}
+							render={({ field }) => (
+								<LocationField
+									value={field.value}
+									placeholder="Start typing to view locations"
+									onChange={({ address, town, lat, lng }) => {
+										field.onChange(address);
+										form.setValue("town", town ?? "");
+										const parsedLat = parseFloat(
+											lat?.toString() ?? "0"
+										);
+										const parsedLng = parseFloat(
+											lng?.toString() ?? "0"
+										);
+										form.setValue(
+											"latitude",
+											!isNaN(parsedLat) ? parsedLat : 0
+										);
+										form.setValue(
+											"longitude",
+											!isNaN(parsedLng) ? parsedLng : 0
+										);
+									}}
+								/>
+							)}
+						/>
+						<p className=" text-error text-[12px] mt-[10px]">
+							{form.formState.errors.location?.message}
+						</p>
+					</div>
 
-          <div className="">
-            <Controller
-              control={form.control}
-              name="host"
-              render={({ field }) => (
-                <HostNameField
-                  onChange={field.onChange}
-                  value={field.value}
-                  placeholder="John Doe"
-                />
-              )}
-            />
-            <p className=" text-error text-[12px] mt-[10px]">
-              {form.formState.errors.host?.message}
-            </p>
-          </div>
+					<div className="">
+						<Controller
+							control={form.control}
+							name="host"
+							render={({ field }) => (
+								<HostNameField
+									onChange={field.onChange}
+									value={field.value}
+									placeholder="John Doe"
+								/>
+							)}
+						/>
+						<p className=" text-error text-[12px] mt-[10px]">
+							{form.formState.errors.host?.message}
+						</p>
+					</div>
 
-          <div className="">
-            <Controller
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <EventDescriptionField
-                  onChange={field.onChange}
-                  value={field.value}
-                  placeholder="What’s the event about?"
-                />
-              )}
-            />
-            <p className=" text-error text-[12px] mt-[10px]">
-              {form.formState.errors.description?.message}
-            </p>
-          </div>
+					<div className="">
+						<Controller
+							control={form.control}
+							name="description"
+							render={({ field }) => (
+								<EventDescriptionField
+									onChange={field.onChange}
+									value={field.value}
+									placeholder="What’s the event about?"
+								/>
+							)}
+						/>
+						<p className=" text-error text-[12px] mt-[10px]">
+							{form.formState.errors.description?.message}
+						</p>
+					</div>
 
-          <div className=" mt-[20px]">
-            <p>Event Options</p>
-            <div className=" mt-[20px] text-accent rounded-[12px] py-[15px] px-[20px] bg-secondary">
-              <TicketTypeField />
+					<div className=" mt-[20px]">
+						<p>Event Options</p>
+						<div className=" mt-[20px] text-accent rounded-[12px] py-[15px] px-[20px] bg-secondary">
+							<TicketTypeField />
 
-              <Controller
-                control={form.control}
-                name="capacity"
-                render={({ field }) => (
-                  <AudienceCapacity
-                    onChange={field.onChange}
-                    value={Number(field.value) ?? 0}
-                    placeholder="0"
-                  />
-                )}
-              />
+							<Controller
+								control={form.control}
+								name="capacity"
+								render={({ field }) => (
+									<AudienceCapacity
+										onChange={field.onChange}
+										value={Number(field.value) ?? 0}
+										placeholder="0"
+									/>
+								)}
+							/>
 
-              <CategoriesField />
+							<CategoriesField />
 
-              <ChatEnableField />
-            </div>
-          </div>
-          {/* <Button type="button" onClick={checkValidity} className="mt-4">
+							<ChatEnableField />
+						</div>
+					</div>
+					{/* <Button type="button" onClick={checkValidity} className="mt-4">
             Check Validity
           </Button> */}
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
-          >
-            {loading && (
-              <span className=" animate-spin">
-                <LoaderCircle />
-              </span>
-            )}
-            {loading ? "Updating Event" : "Update Event"}
-          </Button>
-        </form>
-      </Form>
-      <Dialog open={oepnErrorDialog} onOpenChange={setOpenErrorDialog}>
-        <DialogContent className=" bg-secondary border-0">
-          <DialogHeader>
-            <DialogTitle className=" text-error flex items-center gap-2">
-              <TriangleAlert />
-              <p>Important</p>
-            </DialogTitle>
-            <DialogDescription className=" text-left">
-              The following issues have been spotted in your event.
-            </DialogDescription>
-            <p className=" text-[14px] text-left">
-              {error &&
-                Object.entries(error).map(([key, val]) => (
-                  <li className="" key={key}>
-                    <strong className=" capitalize">{key}:</strong>{" "}
-                    {(val as any)?.message ?? "Invalid input"}
-                  </li>
-                ))}
-            </p>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button className="  flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+					<Button
+						type="submit"
+						disabled={loading}
+						className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
+					>
+						{loading && (
+							<span className=" animate-spin">
+								<LoaderCircle />
+							</span>
+						)}
+						{loading ? "Updating Event" : "Update Event"}
+					</Button>
+				</form>
+			</Form>
+			<Dialog open={oepnErrorDialog} onOpenChange={setOpenErrorDialog}>
+				<DialogContent className=" bg-secondary border-0">
+					<DialogHeader>
+						<DialogTitle className=" text-error flex items-center gap-2">
+							<TriangleAlert />
+							<p>Important</p>
+						</DialogTitle>
+						<DialogDescription className=" text-left">
+							The following issues have been spotted in your
+							event.
+						</DialogDescription>
+						<p className=" text-[14px] text-left">
+							{error &&
+								Object.entries(error).map(([key, val]) => (
+									<li className="" key={key}>
+										<strong className=" capitalize">
+											{key}:
+										</strong>{" "}
+										{(val as any)?.message ??
+											"Invalid input"}
+									</li>
+								))}
+						</p>
+					</DialogHeader>
+					<DialogFooter>
+						<DialogClose asChild>
+							<Button className="  flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]">
+								Close
+							</Button>
+						</DialogClose>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+		</>
+	);
 }

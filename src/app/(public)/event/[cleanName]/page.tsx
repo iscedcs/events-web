@@ -155,9 +155,9 @@ export default async function SingleEventPage(props: { params: Params }) {
                     <p className=" line-clamp-2 text-[16px] capitalize">
                       {event.location.toLowerCase()}
                     </p>
-                    <p className=" text-accent text-[14px] capitalize">
+                    {/* <p className=" text-accent text-[14px] capitalize">
                       {event.town.toLowerCase()}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
                 <div className=" mt-[30px] rounded-[20px] overflow-hidden  border border-accent  ">
