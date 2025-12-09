@@ -1,27 +1,27 @@
 {
-  "name": "ISCE Events",
-  "short_name": "ISCE Events",
-  "start_url": "/",
-  "display": "standalone",
-  "description": "Plan, organize, and track events with ease using ISCE Events. A modern event management platform designed for seamless ticketing, promotion, and real-time analytics.",
-  "lang": "en-US",
-  "dir": "auto",
-  "theme_color": "#212121",
-  "background_color": "#212121",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "/icon-5122.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    }
-  ],
-  "prefer_related_applications": false
+	"name": "GADA",
+	"short_name": "GADA",
+	"start_url": "/",
+	"display": "standalone",
+	"description": "Plan, organize, and track events with ease using GADA. A modern event management platform designed for seamless ticketing, promotion, and real-time analytics.",
+	"lang": "en-US",
+	"dir": "auto",
+	"theme_color": "#212121",
+	"background_color": "#212121",
+	"orientation": "portrait",
+	"icons": [
+		{
+			"src": "/icon-5122.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any"
+		}
+	],
+	"prefer_related_applications": false
 }

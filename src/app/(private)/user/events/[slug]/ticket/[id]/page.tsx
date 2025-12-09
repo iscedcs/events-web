@@ -88,9 +88,9 @@ export default async function Ticket(props: { params: Params }) {
               <p className=" text-[18px] line-clamp-2 capitalize">
                 {ticket.event?.title.toLowerCase()}
               </p>
-              <p className=" capitalize text-[10px] text-accent">
+              {/* <p className=" capitalize text-[10px] text-accent">
                 {ticket.event?.town.toLowerCase()}
-              </p>
+              </p> */}
             </div>
           </div>
           <div className="  border-t-0 border-l-0 border py-[20px] border-accent  border-dashed  border-r-0">
