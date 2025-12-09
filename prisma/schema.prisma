@@ -292,6 +292,38 @@ model Moment {
   @@index([userId])
 }
 
+model Notification {
+  id        String           @id
+  userId    String
+  title     String
+  body      String
+  type      NotificationType
+  data      Json?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime
+  deletedAt DateTime?
+
+  @@index([createdAt])
+  @@index([read])
+  @@index([userId])
+}
+
+model UserDevice {
+  id           String    @id
+  userId       String
+  fcmToken     String    @unique
+  platform     String
+  deviceInfo   String?
+  lastActiveAt DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime
+  deletedAt    DateTime?
+
+  @@index([fcmToken])
+  @@index([userId])
+}
+
 enum PaymentStatus {
   PENDING
   PAID
@@ -318,4 +350,11 @@ enum LikeType {
 enum MediaType {
   IMAGE
   VIDEO
+}
+
+enum NotificationType {
+  CHAT_MESSAGE
+  EVENT_REMINDER
+  EVENT_STARTING
+  SYSTEM
 }

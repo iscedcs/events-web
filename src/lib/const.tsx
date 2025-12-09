@@ -1,15 +1,15 @@
 import {
-  Bell,
-  Bookmark,
-  CircleUserRound,
-  Crown,
-  Headset,
-  LogOut,
-  Pencil,
-  ReceiptText,
-  ShieldAlert,
-  Ticket,
-  UserRoundPlus,
+	Bell,
+	Bookmark,
+	CircleUserRound,
+	Crown,
+	Headset,
+	LogOut,
+	Pencil,
+	ReceiptText,
+	ShieldAlert,
+	Ticket,
+	UserRoundPlus,
 } from "lucide-react";
 import { FaRegUser } from "react-icons/fa";
 import { LuMessageSquareText, LuTickets } from "react-icons/lu";
@@ -23,103 +23,104 @@ export const EVENTS_API = process.env.NEXT_PUBLIC_LIVE_EVENTS_BACKEND_URL;
 export const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const URLS = {
-  auth: {
-    sign_up: "/auth/signup",
-    sign_in: "/auth/signin",
-    sign_out: "/auth/signout",
-    reset_token: "/auth/send-reset-token",
-    reset_password: "/auth/reset-password",
-    request_verification_code: "/auth/request-verify-email-code",
-    verify_code: "/auth/verify-email-code",
-  },
-  user: {
-    one: "/user/one/{id}",
-    update_user: "/user/update/{id}",
-  },
-  events: {
-    new: "/events/create",
-    delete: "/events/{id}/delete",
-    update: "/events/{id}/update",
-    all: "/events/all",
-    all_events_user: "/events/events",
-    all_events_with_attendee: "/events/clean-name/attendees/{cleanName}",
-    one: "/events/one/{id}",
-    events_search: "/events/search",
-    category: "/events/categories",
-    updelete: "/events/{id}/updelete",
-    one_slug: "/events/clean-name/{cleanName}",
-    event_search: "/events/search",
-    nearby_events: "/events/nearby",
-  },
-  chat: {
-    create: "/chat/create",
-    update_chatroom: "/chat/{id}/update-chatroom",
-    event_chatroom: "/chat/event-chatroom/{eventId}",
-    chatroom_one: "/chat/{id}/chatroom-one",
-    all_chatroom_messages: "/chat/messages/{chatRoomId}",
-    all: "/chat/all",
-    all_deleted: "/chat/all/deleted",
-    delete: "/chat/{id}/delete",
-    harddelete: "/chat/{id}/harddelete",
-    members_get: "/chat/{id}/members",
-    members_post: "/chat/{id}/members",
-    post_chatroom_messages: "/chat/{id}/messages",
-    update_message: "/chat/{id}/update-message",
-    search: "/chat/search",
-    softdelete_message: "/chat/{id}/delete-message",
-    harddelete_message: "/chat/{id}/harddelete-message",
-    private_chatroom_user: "/chat/private-user-chatrooms/{userId}",
-    create_private_room_attendees: "/chat/chatroom/private/attendee",
-    create_private_room_host: "/chat/chatroom/private/creator",
-  },
-  gallery: {
-    gallery: "/gallery/event/{event_id}",
-  },
-  attendees: {
-    all: "/attendees/event/{id}",
-    one: "/attendees/{id}/one",
-    create: "/attendees/create",
-    attendee_check: "/attendees/{cleanName}/with-attendee-check",
-    check_in_with_attendeeId: "/attendees/{id}/check-in",
-    check_in_with_token: "/attendees/check-in-by-token",
-    one_token: "/attendees/get-by-token",
-  },
-  tickets: {
-    all_ticket_for_event: "/tickets/event/{eventId}",
-    ticket_by_id: "/tickets/{id}",
-    all_ticket_user: "/tickets/user/{userId}",
-    register_via_tickets: "/tickets/access",
-  },
-  watchlist: {
-    add_watchlist: "/watchlist/add",
-    remove_watchlist: "/watchlist/remove",
-    all_watchlist: "/watchlist/my-watchlist",
-    single_watchlist: "/watchlist/item/{eventId}",
-    event_watchlist_check: "/watchlist/check/{eventId}",
-  },
+	auth: {
+		sign_up: "/auth/signup",
+		sign_in: "/auth/signin",
+		sign_out: "/auth/signout",
+		reset_token: "/auth/send-reset-token",
+		reset_password: "/auth/reset-password",
+		request_verification_code: "/auth/request-verify-email-code",
+		verify_code: "/auth/verify-email-code",
+	},
+	user: {
+		one: "/user/one/{id}",
+		update_user: "/user/update/{id}",
+	},
+	events: {
+		new: "/events/create",
+		delete: "/events/{id}/delete",
+		update: "/events/{id}/update",
+		all: "/events/all",
+		all_events_user: "/events/events",
+		all_events_with_attendee: "/events/clean-name/attendees/{cleanName}",
+		one: "/events/one/{id}",
+		events_search: "/events/search",
+		category: "/events/categories",
+		updelete: "/events/{id}/updelete",
+		one_slug: "/events/clean-name/{cleanName}",
+		event_search: "/events/search",
+		nearby_events: "/events/nearby",
+		close_registration: "/events/{id}/close-registration",
+	},
+	chat: {
+		create: "/chat/create",
+		update_chatroom: "/chat/{id}/update-chatroom",
+		event_chatroom: "/chat/event-chatroom/{eventId}",
+		chatroom_one: "/chat/{id}/chatroom-one",
+		all_chatroom_messages: "/chat/messages/{chatRoomId}",
+		all: "/chat/all",
+		all_deleted: "/chat/all/deleted",
+		delete: "/chat/{id}/delete",
+		harddelete: "/chat/{id}/harddelete",
+		members_get: "/chat/{id}/members",
+		members_post: "/chat/{id}/members",
+		post_chatroom_messages: "/chat/{id}/messages",
+		update_message: "/chat/{id}/update-message",
+		search: "/chat/search",
+		softdelete_message: "/chat/{id}/delete-message",
+		harddelete_message: "/chat/{id}/harddelete-message",
+		private_chatroom_user: "/chat/private-user-chatrooms/{userId}",
+		create_private_room_attendees: "/chat/chatroom/private/attendee",
+		create_private_room_host: "/chat/chatroom/private/creator",
+	},
+	gallery: {
+		gallery: "/gallery/event/{event_id}",
+	},
+	attendees: {
+		all: "/attendees/event/{id}",
+		one: "/attendees/{id}/one",
+		create: "/attendees/create",
+		attendee_check: "/attendees/{cleanName}/with-attendee-check",
+		check_in_with_attendeeId: "/attendees/{id}/check-in",
+		check_in_with_token: "/attendees/check-in-by-token",
+		one_token: "/attendees/get-by-token",
+	},
+	tickets: {
+		all_ticket_for_event: "/tickets/event/{eventId}",
+		ticket_by_id: "/tickets/{id}",
+		all_ticket_user: "/tickets/user/{userId}",
+		register_via_tickets: "/tickets/access",
+	},
+	watchlist: {
+		add_watchlist: "/watchlist/add",
+		remove_watchlist: "/watchlist/remove",
+		all_watchlist: "/watchlist/my-watchlist",
+		single_watchlist: "/watchlist/item/{eventId}",
+		event_watchlist_check: "/watchlist/check/{eventId}",
+	},
 };
 
 export const PASSWORDCHECK = [
-  {
-    key: "lowercase",
-    message: "At least one lowercase letter",
-    state: false,
-  },
-  {
-    key: "length",
-    message: "Minimum of 8 characters",
-    state: false,
-  },
-  {
-    key: "uppercase",
-    message: "At least one uppercase letter",
-    state: false,
-  },
-  {
-    key: "number",
-    message: "At least one number",
-    state: false,
-  },
+	{
+		key: "lowercase",
+		message: "At least one lowercase letter",
+		state: false,
+	},
+	{
+		key: "length",
+		message: "Minimum of 8 characters",
+		state: false,
+	},
+	{
+		key: "uppercase",
+		message: "At least one uppercase letter",
+		state: false,
+	},
+	{
+		key: "number",
+		message: "At least one number",
+		state: false,
+	},
 ];
 
 // export const CATEGORIES = [
@@ -550,249 +551,248 @@ export const PASSWORDCHECK = [
 // ];
 
 export const CATEGORIES = [
-  {
-    name: "Featured",
-    value: "featured",
-  },
-  {
-    name: "Concerts",
-    value: "concerts",
-  },
-  {
-    name: "Workshops",
-    value: "workshops",
-  },
-  {
-    name: "Festivals",
-    value: "festivals",
-  },
-  {
-    name: "Exhibitions",
-    value: "exhibitions",
-  },
-  {
-    name: "Conferences",
-    value: "conferences",
-  },
-  {
-    name: "Sports",
-    value: "sports",
-  },
-  {
-    name: "Networking",
-    value: "networking",
-  },
-  {
-    name: "Theater",
-    value: "theater",
-  },
-  {
-    name: "Wellness",
-    value: "wellness",
-  },
-  {
-    name: "Charity",
-    value: "charity",
-  },
-  {
-    name: "Parties",
-    value: "parties",
-  },
-  {
-    name: "Seminars",
-    value: "seminars",
-  },
-  {
-    name: "Markets",
-    value: "markets",
-  },
-  {
-    name: "Tours",
-    value: "tours",
-  },
+	{
+		name: "Featured",
+		value: "featured",
+	},
+	{
+		name: "Concerts",
+		value: "concerts",
+	},
+	{
+		name: "Workshops",
+		value: "workshops",
+	},
+	{
+		name: "Festivals",
+		value: "festivals",
+	},
+	{
+		name: "Exhibitions",
+		value: "exhibitions",
+	},
+	{
+		name: "Conferences",
+		value: "conferences",
+	},
+	{
+		name: "Sports",
+		value: "sports",
+	},
+	{
+		name: "Networking",
+		value: "networking",
+	},
+	{
+		name: "Theater",
+		value: "theater",
+	},
+	{
+		name: "Wellness",
+		value: "wellness",
+	},
+	{
+		name: "Charity",
+		value: "charity",
+	},
+	{
+		name: "Parties",
+		value: "parties",
+	},
+	{
+		name: "Seminars",
+		value: "seminars",
+	},
+	{
+		name: "Markets",
+		value: "markets",
+	},
+	{
+		name: "Tours",
+		value: "tours",
+	},
 ];
 
 export const HEADERITEMS: HeaderItemsTypes[] = [
-  {
-    icon: <FaRegUser className=" w-[16px] h-[16px]" />,
-    path: "/user/me",
-    title: "Your profile",
-    value: "profile",
-  },
-  {
-    icon: <MdEventNote className=" w-[16px] h-[16px]" />,
-    path: "/user/me/my-events",
-    title: "Your events",
-    value: "events",
-  },
-  {
-    icon: <LuTickets className=" w-[16px] h-[16px]" />,
-    path: "/user/me/my-tickets",
-    title: "Your tickets",
-    value: "tickets",
-  },
-  {
-    icon: <LuMessageSquareText className=" w-[16px] h-[16px]" />,
-    path: "/user/me/my-chats",
-    title: "Your chats",
-    value: "chats",
-  },
-  {
-    icon: <Bookmark className=" w-[16px] h-[16px]" />,
-    path: "/user/me/my-events",
-    title: "Your bookmarks",
-    value: "bookmarks",
-  },
+	{
+		icon: <FaRegUser className=" w-[16px] h-[16px]" />,
+		path: "/user/me",
+		title: "Your profile",
+		value: "profile",
+	},
+	{
+		icon: <MdEventNote className=" w-[16px] h-[16px]" />,
+		path: "/user/me/my-events",
+		title: "Your events",
+		value: "events",
+	},
+	{
+		icon: <LuTickets className=" w-[16px] h-[16px]" />,
+		path: "/user/me/my-tickets",
+		title: "Your tickets",
+		value: "tickets",
+	},
+	{
+		icon: <LuMessageSquareText className=" w-[16px] h-[16px]" />,
+		path: "/user/me/my-chats",
+		title: "Your chats",
+		value: "chats",
+	},
+	{
+		icon: <Bookmark className=" w-[16px] h-[16px]" />,
+		path: "/user/me/my-bookmarks",
+		title: "Your bookmarks",
+		value: "bookmarks",
+	},
 ];
 
 export const DUMMYTRENDINGEVENTS: TrendingEventsProps[] = [
-  {
-    image: "/dummy-images/cover.png",
-    title: "Test Event 01",
-    day: new Date(),
-    location: "Test Location, test place,",
-    path: "",
-  },
-  {
-    image: "/dummy-images/cover.png",
-    title: "Test Event 01",
-    day: new Date(),
-    location: "Test Location, test place,",
-    path: "",
-  },
-  {
-    image: "/dummy-images/cover.png",
-    title: "Test Event 01",
-    day: new Date(),
-    location: "Test Location, test place,",
-    path: "",
-  },
-  {
-    image: "/dummy-images/cover.png",
-    title: "Test Event 01",
-    day: new Date(),
-    location: "Test Location, test place,",
-    path: "",
-  },
-  {
-    image: "/dummy-images/cover.png",
-    title: "Test Event 01",
-    day: new Date(),
-    location: "Test Location, test place,",
-    path: "",
-  },
-  {
-    image: "/dummy-images/cover.png",
-    title: "Test Event 01",
-    day: new Date(),
-    location: "Test Location, test place,",
-    path: "",
-  },
-  {
-    image: "/dummy-images/cover.png",
-    title: "Test Event 01",
-    day: new Date(),
-    location: "Test Location, test place,",
-    path: "",
-  },
-  {
-    image: "/dummy-images/cover.png",
-    title: "Test Event 01",
-    day: new Date(),
-    location: "Test Location, test place,",
-    path: "",
-  },
-  {
-    image: "/dummy-images/cover.png",
-    title: "Test Event 01",
-    day: new Date(),
-    location: "Test Location, test place,",
-    path: "",
-  },
+	{
+		image: "/dummy-images/cover.png",
+		title: "Test Event 01",
+		day: new Date(),
+		location: "Test Location, test place,",
+		path: "",
+	},
+	{
+		image: "/dummy-images/cover.png",
+		title: "Test Event 01",
+		day: new Date(),
+		location: "Test Location, test place,",
+		path: "",
+	},
+	{
+		image: "/dummy-images/cover.png",
+		title: "Test Event 01",
+		day: new Date(),
+		location: "Test Location, test place,",
+		path: "",
+	},
+	{
+		image: "/dummy-images/cover.png",
+		title: "Test Event 01",
+		day: new Date(),
+		location: "Test Location, test place,",
+		path: "",
+	},
+	{
+		image: "/dummy-images/cover.png",
+		title: "Test Event 01",
+		day: new Date(),
+		location: "Test Location, test place,",
+		path: "",
+	},
+	{
+		image: "/dummy-images/cover.png",
+		title: "Test Event 01",
+		day: new Date(),
+		location: "Test Location, test place,",
+		path: "",
+	},
+	{
+		image: "/dummy-images/cover.png",
+		title: "Test Event 01",
+		day: new Date(),
+		location: "Test Location, test place,",
+		path: "",
+	},
+	{
+		image: "/dummy-images/cover.png",
+		title: "Test Event 01",
+		day: new Date(),
+		location: "Test Location, test place,",
+		path: "",
+	},
+	{
+		image: "/dummy-images/cover.png",
+		title: "Test Event 01",
+		day: new Date(),
+		location: "Test Location, test place,",
+		path: "",
+	},
 ];
 
 export const TICKETTANDC = [
-  "Tickets must be purchased from authorized sellers.",
-  "No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
-  "A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
-  "No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
-  "A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
+	"Tickets must be purchased from authorized sellers.",
+	"No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
+	"A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
+	"No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
+	"A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
 ];
 
 export const INITIALTICKETS: InitialTicketProps[] = [
-  {
-    icon: <Ticket className=" w-5 h-5" />,
-    amount: 0,
-    currency: "NGN",
-    isFree: true,
-    title: "Regular Ticket",
-    quantity: 0,
-  },
-  {
-    icon: <Crown className=" w-5 h-5" />,
-    amount: 0,
-    currency: "NGN",
-    isFree: true,
-    title: "VIP Ticket",
-    quantity: 0,
-  },
+	{
+		icon: <Ticket className=" w-5 h-5" />,
+		amount: 0,
+		currency: "NGN",
+		isFree: true,
+		title: "Regular Ticket",
+		quantity: 0,
+	},
+	{
+		icon: <Crown className=" w-5 h-5" />,
+		amount: 0,
+		currency: "NGN",
+		isFree: true,
+		title: "VIP Ticket",
+		quantity: 0,
+	},
 ];
 
 export const DUMMYATTENDEES = [
-  {
-    image: "/resources/no-profile.jpg",
-    name: "John Doe",
-  },
-  {
-    image: "/resources/no-profile.jpg",
-    name: "John Doe 1",
-  },
-  {
-    image: "/resources/no-profile.jpg",
-    name: "John Doe 2",
-  },
+	{
+		image: "/resources/no-profile.jpg",
+		name: "John Doe",
+	},
+	{
+		image: "/resources/no-profile.jpg",
+		name: "John Doe 1",
+	},
+	{
+		image: "/resources/no-profile.jpg",
+		name: "John Doe 2",
+	},
 ];
 
 export const ACCOUNTSETTINGS = [
-  {
-    icon: <Pencil />,
-    label: "Edit profile",
-    path: "me/edit-profile",
-  },
-  {
-    icon: <CircleUserRound />,
-    label: "Account settings",
-    path: "me/account-settings",
-  },
-  {
-    icon: <Bell />,
-    label: "Notification settings",
-    path: "",
-  },
-  {
-    icon: <UserRoundPlus />,
-    label: "Invite a friend",
-    path: "",
-  },
-  {
-    icon: <Headset />,
-    label: "Contact support",
-    path: "",
-  },
-  {
-    icon: <ReceiptText />,
-    label: "Terms of service",
-    path: "",
-  },
-  {
-    icon: <ShieldAlert />,
-    label: "Privacy policy",
-    path: "",
-  },
-  {
-    icon: <LogOut />,
-    label: "Sign out from this device",
-    path: "",
-  },
+	{
+		icon: <Pencil />,
+		label: "Edit profile",
+		path: "me/edit-profile",
+	},
+	{
+		icon: <CircleUserRound />,
+		label: "Account settings",
+		path: "me/account-settings",
+	},
+	{
+		icon: <Bell />,
+		label: "Notification settings",
+		path: "",
+	},
+	{
+		icon: <UserRoundPlus />,
+		label: "Invite a friend",
+		path: "",
+	},
+	{
+		icon: <Headset />,
+		label: "Contact support",
+		path: "",
+	},
+	{
+		icon: <ReceiptText />,
+		label: "Terms of service",
+		path: "",
+	},
+	{
+		icon: <ShieldAlert />,
+		label: "Privacy policy",
+		path: "",
+	},
+	{
+		icon: <LogOut />,
+		label: "Sign out from this device",
+		path: "",
+	},
 ];
-
