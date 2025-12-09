@@ -6,12 +6,12 @@
 	"description": "Plan, organize, and track events with ease using GADA. A modern event management platform designed for seamless ticketing, promotion, and real-time analytics.",
 	"lang": "en-US",
 	"dir": "auto",
-	"theme_color": "#212121",
-	"background_color": "#212121",
+	"theme_color": "#000000",
+	"background_color": "#000000",
 	"orientation": "portrait",
 	"icons": [
 		{
-			"src": "/icon-5122.png",
+			"src": "/icon-512.png",
 			"sizes": "512x512",
 			"type": "image/png",
 			"purpose": "maskable"
