@@ -1,3 +1,4 @@
+import { verifyToken } from "@/lib/verify-jwt";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -6,34 +7,44 @@ export async function GET(req: Request) {
   const redirectTo = searchParams.get("redirect") || "/";
 
   const appBase = process.env.NEXT_PUBLIC_URL!;
+
+  if (!token) {
+    return NextResponse.redirect(
+      `${process.env.NEXT_PUBLIC_AUTH_BASE_URL}/sign-in?redirect_uri=${appBase}`
+    );
+  }
+
+  const { valid } = await verifyToken(token);
+
+  if (!valid) {
+    return NextResponse.redirect(
+      `${process.env.NEXT_PUBLIC_AUTH_BASE_URL}/sign-in?redirect_uri=${appBase}`
+    );
+  }
+
   const safeRedirect =
     redirectTo.startsWith("/") || redirectTo.startsWith(appBase);
   const safe = safeRedirect ? redirectTo : "/";
-
-  if (!token) {
-    const loginUrl = `${process.env.NEXT_PUBLIC_AUTH_BASE_URL}${
-      process.env.NEXT_PUBLIC_AUTH_LOGIN_PATH || "/sign-in"
-    }?redirect_uri=${encodeURIComponent(new URL(safe, appBase).toString())}`;
-    return NextResponse.redirect(loginUrl);
-  }
 
   let maxAge = 60 * 60 * 24;
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
     if (payload?.exp) {
       const nowSec = Math.floor(Date.now() / 1000);
-      const remaining = Math.max(0, payload.exp - nowSec);
+      const remaining = Math.max(payload.exp - nowSec, 0);
       maxAge = Math.min(remaining, 60 * 60 * 24 * 7);
     }
   } catch {}
 
   const absoluteRedirect = new URL(safe, appBase).toString();
 
-  const res = NextResponse.redirect(absoluteRedirect);
+  const isProduction = process.env.NODE_ENV === "production";
+  const res = NextResponse.redirect(absoluteRedirect, { status: 302 });
+
   res.cookies.set("accessToken", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     path: "/",
     maxAge,
   });
