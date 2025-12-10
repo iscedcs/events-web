@@ -43,14 +43,14 @@ export default function EventChatButton({
 		<div className=" py-[10px] flex gap-2 flex-row w-full justify-center  px-[10px] mt-[56px]">
 			<Link
 				href={`/user/events/${event?.cleanName.toLowerCase()}/chat`}
-				className=" rounded-full gap-2 py-[10px] px-[40px] items-center flex bg-secondary"
+				className=" rounded-full gap-2 py-[10px] px-[30px] items-center flex bg-secondary"
 			>
 				<MessageCircleMore className=" w-5 h-5" />
 				<p>Chatroom</p>
 			</Link>
 			<Link
 				href={`/user/events/${event?.cleanName.toLowerCase()}/highlights`}
-				className=" rounded-full gap-2  py-[10px] px-[40px] items-center flex bg-secondary"
+				className=" rounded-full gap-2  py-[10px] px-[30px] items-center flex bg-secondary"
 			>
 				<MdOutlineAmpStories className=" w-6 h-6" />
 				<p>Highlights</p>

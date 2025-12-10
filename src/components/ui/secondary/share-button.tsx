@@ -26,9 +26,9 @@ export default function ShareButton() {
 	return (
 		<div
 			onClick={shareData}
-			className=" py-[20px] border shadow px-[20px] rounded-full mb-[70px] mr-[30px] fixed bottom-0 bg-secondary right-0"
+			className=" py-[13px] border shadow px-[13px] rounded-full mb-[30px] mr-[30px] fixed bottom-0 bg-secondary right-0"
 		>
-			<Share2 className=" w-4 h-4" />
+			<Share2 className=" w-3 h-3" />
 		</div>
 	);
 }
