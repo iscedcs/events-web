@@ -17,9 +17,8 @@ import BookmarkButton from "../../../../../ui/secondary/bookmark-button";
 import ClosedRegistration from "./closed-registration";
 import EventMapLocation from "./event-map-location";
 import EventRegistrationCTA from "./event-registration-cta";
-import ViewTicket from "./view-ticket";
-import { Share2 } from "lucide-react";
 import ShareButton from "./share-button";
+import ViewTicket from "./view-ticket";
 
 export default async function EventRegistration({ slug }: { slug: string }) {
 	const event: SingleEventProps = await getEventsByCleanName(slug ?? "");
@@ -147,7 +146,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 											{event.title.toLowerCase()}
 										</p>
 										<ShareButton
-											url={`/user/event/${event.cleanName}`}
+											url={`/event/${event.cleanName}`}
 											description={event.description}
 											title={event.title}
 										/>

@@ -1,4 +1,5 @@
 import EventMapLocation from "@/components/pages/user/events/single-event/event-registration/event-map-location";
+import ShareButton from "@/components/pages/user/events/single-event/event-registration/share-button";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SingleDayDisplay from "@/components/ui/secondary/single-day-display";
@@ -12,7 +13,6 @@ import { FaUserCircle } from "react-icons/fa";
 import { HiTicket } from "react-icons/hi";
 import { PiMapPinFill } from "react-icons/pi";
 import { getEventsByCleanName } from "../../../../../actions/events";
-import ShareButton from "@/components/pages/user/events/single-event/event-registration/share-button";
 
 type Params = Promise<{ cleanName: string }>;
 
@@ -124,7 +124,7 @@ export default async function SingleEventPage(props: { params: Params }) {
 										{event.title.toLowerCase()}
 									</p>
 									<ShareButton
-										url={`/user/event/${event.cleanName}`}
+										url={`/event/${event.cleanName}`}
 										description={event.description}
 										title={event.title}
 									/>
