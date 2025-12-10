@@ -119,7 +119,7 @@ export default async function SingleEventPage(props: { params: Params }) {
 								)}
 							</div>
 							<div className=" mt-[10px]   ">
-								<div className="">
+								<div className="flex items-center justify-between">
 									<p className="text-[24px] capitalize">
 										{event.title.toLowerCase()}
 									</p>
