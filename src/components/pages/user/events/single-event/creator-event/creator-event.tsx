@@ -71,6 +71,8 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
 
 	// const totalValue = tickets?.total - data?.totalAttendees;
 
+	// console.log(data?.event);
+
 	return (
 		<>
 			{(isBefore(today, eventEndDate) ||
@@ -96,29 +98,42 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
 					{(isAfter(eventEndDate, today) ||
 						isSameDay(eventEndDate, today)) && (
 						<p className=" text-[15px] text-error">
-							End Time:{" "}
+							End Date:{" "}
 							{format(data?.event?.endDate ?? new Date(), "PPPP")}
 						</p>
 					)}
 					{data?.event?.time && (
 						<p className=" text-accent text-[14px]">
-							{data?.event?.time} GMT +1
+							{data?.event?.time}{" "}
+							{data.event.endTime && (
+								<p> - {data?.event?.endTime} </p>
+							)}{" "}
+							GMT +1
 						</p>
 					)}
 				</div>
-				{!extraInfo.isPublic && (
-					<div className=" rounded-[20px] px-[20px] py-[20px] my-[20px] bg-secondary">
-						<p className=" text-[20px] font-bold">Private event</p>
-						<p className=" text-accent">
-							This event is a private event, share event link to
-							get more attendees
-						</p>
-						<ShareButton
-							eventTitle={data?.event.title}
-							text="Check this event out!!"
-						/>
-					</div>
-				)}
+				<div className=" rounded-[20px] px-[20px] py-[20px] my-[20px] bg-secondary">
+					{!extraInfo.isPublic ? (
+						<div className="">
+							<p className=" text-accent">
+								This event is a private event, share event link
+								to get more attendees
+							</p>
+						</div>
+					) : (
+						<div className="">
+							<p className=" text-accent">
+								This event is public!! Share the event link to
+								increase visibility and attendance.
+							</p>
+						</div>
+					)}
+					<ShareButton
+						url={`/user/event/${data?.event.cleanName}`}
+						eventTitle={data?.event.title}
+						text={data?.event.description}
+					/>
+				</div>
 				{(isSameDay(today, eventStartDate) ||
 					(!isAfter(eventEndDate, today) && isTime)) && (
 					<div className="">
