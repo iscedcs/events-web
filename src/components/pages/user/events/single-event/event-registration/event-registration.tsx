@@ -147,6 +147,7 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 											{event.title.toLowerCase()}
 										</p>
 										<ShareButton
+											url={`/user/event/${event.cleanName}`}
 											description={event.description}
 											title={event.title}
 										/>
@@ -235,9 +236,9 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 											<p className=" capitalize text-[16px]">
 												{event.location.toLowerCase()}
 											</p>
-											<p className=" text-[12px] capitalize">
+											{/* <p className=" text-[12px] capitalize">
 												{event.town.toLowerCase()}
-											</p>
+											</p> */}
 											<div className=" mt-[10px]">
 												<EventMapLocation
 													event={event}

@@ -29,7 +29,7 @@ const UserEvents: NextPage<UserEventsProps> = async ({ searchParams }) => {
 			<Header title="GADA" user={user} />
 			<div className="py-[70px]">
 				<EventsTab initialTab={currentTab} userId={userId} />
-				<ShareButton />
+				{/* <ShareButton /> */}
 			</div>
 		</div>
 	);
