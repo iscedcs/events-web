@@ -129,7 +129,7 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
 						</div>
 					)}
 					<ShareButton
-						url={`/user/event/${data?.event.cleanName}`}
+						url={`/event/${data?.event.cleanName}`}
 						eventTitle={data?.event.title}
 						text={data?.event.description}
 					/>
