@@ -21,7 +21,7 @@ export default function ShareButton({
 				await navigator.share({
 					title: title,
 					text: description,
-					url: pathName,
+					url: url,
 				});
 				console.log("Shared successfully");
 			} catch (err: any) {
