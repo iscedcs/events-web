@@ -713,11 +713,17 @@ export const DUMMYTRENDINGEVENTS: TrendingEventsProps[] = [
 ];
 
 export const TICKETTANDC = [
-	"Tickets must be purchased from authorized sellers.",
-	"No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
-	"A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
-	"No refunds, exchanges, or cancellations unless the event is canceled or postponded.",
-	"A valid ticket and ID (if required) are needed for entry. Re-entry is not allowed.",
+	"Tickets must be purchased only through authorized sellers. Unauthorized tickets may be invalidated without refund.",
+	"All ticket sales are final. Refunds, exchanges, or cancellations are only permitted if the event is canceled or postponed.",
+	"Attendees must present a valid ticket and, where required, a government-issued ID for entry. Re-entry is not allowed unless specified.",
+	"The event organizer reserves the right to refuse entry or remove any attendee who does not comply with the event's rules or policies.",
+	"By purchasing a ticket, attendees agree to comply with all applicable venue regulations, safety protocols, and local laws.",
+	"Tickets may not be resold, transferred, or offered for commercial purposes without prior written consent from the event organizer.",
+	"The event organizer is not responsible for lost, stolen, or damaged tickets.",
+	"Photography, videography, or recording may be restricted or prohibited. Attendees must comply with all media policies communicated by the organizer.",
+	"Personal belongings are the responsibility of the attendee. The organizer is not liable for any loss or damage.",
+	"The event schedule, performers, or venue may be subject to change. Every effort will be made to notify ticket holders of significant changes.",
+	"By attending the event, attendees consent to the use of their images or recordings by the organizer for promotional purposes unless explicitly opted out.",
 ];
 
 export const INITIALTICKETS: InitialTicketProps[] = [
