@@ -42,13 +42,15 @@ export default function TrendingEvents() {
 			<div className=" mt-[40px]">
 				<div className=" flex items-center justify-between">
 					<p className="text-[24px]">Trending Events</p>
-					<Button
-						onClick={() => {
-							router.push("/user/events/all");
-						}}
-					>
-						View all
-					</Button>
+					{event?.length === 10 && (
+						<Button
+							onClick={() => {
+								router.push("/user/events/trending");
+							}}
+						>
+							View all
+						</Button>
+					)}
 				</div>
 			</div>
 			<div className=" mt-[10px]">

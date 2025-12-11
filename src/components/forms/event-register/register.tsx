@@ -143,7 +143,7 @@ export default function EventRegistrationForm({
 
 	return (
 		<>
-			<div className=" mt-[20px]">
+			<div className=" min-h-screen  flex flex-col mt-[20px]">
 				<p className=" font-extrabold text-[24px]">
 					Provide your info for the event
 				</p>
@@ -156,7 +156,7 @@ export default function EventRegistrationForm({
 					</div>
 				)}
 
-				<div className=" relative h-[600px] ">
+				<div className=" relative  ">
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(handleSubmit)}>
 							<FormField
@@ -254,7 +254,7 @@ export default function EventRegistrationForm({
 									</DialogContent>
 								</Dialog>
 							</div>
-							<div className=" absolute bottom-0 mb-[30px] w-full">
+							<div className=" fixed left-0 px-[15px] bottom-0 mb-[30px] w-full">
 								<Button
 									type="submit"
 									disabled={

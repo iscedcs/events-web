@@ -3,15 +3,17 @@
 import { QRCodeCanvas } from "qrcode.react";
 
 export default function QrCodeGenerator({
-  value,
-  size,
+	className,
+	value,
+	size,
 }: {
-  value: string;
-  size?: number;
+	className?: string;
+	value: string;
+	size?: number;
 }) {
-  return (
-    <div className="">
-      <QRCodeCanvas value={value} size={size} />
-    </div>
-  );
+	return (
+		<div className={`${className}`}>
+			<QRCodeCanvas value={value} size={size} />
+		</div>
+	);
 }

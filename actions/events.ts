@@ -265,6 +265,47 @@ export const getMostRecentEvent = async ({ limit, page }: PaginationType) => {
 	}
 };
 
+export const getAllUpcomingEvents = async ({ limit, page }: PaginationType) => {
+	const url = `${EVENTS_API}${URLS.events.all}?page=${page}&limit=${limit}`;
+	const auth = await getAuthInfo();
+	const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+	try {
+		const res = await fetch(url, {
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${BEARER}`,
+				"Content-Type": "application/json",
+			},
+			next: { revalidate: 20 },
+		});
+
+		const data = await res.json();
+		const events: SingleEventProps[] = data.data.events;
+
+		if (!data.success) return [];
+
+		const today = new Date();
+
+		const upcomingEvents = events.filter((ev) => {
+			const evDate = new Date(ev.startDate);
+			return ev.isPublic === true && isAfter(evDate, today);
+		});
+
+		const sortedUpcoming = upcomingEvents.sort((a, b) => {
+			return (
+				new Date(a.startDate).getTime() -
+				new Date(b.startDate).getTime()
+			);
+		});
+
+		return sortedUpcoming.slice(0, 5);
+	} catch (error) {
+		console.log("Unable to fetch events", error);
+		return [];
+	}
+};
+
 export const getEventsForCalendar = async ({ limit, page }: PaginationType) => {
 	const url = `${EVENTS_API}${URLS.events.all}?page=${page}&limit=${limit}`;
 	const auth = await getAuthInfo();
@@ -282,7 +323,8 @@ export const getEventsForCalendar = async ({ limit, page }: PaginationType) => {
 		const data = await res.json();
 		const events: SingleEventProps[] = data.data.events;
 
-		const futureEvent = events.filter((e) => isBefore(e.startDate, today));
+		const futureEvent = events.filter((e) => isAfter(e.startDate, today));
+		console.log({ futureEvent });
 
 		// console.log(data.data.events);
 		// console.log({ recentEvent });
