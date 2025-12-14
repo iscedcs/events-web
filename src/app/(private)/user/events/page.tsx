@@ -20,15 +20,25 @@ const UserEvents: NextPage<UserEventsProps> = async ({ searchParams }) => {
 
 	const resolvedSearchParams = await searchParams;
 	const tabParam = resolvedSearchParams?.tab;
+	const categoryParam = resolvedSearchParams.category;
+
 	const currentTab = Array.isArray(tabParam)
 		? tabParam[0]
 		: tabParam || "discover";
+
+	const currentCategoryParam = Array.isArray(categoryParam)
+		? categoryParam[0]
+		: categoryParam || "";
 
 	return (
 		<div>
 			<Header title="GADA" user={user} />
 			<div className="py-[70px]">
-				<EventsTab initialTab={currentTab} userId={userId} />
+				<EventsTab
+					category={currentCategoryParam}
+					initialTab={currentTab}
+					userId={userId}
+				/>
 				{/* <ShareButton /> */}
 			</div>
 		</div>

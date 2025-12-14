@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { closeRegistration } from "../../../../../../../actions/events";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { TbLoader2 } from "react-icons/tb";
 
 export default function CloseRegistration({
 	event,
@@ -39,13 +40,18 @@ export default function CloseRegistration({
 				onClick={handleRegistrationClose}
 				className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
 			>
-				{loading
-					? "Closing Registration"
-					: `${
-							event.registrationClosed
-								? "Registration Closed"
-								: "Close Registration"
-					  }`}
+				{loading ? (
+					<div className=" flex items-center gap-2">
+						<TbLoader2 className=" w-[22px] h-[22px] animate-spin" />
+						Closing Registration
+					</div>
+				) : (
+					`${
+						event.registrationClosed
+							? "Registration Closed"
+							: "Close Registration"
+					}`
+				)}
 			</Button>
 		</div>
 	);

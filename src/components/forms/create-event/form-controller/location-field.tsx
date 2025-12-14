@@ -7,6 +7,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { SETTINGS } from "@/lib/settings-config";
 import { useLoadScript } from "@react-google-maps/api";
 import { MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -145,7 +146,7 @@ export default function LocationField({
 			address: inputValue,
 			lat: 0,
 			lng: 0,
-			town: "null",
+			town: SETTINGS.google_api.isWorking ? "" : "null",
 		});
 	};
 

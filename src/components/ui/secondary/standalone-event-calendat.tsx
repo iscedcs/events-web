@@ -9,6 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from "../dropdown-menu";
 import Image from "next/image";
+import { Skeleton } from "../skeleton";
 
 type CalendarEvent = {
 	title?: string;
@@ -23,11 +24,16 @@ export default function StandaloneCurrentMonthCalendar() {
 	const currentMonth = today.getMonth(); // 0-indexed
 
 	const [events, setEvents] = useState<CalendarEvent[]>([]);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
+		setLoading(true);
 		const loadEvents = async () => {
 			const res = await getEventsForCalendar({});
-			setEvents(res || []);
+			if (res) {
+				setLoading(false);
+				setEvents(res || []);
+			}
 		};
 		loadEvents();
 	}, []);
@@ -48,6 +54,10 @@ export default function StandaloneCurrentMonthCalendar() {
 	}, [daysInMonth, firstDayOfMonth]);
 
 	const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+	if (loading) {
+		return <Skeleton className=" w-full h-[321px] " />;
+	}
 
 	return (
 		<div className="w-full max-w-[400px] mx-auto p-4 rounded-xl bg-secondary text-white">

@@ -46,6 +46,7 @@ export const URLS = {
 		one: "/events/one/{id}",
 		events_search: "/events/search",
 		category: "/events/categories",
+		active_categories: "/events/categories/active",
 		updelete: "/events/{id}/updelete",
 		one_slug: "/events/clean-name/{cleanName}",
 		event_search: "/events/search",
@@ -97,6 +98,16 @@ export const URLS = {
 		all_watchlist: "/watchlist/my-watchlist",
 		single_watchlist: "/watchlist/item/{eventId}",
 		event_watchlist_check: "/watchlist/check/{eventId}",
+	},
+	notifications: {
+		register_device: "/notifications/register-device",
+		all_user_notification: "/notifications",
+		unread_count: "/notifications/unread-count",
+		mark_as_read: "/notifications/mark-read",
+		mark_all_as_read: "/notifications/mark-all-read",
+		all_preferences: "/notifications/preferences",
+		update_preferences: "/notifications/preferences",
+		update_all_preferences: "/notifications/preferences/toggle",
 	},
 };
 
@@ -774,7 +785,7 @@ export const ACCOUNTSETTINGS = [
 	{
 		icon: <Bell />,
 		label: "Notification settings",
-		path: "",
+		path: "me/notifications-settings",
 	},
 	{
 		icon: <UserRoundPlus />,

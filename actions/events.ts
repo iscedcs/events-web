@@ -103,6 +103,73 @@ export const getUserEVents = async ({ limit, page }: PaginationType) => {
 	}
 };
 
+export const getEventsByCategories = async ({
+	category,
+	page,
+	limit,
+}: {
+	category: string;
+	page: number;
+	limit: number;
+}) => {
+	const url = `${EVENTS_API}${URLS.events.all}?page=${page}&limit=${limit}`;
+	const auth = await getAuthInfo();
+	const BEARER = "error" in auth || auth.isExpired ? null : auth.accessToken;
+
+	try {
+		const res = await fetch(url, {
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${BEARER}`,
+				"Content-Type": "application/json",
+			},
+		});
+		const data = await res.json();
+		const events: SingleEventProps[] = data.data.events;
+		// console.log(data.data.events);
+
+		const categorizedEvents = events.filter((e) =>
+			e.categories.includes(category)
+		);
+
+		// console.log({
+		// 	category,
+		// 	categorizedEvents,
+		// 	events: events.map((i) => i.categories),
+		// });
+
+		const presentEvents = categorizedEvents.filter((e) =>
+			isBefore(today, new Date(e.endDate))
+		);
+
+		const publicEvents = presentEvents.filter((e) => e.isPublic);
+
+		const sortedEvents = [...publicEvents].sort(
+			(a, b) =>
+				new Date(b.startDate).getTime() -
+				new Date(a.startDate).getTime()
+		);
+
+		const totalRecords = data.data.total;
+		const currentPage = data.data.currentPage;
+		const totalPages = data.data.totalPages;
+
+		// console.log({ publicEvents });
+
+		if (data.success === true) {
+			return {
+				event: sortedEvents,
+				totalPages: totalPages,
+				currentPage: currentPage,
+				totalRecords: totalRecords,
+			};
+		}
+		return null;
+	} catch (e: any) {
+		console.log("Unable to fetch events", e);
+	}
+};
+
 export const getUserEVentsForCalendar = async ({
 	limit,
 	page,
@@ -324,7 +391,7 @@ export const getEventsForCalendar = async ({ limit, page }: PaginationType) => {
 		const events: SingleEventProps[] = data.data.events;
 
 		const futureEvent = events.filter((e) => isAfter(e.startDate, today));
-		console.log({ futureEvent });
+		// console.log({ futureEvent });
 
 		// console.log(data.data.events);
 		// console.log({ recentEvent });
@@ -490,10 +557,14 @@ export const searchForEvents = async (value: string) => {
 			return e.isPublic === true;
 		});
 
+		const filteredEvents = item.filter(
+			(e) => isBefore(new Date(), e.endDate) && e.isPublic === true
+		);
+
 		// console.log({ showPublic });
 
 		if (res.ok) {
-			return { item: showPublic };
+			return { item: filteredEvents };
 		}
 		return null;
 	} catch (e: any) {
