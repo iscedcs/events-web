@@ -33,8 +33,6 @@ export function useRegisterPushDevice() {
 				return;
 			}
 
-			const stored = localStorage.getItem("fcmToken");
-			if (stored === fcmToken) return;
 			localStorage.setItem("fcmToken", fcmToken);
 
 			setToken(fcmToken);
