@@ -19,22 +19,16 @@ firebase.initializeApp({
 firebase.messaging();
 
 self.addEventListener("push", (event) => {
-	if (!event.data) return;
+	const data = event.data?.json();
+	if (!data) return;
 
-	const data = event.data.json();
-
-	const title = data.title || "New notification";
-
-	const options = {
-		body: data.body,
-		icon: "/icon-192.png",
-		data: {
-			url: data.url || "/",
-		},
-		silent: false,
-	};
-
-	event.waitUntil(self.registration.showNotification(title, options));
+	event.waitUntil(
+		self.registration.showNotification(data.title, {
+			body: data.body,
+			icon: "/icon-192.png",
+			data: { url: data.url },
+		})
+	);
 });
 
 self.addEventListener("notificationclick", (event) => {
