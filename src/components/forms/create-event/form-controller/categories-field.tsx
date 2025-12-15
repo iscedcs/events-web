@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -8,14 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Check, Plus } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BiCategory } from "react-icons/bi";
-import { Check, Plus } from "lucide-react";
-import { useFormContext } from "react-hook-form";
-import { getUniqueCategories } from "../../../../../actions/categories";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { getActiveUniqueCategories } from "../../../../../actions/categories";
 
 type CategoriesFormValues = {
   categories: string[];
@@ -33,7 +33,7 @@ export default function CategoriesField() {
   // ✅ Fetch categories once
   useEffect(() => {
     (async () => {
-      const categoryData = await getUniqueCategories();
+      const categoryData = await getActiveUniqueCategories();
       setAvailableCategories(categoryData || []);
     })();
   }, []);

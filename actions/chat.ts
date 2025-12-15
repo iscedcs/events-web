@@ -27,7 +27,7 @@ export const getEventChatroomByEventID = async (eventId: string) => {
       // next: { revalidate: 20 },
     });
     const data = await res.json();
-    console.log({ data });
+    // console.log({ data });
     const roomInfo: SingleChatroomProps = data.data.data;
 
     if (res.ok) {

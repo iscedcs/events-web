@@ -7,62 +7,67 @@ import Discover from "./discover/discover";
 import ManageEvents from "./manage-events/manage-events";
 
 export default function EventsTab({
-  initialTab,
-  userId,
+	category,
+	initialTab,
+	userId,
 }: {
-  initialTab: string;
-  userId: string;
+	category: string;
+	initialTab: string;
+	userId: string;
 }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+	const router = useRouter();
+	const searchParams = useSearchParams();
 
-  const tab = searchParams.get("tab") || initialTab;
+	const tab = searchParams.get("tab") || initialTab;
+	const categoryPick = searchParams.get("category") || category;
 
-  const handleChange = (value: string) => {
-    if (value === tab) return;
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("tab", value);
-    router.push(`?${params.toString()}`, { scroll: false });
-  };
+	const handleChange = (value: string) => {
+		if (value === tab) return;
+		const params = new URLSearchParams(searchParams.toString());
+		params.set("tab", value);
+		router.push(`?${params.toString()}`, { scroll: false });
+	};
 
-  return (
-    <div className="relative">
-      <Tabs
-        value={tab}
-        onValueChange={handleChange}
-        className="bg-black rounded-none"
-      >
-        <TabsList className="flex w-full border-b-[4px] border-secondary py-[23px] justify-between rounded-none bg-black">
-          <TabsTrigger
-            value="manage"
-            className="text-[14px] text-center data-[state=active]:border-b-[4px] data-[state=active]:py-[24px] data-[state=active]:border-l-0 data-[state=active]:border-r-0 data-[state=active]:border-t-0 data-[state=active]:bg-black data-[state=active]:border-white data-[state=active]:rounded-none data-[state=active]:text-white"
-          >
-            Manage events
-          </TabsTrigger>
-          <TabsTrigger
-            value="discover"
-            className="text-[14px] text-center data-[state=active]:border-b-[4px] data-[state=active]:py-[24px] data-[state=active]:border-l-0 data-[state=active]:border-r-0 data-[state=active]:border-t-0 data-[state=active]:bg-black data-[state=active]:border-white data-[state=active]:rounded-none data-[state=active]:text-white"
-          >
-            Discover
-          </TabsTrigger>
-          <TabsTrigger
-            value="create"
-            className="text-[14px] text-center data-[state=active]:border-b-[4px] data-[state=active]:py-[24px] data-[state=active]:border-l-0 data-[state=active]:border-r-0 data-[state=active]:border-t-0 data-[state=active]:bg-black data-[state=active]:border-white data-[state=active]:rounded-none data-[state=active]:text-white"
-          >
-            Create event
-          </TabsTrigger>
-        </TabsList>
+	const fcmToke = localStorage.getItem("fcmToken");
 
-        <TabsContent value="manage">
-          <ManageEvents userId={userId} />
-        </TabsContent>
-        <TabsContent value="discover">
-          <Discover />
-        </TabsContent>
-        <TabsContent value="create">
-          <CreateEvent />
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
+	return (
+		<div className="relative">
+			<Tabs
+				value={tab}
+				onValueChange={handleChange}
+				className="bg-black rounded-none"
+			>
+				<TabsList className="flex w-full border-b-[4px] border-secondary py-[23px] justify-between rounded-none bg-black">
+					<TabsTrigger
+						value="manage"
+						className="text-[14px] text-center data-[state=active]:border-b-[4px] data-[state=active]:py-[24px] data-[state=active]:border-l-0 data-[state=active]:border-r-0 data-[state=active]:border-t-0 data-[state=active]:bg-black data-[state=active]:border-white data-[state=active]:rounded-none data-[state=active]:text-white"
+					>
+						Manage events
+					</TabsTrigger>
+					<TabsTrigger
+						value="discover"
+						className="text-[14px] text-center data-[state=active]:border-b-[4px] data-[state=active]:py-[24px] data-[state=active]:border-l-0 data-[state=active]:border-r-0 data-[state=active]:border-t-0 data-[state=active]:bg-black data-[state=active]:border-white data-[state=active]:rounded-none data-[state=active]:text-white"
+					>
+						Discover
+					</TabsTrigger>
+					<TabsTrigger
+						value="create"
+						className="text-[14px] text-center data-[state=active]:border-b-[4px] data-[state=active]:py-[24px] data-[state=active]:border-l-0 data-[state=active]:border-r-0 data-[state=active]:border-t-0 data-[state=active]:bg-black data-[state=active]:border-white data-[state=active]:rounded-none data-[state=active]:text-white"
+					>
+						Create event
+					</TabsTrigger>
+				</TabsList>
+
+				<TabsContent value="manage">
+					<ManageEvents userId={userId} />
+				</TabsContent>
+				<TabsContent value="discover">
+					<Discover category={categoryPick} />
+				</TabsContent>
+				<TabsContent value="create">
+					<CreateEvent />
+				</TabsContent>
+			</Tabs>
+		</div>
+	);
 }

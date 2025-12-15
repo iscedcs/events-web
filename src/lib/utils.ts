@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import bcrypt from "bcryptjs";
+import { format } from "date-fns";
 
 const TAILWIND_TEXT_COLORS = [
 	"text-red-500",
@@ -74,7 +75,9 @@ export function formatWithCommasAndCurrency(value: number | string): string {
 
 	const formattedInt = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-	return decimalPart ? `₦ ${formattedInt}.${decimalPart}` : `₦ ${formattedInt}`;
+	return decimalPart
+		? `₦ ${formattedInt}.${decimalPart}`
+		: `₦ ${formattedInt}`;
 }
 
 export function formatWithCommas(value: number | string): string {
@@ -139,3 +142,20 @@ export function toLocalISOString(date: Date) {
 export function comparePassowrd(hash: string, password: string) {
 	return bcrypt.compareSync(password, hash);
 }
+
+export const formatDateForChat = (iso: string) => {
+	const date = new Date(iso);
+	const today = new Date();
+	const yesterday = new Date();
+	yesterday.setDate(today.getDate() - 1);
+
+	if (date.toDateString() === today.toDateString()) {
+		return "Today";
+	}
+
+	if (date.toDateString() === yesterday.toDateString()) {
+		return "Yesterday";
+	}
+
+	return format(new Date(iso), "PPPP");
+};
