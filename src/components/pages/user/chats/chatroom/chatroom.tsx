@@ -47,7 +47,6 @@ export default function Chatroom({
 		SingleChatMessageProps[]
 	>([]);
 	const [open, setOpen] = useState(true);
-	const [totalAttendee, setTotalAttendee] = useState(0);
 
 	const allMessages = useMemo(() => {
 		return [...messages, ...pendingMessages].sort(
@@ -614,18 +613,6 @@ export default function Chatroom({
 		}
 	};
 
-	useEffect(() => {
-		setLoading(true);
-		const fetchData = async () => {
-			const attendees = await getAttendeesEventID(event.id);
-			if (attendees) {
-				setTotalAttendee(attendees.length);
-				setLoading(false);
-			}
-		};
-		fetchData();
-	}, [event.id]);
-
 	if (loadingChatroom) {
 		return (
 			<div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -683,7 +670,7 @@ export default function Chatroom({
 									event is still ongoing
 								</p>
 								<p className=" text-center text-[13px] text-accent">
-									{totalAttendee} members
+									{event.audienceSize} members
 								</p>
 							</div>
 						)}
