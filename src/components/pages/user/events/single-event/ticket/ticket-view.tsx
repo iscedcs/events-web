@@ -18,6 +18,7 @@ import { stripTime } from "@/lib/utils";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import html2pdf from "html2pdf.js";
+import { SETTINGS } from "@/lib/settings-config";
 
 export default function TicketView({
 	ticket,
@@ -109,21 +110,15 @@ export default function TicketView({
 							<p className=" text-[18px] line-clamp-2 capitalize">
 								{ticket.event?.title.toLowerCase()}
 							</p>
-							{/* <p className=" capitalize text-[10px] text-accent">
-		        {ticket.event?.town.toLowerCase()}
-		      </p> */}
+							{SETTINGS.google_api.isWorking && (
+								<p className=" capitalize text-[10px] text-accent">
+									{ticket.event?.town.toLowerCase()}
+								</p>
+							)}
 						</div>
 					</div>
 					<div className="  border-t-0 border-l-0 border py-[20px] border-accent  border-dashed  border-r-0">
 						<div className=" flex gap-6 ">
-							<div className="">
-								<p className=" text-[14px] text-accent">
-									Event Title
-								</p>
-								<p className=" text-[16px] capitalize ">
-									{ticket.event?.title.toLowerCase()}
-								</p>
-							</div>
 							<div className="">
 								<p className=" text-[14px] text-accent">
 									Venue

@@ -11,8 +11,9 @@ import { HederType } from "@/lib/types/layout";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FaBell, FaPowerOff } from "react-icons/fa";
-import { GoLinkExternal } from "react-icons/go";
+import { getUnreadNotificationsCount } from "../../../../actions/notifications";
 
 export const onSignOut = () => {
 	window.location.href = "/api/auth/logout";
@@ -20,21 +21,32 @@ export const onSignOut = () => {
 
 export default function Header({ title, user, hasBack }: HederType) {
 	const fullName = `${user?.firstName} ${user?.lastName}`;
+	const [count, setCount] = useState(0);
 
-	const onSignIn = () => {
-		// Where we came from (deep link safe)
-		const back = window.location.href;
+	// const onSignIn = () => {
+	// 	// Where we came from (deep link safe)
+	// 	const back = window.location.href;
 
-		// Build IdP sign-in URL with redirect_uri
-		const base = process.env.NEXT_PUBLIC_AUTH_BASE_URL!;
-		const path = process.env.NEXT_PUBLIC_AUTH_LOGIN_PATH || "/sign-in";
-		const authUrl = new URL(path, base);
-		authUrl.searchParams.set("redirect_uri", back);
+	// 	// Build IdP sign-in URL with redirect_uri
+	// 	const base = process.env.NEXT_PUBLIC_AUTH_BASE_URL!;
+	// 	const path = process.env.NEXT_PUBLIC_AUTH_LOGIN_PATH || "/sign-in";
+	// 	const authUrl = new URL(path, base);
+	// 	authUrl.searchParams.set("redirect_uri", back);
 
-		window.location.href = authUrl.toString();
-	};
+	// 	window.location.href = authUrl.toString();
+	// };
 
 	const router = useRouter();
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const data = await getUnreadNotificationsCount();
+			if (data) {
+				setCount(data);
+			}
+		};
+		fetchData();
+	}, []);
 
 	return (
 		<div className=" flex fixed z-50 w-full left-0 top-0 items-center justify-between px-[20px] py-[10px] bg-secondary">
@@ -49,32 +61,18 @@ export default function Header({ title, user, hasBack }: HederType) {
 				</div>
 			</div>
 
-			<div className=" flex items-center gap-7">
-				{/* <SignOutButton />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className="flex items-center gap-2">
-              <Image
-                src={user?.displayPicture ?? "/resources/no-profile.jpg"}
-                width={"1000"}
-                height={"1000"}-6+-+
-                alt="image"
-                className=" w-[35px] h-[35px] object-cover rounded-full"
-              />
-              <IoIosArrowDown />
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className=" flex flex-col gap-2 text-[14px] px-[15px] py-[8px] mr-[10px] bg-secondary text-white rounded-[12px] border ">
-            <p>{fullName}</p>
-            <p>{user?.email}</p>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
-				<FaBell
-					onClick={() => {
-						router.push("/user/events/notifications");
-					}}
-					className=" w-5 h-5"
-				/>
+			<div className=" flex items-center gap-5">
+				<div className=" relative">
+					{count > 0 && (
+						<div className=" rounded-full absolute right-0 bg-error w-3 h-3"></div>
+					)}
+					<FaBell
+						onClick={() => {
+							router.push("/user/events/notifications");
+						}}
+						className=" w-5 h-5"
+					/>
+				</div>
 				<Sheet>
 					<SheetTrigger asChild>
 						<Image
@@ -138,7 +136,7 @@ export default function Header({ title, user, hasBack }: HederType) {
 								)}{" "}
 							</div>
 						</div>
-						<div className=" flex flex-col gap-3">
+						{/* <div className=" flex flex-col gap-3">
 							<Link
 								href={""}
 								className=" py-[20px] flex items-center justify-between rounded-[12px] px-[20px] text-black bg-accent"
@@ -153,7 +151,7 @@ export default function Header({ title, user, hasBack }: HederType) {
 								<p className=" font-semibold">Wallet</p>
 								<GoLinkExternal />
 							</Link>
-						</div>
+						</div> */}
 
 						<SheetTitle hidden>Display</SheetTitle>
 					</SheetContent>

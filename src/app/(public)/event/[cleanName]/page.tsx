@@ -13,6 +13,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { HiTicket } from "react-icons/hi";
 import { PiMapPinFill } from "react-icons/pi";
 import { getEventsByCleanName } from "../../../../../actions/events";
+import { SETTINGS } from "@/lib/settings-config";
 
 type Params = Promise<{ cleanName: string }>;
 
@@ -176,9 +177,11 @@ export default async function SingleEventPage(props: { params: Params }) {
 										<p className=" line-clamp-2 text-[16px] capitalize">
 											{event.location.toLowerCase()}
 										</p>
-										{/* <p className=" text-accent text-[14px] capitalize">
-                      {event.town.toLowerCase()}
-                    </p> */}
+										{SETTINGS.google_api.isWorking && (
+											<p className=" text-accent text-[14px] capitalize">
+												{event.town.toLowerCase()}
+											</p>
+										)}
 									</div>
 								</div>
 								<div className=" mt-[30px] rounded-[20px] overflow-hidden  border border-accent  ">
@@ -238,9 +241,12 @@ export default async function SingleEventPage(props: { params: Params }) {
 										<p className=" capitalize text-[16px]">
 											{event.location.toLowerCase()}
 										</p>
-										{/* <p className=" text-[12px] capitalize">
-                      {event.town.toLowerCase()}
-                    </p> */}
+										{SETTINGS.google_api.isWorking && (
+											<p className=" text-[12px] capitalize">
+												{event.town.toLowerCase()}
+											</p>
+										)}
+
 										<div className=" mt-[10px]">
 											<EventMapLocation event={event} />
 										</div>

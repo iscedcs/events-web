@@ -209,7 +209,12 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
 
 				<div className=" mt-[20px]">
 					<div className=" flex justify-between items-center">
-						<p className=" text-[24px]">Attendees</p>
+						<span className=" flex items-center gap-3 text-[24px]">
+							Attendees
+							<p className=" text-accent">
+								{extraInfo.audienceSize ?? 0}
+							</p>
+						</span>
 						{data?.attendees.length === 10 && (
 							<Link
 								href={`${extraInfo.cleanName.toLowerCase()}/attendees`}
