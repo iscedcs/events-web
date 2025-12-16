@@ -440,7 +440,7 @@ export default function Chatroom({
 					updatedAt: tempTimestamp,
 					attendee_id: attendeeId ?? userId,
 					deletedAt: null,
-					isFromCreator: attendee === null,
+					isFromCreator: attendee === null || attendee === undefined,
 					timestamp: tempTimestamp,
 					createdAt: tempTimestamp,
 				});
@@ -703,7 +703,7 @@ export default function Chatroom({
 											>
 												{isNewDay && (
 													<div className="flex justify-center my-4">
-														<span className="px-3 py-1 text-[12px] rounded-full bg-secondary text-accent">
+														<span className="px-3 py-1 text-[12px]  text-accent">
 															{formatDateForChat(
 																message.timestamp
 															)}
