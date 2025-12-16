@@ -1,10 +1,8 @@
 import EventsTab from "@/components/pages/user/events/events-tab";
 import Header from "@/components/shared/layout/header";
 import { type NextPage } from "next";
-import { getUserByID } from "../../../../../actions/user";
 import { getCurrentUser } from "../../../../../actions/auth";
-import ShareButtons from "@/components/ui/secondary/share-button";
-import ShareButton from "@/components/ui/secondary/share-button";
+import { getUserByID } from "../../../../../actions/user";
 
 export const dynamic = "force-dynamic";
 

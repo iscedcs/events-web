@@ -28,7 +28,8 @@ export default function EventsTab({
 		router.push(`?${params.toString()}`, { scroll: false });
 	};
 
-	const fcmToke = localStorage.getItem("fcmToken");
+	const fcmToken = localStorage.getItem("fcmToken");
+	console.log({ fcmToken });
 
 	return (
 		<div className="relative">
