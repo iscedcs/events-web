@@ -1,55 +1,61 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNotificationsSocket } from "@/hooks/useNotificationsSocket";
 import { NotificationProps } from "@/lib/types/notifications";
 
-interface Props {
-	token: string; // JWT from your auth provider
-}
+export function NotificationsListener({ token }: { token: string }) {
+	const [unreadCount, setUnreadCount] = useState(0);
+	const audioRef = useRef<HTMLAudioElement | null>(null);
 
-export function NotificationsListener({ token }: Props) {
-	const [notifications, setNotifications] = useState<NotificationProps[]>([]);
-	const [unreadCount, setUnreadCount] = useState<number>(0);
+	useEffect(() => {
+		if (typeof window === "undefined") return;
 
-	const audio = useMemo(() => {
-		if (typeof window === "undefined") return null;
-		return new Audio("/resources/notification.mp3");
+		try {
+			audioRef.current = new Audio("/sounds/notification.mp3");
+			audioRef.current.preload = "auto";
+		} catch {}
 	}, []);
 
 	useNotificationsSocket({
 		token,
 		onNewNotification: (notification) => {
-			setNotifications((prev) => [
-				notification as NotificationProps,
-				...prev,
-			]);
 			setUnreadCount((prev) => prev + (notification.read ? 0 : 1));
 
-			if (audio) {
-				audio.currentTime = 0;
-				audio.play().catch((err) => {
-					console.warn("Failed to play notification sound", err);
-				});
-			}
+			// 🔊 Sound
+			try {
+				const audio = audioRef.current;
+				if (audio) {
+					audio.currentTime = 0;
+					audio.play().catch(() => {});
+				}
+			} catch {}
 
-			if (Notification.permission === "granted") {
-				new Notification(notification.title, {
-					body: notification.body,
-				});
-			}
+			// 🔔 Browser notification
+			try {
+				if (
+					"Notification" in window &&
+					Notification.permission === "granted"
+				) {
+					new Notification(notification.title, {
+						body: notification.body,
+					});
+				}
+			} catch {}
 		},
-		onUnreadCount: (count) => {
-			setUnreadCount(count);
-		},
+
+		onUnreadCount: setUnreadCount,
 	});
 
 	useEffect(() => {
-		if (typeof window === "undefined") return;
-		if (Notification.permission === "default") {
+		if (
+			typeof window !== "undefined" &&
+			"Notification" in window &&
+			Notification.permission === "default"
+		) {
 			Notification.requestPermission().catch(() => {});
 		}
 	}, []);
 
-	return null; // Attach your own UI component here if desired
+	return null;
 }
