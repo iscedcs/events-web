@@ -28,9 +28,6 @@ export default function EventsTab({
 		router.push(`?${params.toString()}`, { scroll: false });
 	};
 
-	const fcmToken = localStorage.getItem("fcmToken");
-	console.log({ fcmToken });
-
 	return (
 		<div className="relative">
 			<Tabs
