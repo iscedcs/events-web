@@ -737,6 +737,14 @@ export const TICKETTANDC = [
 	"By attending the event, attendees consent to the use of their images or recordings by the organizer for promotional purposes unless explicitly opted out.",
 ];
 
+export const COMMUNITY_GUIDELINES = [
+	"Treat attendees, speakers, and organizers with courtesy. No harassment, hate speech, or personal attacks.",
+	"Do not post spam, repeated messages, or advertisements unless approved by organizers.",
+	"No illegal, explicit, offensive, or disruptive content.",
+	"Comply with all applicable laws and platform terms of service.",
+	"Do not encourage self-harm, violence, or dangerous behavior.",
+];
+
 export const INITIALTICKETS: InitialTicketProps[] = [
 	{
 		icon: <Ticket className=" w-5 h-5" />,

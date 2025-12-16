@@ -3,11 +3,13 @@
 import { Button } from "@/components/ui/button";
 import {
 	Drawer,
+	DrawerClose,
 	DrawerContent,
 	DrawerTitle,
 	DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
+import { COMMUNITY_GUIDELINES } from "@/lib/const";
 import { ChatInputProps } from "@/lib/types/chat";
 import { Camera, Mic, SendHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -202,18 +204,36 @@ export default function ChatInput({
 					)}
 				</Button>
 			</div>
-			<span className=" text-center text-accent mt-[5px] text-[10px]">
-				Take care with the message you send in here, and obey our{" "}
+			<span className=" text-accent text-center mt-[10px] text-[10px]">
+				<p className=" text-center">
+					Take care with the message you send in here, and obey our
+				</p>
 				<div className="">
 					<Drawer>
 						<DrawerTrigger>
-							<p className=" underline">Community Guidelines</p>
+							<p className=" text-center underline">
+								Community Guidelines
+							</p>
 						</DrawerTrigger>
 						<DrawerContent className=" bg-secondary px-[20px] pb-[30px]">
 							<DrawerTitle className=" font-black text-center">
 								COMMUNITY GUIDELINES
 							</DrawerTitle>
-							<div className="">DFNDIFNDIFNI</div>
+							<ul className=" pl-[15px] flex flex-col gap-2">
+								{COMMUNITY_GUIDELINES.map((i, k) => (
+									<li
+										className=" list-disc text-accent text-[12px]"
+										key={k}
+									>
+										{i}
+									</li>
+								))}
+							</ul>
+							<DrawerClose asChild>
+								<Button className=" mt-[20px] w-full rounded-[12px] font-semibold py-[24px] ">
+									I Understand
+								</Button>
+							</DrawerClose>
 						</DrawerContent>
 					</Drawer>
 				</div>
