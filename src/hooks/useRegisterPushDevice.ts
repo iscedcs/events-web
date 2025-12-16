@@ -12,24 +12,21 @@ export function useRegisterPushDevice() {
 
 	const register = useCallback(async () => {
 		setError(null);
+		setLoading(true);
 
 		try {
+			// 1. Browser support checks
 			if (!("Notification" in window)) {
 				throw new Error(
 					"Notifications are not supported on this browser"
 				);
 			}
 
-			// Avoid duplicate registrations
-			const existingToken = localStorage.getItem(STORAGE_KEY);
-			if (existingToken) {
-				setToken(existingToken);
-				return;
+			if (!("serviceWorker" in navigator)) {
+				throw new Error("Service workers are not supported");
 			}
 
-			setLoading(true);
-
-			// Handle permission flow
+			// 2. Permission handling
 			if (Notification.permission === "default") {
 				const permission = await Notification.requestPermission();
 				if (permission !== "granted") {
@@ -43,26 +40,30 @@ export function useRegisterPushDevice() {
 				);
 			}
 
-			// Ensure service worker is registered
-			if (!("serviceWorker" in navigator)) {
-				throw new Error("Service workers are not supported");
+			// 3. Reuse token only if permission is still granted
+			const existingToken = localStorage.getItem(STORAGE_KEY);
+			if (existingToken && Notification.permission === "granted") {
+				setToken(existingToken);
+				return;
 			}
 
+			// 4. Ensure service worker is registered and ready
 			await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+			await navigator.serviceWorker.ready;
 
+			// 5. Get VAPID key
 			const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
 			if (!vapidKey) {
 				throw new Error("Missing Firebase VAPID key");
 			}
 
-			// Get FCM token
+			// 6. Request FCM token
 			const fcmToken = await requestFcmToken(vapidKey);
-
 			if (!fcmToken) {
 				throw new Error("Failed to obtain FCM token");
 			}
 
-			// Register with backend
+			// 7. Register device on backend
 			const res = await fetch("/api/notifications/register", {
 				method: "POST",
 				headers: {
@@ -79,7 +80,7 @@ export function useRegisterPushDevice() {
 				throw new Error("Failed to register device on server");
 			}
 
-			// Persist only after success
+			// 8. Persist only after successful backend registration
 			localStorage.setItem(STORAGE_KEY, fcmToken);
 			setToken(fcmToken);
 		} catch (err: any) {

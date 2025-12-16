@@ -21,12 +21,22 @@ firebase.messaging();
 self.addEventListener("push", (event) => {
 	if (!event.data) return;
 
-	const data = event.data.json();
+	let data = {};
+
+	try {
+		data = event.data.json();
+	} catch (err) {
+		// Fallback for non-JSON payloads (Firebase console, bad sends)
+		data = {
+			title: "Notification",
+			body: event.data.text(),
+		};
+	}
 
 	const title = data.title || "New notification";
 
 	const options = {
-		body: data.body,
+		body: data.body || "",
 		icon: "/icon-192.png",
 		data: {
 			url: data.url || "/",
