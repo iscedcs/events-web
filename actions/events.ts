@@ -260,7 +260,7 @@ export const getTrendingEvents = async () => {
 			return (
 				// isBefore(new Date(), e.startDate) ||
 				// isSameDay(e.startDate, e.endDate) ||
-				isBefore(new Date(), e.endDate)
+				isBefore(today, e.startDate) && isBefore(today, e.endDate)
 			);
 		});
 

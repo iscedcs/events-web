@@ -628,31 +628,31 @@ export const HEADERITEMS: HeaderItemsTypes[] = [
 	{
 		icon: <FaRegUser className=" w-[16px] h-[16px]" />,
 		path: "/user/me",
-		title: "Your profile",
+		title: "Profile",
 		value: "profile",
 	},
 	{
 		icon: <MdEventNote className=" w-[16px] h-[16px]" />,
 		path: "/user/me/my-events",
-		title: "Your events",
+		title: "Events",
 		value: "events",
 	},
 	{
 		icon: <LuTickets className=" w-[16px] h-[16px]" />,
 		path: "/user/me/my-tickets",
-		title: "Your tickets",
+		title: "Tickets",
 		value: "tickets",
 	},
 	{
 		icon: <LuMessageSquareText className=" w-[16px] h-[16px]" />,
 		path: "/user/me/my-chats",
-		title: "Your chats",
+		title: "Chats",
 		value: "chats",
 	},
 	{
 		icon: <Bookmark className=" w-[16px] h-[16px]" />,
 		path: "/user/me/my-bookmarks",
-		title: "Your bookmarks",
+		title: "Bookmarks",
 		value: "bookmarks",
 	},
 ];

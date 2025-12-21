@@ -18,7 +18,11 @@ export default async function Profile() {
 			<div className=" w-full h-[100px] bg-linear-to-b from-[#6600FF] to-[#000000]"></div>
 			<div className=" -mt-[40px] px-[10px]">
 				<Image
-					src={user?.displayPicture ?? "/resources/no-profile.jpg"}
+					src={
+						user?.displayPicture === ""
+							? "/resources/no-profile.jpg"
+							: user?.displayPicture!
+					}
 					alt="displayPicture"
 					width={"1000"}
 					height={"1000"}

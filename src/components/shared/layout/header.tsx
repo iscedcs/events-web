@@ -77,8 +77,9 @@ export default function Header({ title, user, hasBack }: HederType) {
 					<SheetTrigger asChild>
 						<Image
 							src={
-								user?.displayPicture ??
-								"/resources/no-profile.jpg"
+								user?.displayPicture === ""
+									? "/resources/no-profile.jpg"
+									: user?.displayPicture!
 							}
 							width={"1000"}
 							height={"1000"}
@@ -91,8 +92,9 @@ export default function Header({ title, user, hasBack }: HederType) {
 							<div className=" flex items-center gap-4">
 								<Image
 									src={
-										user?.displayPicture ??
-										"/resources/no-profile.jpg"
+										user?.displayPicture === ""
+											? "/resources/no-profile.jpg"
+											: user?.displayPicture!
 									}
 									width={"1000"}
 									height={"1000"}
