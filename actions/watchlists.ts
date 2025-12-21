@@ -63,16 +63,11 @@ export const getWatchlistForCalendarUserID = async (userId: string) => {
 			cache: "no-store",
 		});
 
-		if (!res.ok) {
-			console.log("watchlist fetch failed", res.status, await res.text());
-			return [];
-		}
-
 		const data = await res.json();
 		const watchlist: SingleUserWatchlistProps[] = data.data.watchlist;
 
 		const futureEvent = watchlist.filter((e) =>
-			isBefore(e.event.startDate, new Date())
+			isBefore(new Date(), e.event.startDate)
 		);
 
 		if (res.ok) {
@@ -102,7 +97,6 @@ export const checkWatchList = async (eventId: string) => {
 				Authorization: `Bearer ${BEARER}`,
 			},
 			method: "GET",
-			next: { revalidate: 20 },
 		});
 		const data = await res.json();
 		const isInWatchlist = data.data.isInWatchlist;
