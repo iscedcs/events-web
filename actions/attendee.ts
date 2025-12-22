@@ -2,7 +2,8 @@
 
 import { EVENTS_API, URLS } from "@/lib/const";
 import { getAuthInfo } from "./auth";
-import { SingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
+import { SingleEventProps } from "@/lib/types/event";
+import { SingleAttendeeProps } from "@/lib/types/attendee";
 
 export const getAttendeesEventID = async (id: string) => {
 	const auth = await getAuthInfo();

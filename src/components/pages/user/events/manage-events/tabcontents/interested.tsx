@@ -3,7 +3,6 @@
 import EventCard from "@/components/shared/event/event-card";
 import EventCardSkeleton from "@/components/skeletons/event-card";
 import EventCalendar from "@/components/ui/secondary/event-calendar";
-import { SingleUserWatchlistProps } from "@/lib/types/event";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -11,6 +10,7 @@ import {
 	getWatchlistUserID,
 } from "../../../../../../../actions/watchlists";
 import EmptyState from "../empty-state";
+import { SingleUserWatchlistProps } from "@/lib/types/watchlist";
 
 export default function Interested({ userId }: { userId?: string }) {
 	const [watchlists, setWatchlists] = useState<SingleUserWatchlistProps[]>(
@@ -32,7 +32,7 @@ export default function Interested({ userId }: { userId?: string }) {
 					return;
 				}
 				const watchlistsData = await getWatchlistUserID(userId!);
-				console.log({ watchlistsData });
+				// console.log({ watchlistsData });
 				if (!cancelled) setWatchlists(watchlistsData ?? []);
 			} finally {
 				if (!cancelled) setLoading(false);

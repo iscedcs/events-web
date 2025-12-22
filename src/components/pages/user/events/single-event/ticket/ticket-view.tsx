@@ -3,8 +3,6 @@
 import { Button } from "@/components/ui/button";
 import CopyButton from "@/components/ui/secondary/copy-button";
 import { TICKETTANDC } from "@/lib/const";
-import { SingleAttendeeProps } from "@/lib/types/event";
-import { SingleTicketProps } from "@/lib/types/ticket";
 import { format, isBefore, isSameDay } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,6 +17,8 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import html2pdf from "html2pdf.js";
 import { SETTINGS } from "@/lib/settings-config";
+import { SingleTicketProps } from "@/lib/types/ticket";
+import { SingleAttendeeProps } from "@/lib/types/attendee";
 
 export default function TicketView({
 	ticket,
