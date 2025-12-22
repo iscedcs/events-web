@@ -1,9 +1,9 @@
 "use server";
 
 import { EVENTS_API, URLS } from "@/lib/const";
-import { SingleUserWatchlistProps } from "@/lib/types/event";
 import { getAuthInfo } from "./auth";
 import { isBefore } from "date-fns";
+import { SingleUserWatchlistProps } from "@/lib/types/watchlist";
 
 export const getWatchlistUserID = async (userId: string) => {
 	if (!userId) return [];
