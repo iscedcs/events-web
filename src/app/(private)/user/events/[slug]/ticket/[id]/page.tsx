@@ -1,14 +1,14 @@
 import TicketView from "@/components/pages/user/events/single-event/ticket/ticket-view";
 import Header from "@/components/shared/layout/header";
-import { SingleAttendeeProps } from "@/lib/types/event";
 import { SingleTicketProps } from "@/lib/types/ticket";
 import {
-  getAttendeeID,
-  getAttendeesEventID,
+	getAttendeeID,
+	getAttendeesEventID,
 } from "../../../../../../../../actions/attendee";
 import { getCurrentUser } from "../../../../../../../../actions/auth";
 import { getTicketByID } from "../../../../../../../../actions/tickets";
 import { getUserByID } from "../../../../../../../../actions/user";
+import { SingleAttendeeProps } from "@/lib/types/attendee";
 
 type Params = Promise<{ id: string }>;
 
@@ -30,13 +30,11 @@ export default async function Ticket(props: { params: Params }) {
 
 	// console.log({ singleAttendeeID });
 
-
 	// const ticketRef = useRef<HTMLDivElement>(null);
 
 	// console.log({ startDate, endDate, now });
 
 	// console.log(isEqual(now, startDate));
-
 
 	return (
 		<div>

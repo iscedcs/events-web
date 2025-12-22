@@ -1,7 +1,7 @@
 "use server";
 
 import { EVENTS_API, URLS } from "@/lib/const";
-import { MiniSingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
+import { SingleEventProps } from "@/lib/types/event";
 import { PaginationType } from "@/lib/types/layout";
 import { getAuthInfo } from "./auth";
 import {
@@ -13,6 +13,7 @@ import {
 	isSameDay,
 } from "date-fns";
 import { getAttendeesEventID } from "./attendee";
+import { MiniSingleAttendeeProps } from "@/lib/types/attendee";
 
 const today = new Date();
 

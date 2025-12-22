@@ -1,10 +1,11 @@
 import Header from "@/components/shared/layout/header";
-import { SingleAttendeeProps, SingleEventProps } from "@/lib/types/event";
+import {  SingleEventProps } from "@/lib/types/event";
 import Image from "next/image";
 import { getAttendeesEventID } from "../../../../../../../actions/attendee";
 import { getCurrentUser } from "../../../../../../../actions/auth";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { getUserByID } from "../../../../../../../actions/user";
+import { SingleAttendeeProps } from "@/lib/types/attendee";
 
 type Params = Promise<{ slug: string }>;
 export default async function Attendees(props: { params: Params }) {
