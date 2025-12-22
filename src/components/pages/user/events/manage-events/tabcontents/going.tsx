@@ -9,69 +9,69 @@ import { getFutureTicketsByUserId } from "../../../../../../../actions/tickets";
 import EmptyState from "../empty-state";
 
 export default function Going({ userId }: { userId?: string }) {
-  const [tickets, setTickets] = useState<SingleTicketProps[]>([]);
-  const [loading, setLoading] = useState(true);
+	const [tickets, setTickets] = useState<SingleTicketProps[]>([]);
+	const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!userId) return;
+	useEffect(() => {
+		if (!userId) return;
 
-    let cancelled = false;
+		let cancelled = false;
 
-    const fetchEvents = async () => {
-      setLoading(true);
-      try {
-        const ticketsData = await getFutureTicketsByUserId(userId, {});
-        if (!cancelled) setTickets(ticketsData?.filteredTickets ?? []);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
+		const fetchEvents = async () => {
+			setLoading(true);
+			try {
+				const ticketsData = await getFutureTicketsByUserId(userId, {});
+				if (!cancelled) setTickets(ticketsData?.filteredTickets ?? []);
+			} finally {
+				if (!cancelled) setLoading(false);
+			}
+		};
 
-    fetchEvents();
+		fetchEvents();
 
-    return () => {
-      cancelled = true;
-    };
-  }, [userId]);
+		return () => {
+			cancelled = true;
+		};
+	}, [userId]);
 
-  // console.log({ tickets });
+	return (
+		<>
+			<div className="px-[10px] absolute top-0 right-0">
+				<EventCalendar eventType="going" type="multiple" />
+			</div>
 
-  return (
-    <>
-      <div className="px-[10px] absolute top-0 right-0">
-        <EventCalendar eventType="going" type="multiple" />
-      </div>
+			{loading && (
+				<div className="mt-[20px]">
+					<EventCardSkeleton />
+				</div>
+			)}
 
-      {loading && (
-        <div className="mt-[20px]">
-          <EventCardSkeleton />
-        </div>
-      )}
+			{!loading && tickets.length === 0 && <EmptyState />}
 
-      {!loading && tickets.length === 0 && <EmptyState />}
-
-      {!loading && tickets.length > 0 && (
-        <div className="grid-cols-1 grid gap-[30px] mt-[20px]">
-          {tickets.map((ticket) => (
-            <div key={ticket.id}>
-              <EventCard
-                endDate={ticket.event?.endDate ?? new Date()}
-                title={ticket.event?.title ?? ""}
-                image={ticket.event?.image ?? ""}
-                time={ticket.event?.time ?? ""}
-                host={ticket.event?.host ?? ""}
-                startDate={ticket.event?.startDate ?? new Date()}
-                id={ticket.id}
-                link={`/user/events/${ticket.event?.cleanName.toLowerCase()}/ticket/${
-                  ticket.id
-                }`}
-                cardType="going"
-              />
-              <hr className="mt-[25px]" />
-            </div>
-          ))}
-        </div>
-      )}
-    </>
-  );
+			{!loading && tickets.length > 0 && (
+				<div className="grid-cols-1 grid gap-[30px] mt-[20px]">
+					{tickets.map((ticket) => (
+						<div key={ticket.id}>
+							<EventCard
+								endDate={ticket.event?.endDate ?? new Date()}
+								title={ticket.event?.title ?? ""}
+								image={ticket.event?.image ?? ""}
+								time={ticket.event?.time ?? ""}
+								host={ticket.event?.host ?? ""}
+								startDate={
+									ticket.event?.startDate ?? new Date()
+								}
+								id={ticket.id}
+								link={`/user/events/${ticket.event?.cleanName.toLowerCase()}/ticket/${
+									ticket.id
+								}`}
+								cardType="going"
+							/>
+							<hr className="mt-[25px]" />
+						</div>
+					))}
+				</div>
+			)}
+		</>
+	);
 }
