@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import { CircleCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -21,7 +20,7 @@ export default function SingleBookmarkCard({
 	return (
 		<Link
 			href={`/user/events/${cleanName.toLowerCase()}`}
-			className=" flex gap-5 items-center py-[20px] rounded-[30px] px-[20px] bg-secondary"
+			className=" flex gap-5 items-center py-[10px] rounded-[30px] px-[20px] bg-secondary"
 		>
 			<Image
 				className=" w-[100px] rounded-[20px] h-[100px] object-cover"
@@ -30,7 +29,7 @@ export default function SingleBookmarkCard({
 				width={"1000"}
 				height={"1000"}
 			/>
-			<div className="">
+			<div className=" w-[50%]">
 				<p className=" capitalize line-clamp-2  mt-[10px] ">
 					{title.toLowerCase()}
 				</p>

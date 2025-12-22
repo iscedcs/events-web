@@ -34,7 +34,7 @@ export default function EventDisplay() {
 		fetchEvent();
 	}, []);
 
-	//   console.log({ event });
+	// console.log({ event });
 
 	return (
 		<div>
@@ -45,7 +45,7 @@ export default function EventDisplay() {
 					{event.length === 0 || event === null ? (
 						<div className=" mt-[50px] flex items-center justify-center flex-col text-accent gap-2">
 							<CalendarDays className=" w-[100px] h-[100px]" />
-							<p>You do not have any event yet</p>
+							<p>You have not hosted an event yet</p>
 							<Button asChild>
 								<Link href={"/user/events?tab=create"}>
 									Host an event
@@ -59,9 +59,7 @@ export default function EventDisplay() {
 									<SingleEventCard
 										location={item.location}
 										key={item.id}
-										attendeeNumber={
-											item.attendeeCount.toString() ?? 0
-										}
+										attendeeNumber={item.audienceSize.toString()}
 										cleanName={item.cleanName}
 										image={item.image}
 										startDate={item.startDate}

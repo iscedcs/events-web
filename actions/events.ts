@@ -258,11 +258,7 @@ export const getTrendingEvents = async () => {
 			// const start = new Date(e.startDate);
 			// const end = new Date(e.endDate);
 
-			return (
-				// isBefore(new Date(), e.startDate) ||
-				// isSameDay(e.startDate, e.endDate) ||
-				isBefore(today, e.startDate) && isBefore(today, e.endDate)
-			);
+			return isBefore(today, e.endDate) || isSameDay(e.endDate, today);
 		});
 
 		const publicEvent = sortedEvents.filter((e) => e.isPublic === true);
