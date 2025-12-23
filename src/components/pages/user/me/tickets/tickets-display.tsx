@@ -4,7 +4,10 @@ import { SingleTicketProps } from "@/lib/types/ticket";
 import { CalendarDays, Ticket } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { getTicketsByUserID } from "../../../../../../actions/tickets";
+import {
+	getFutureTicketsByUserId,
+	getTicketsByUserID,
+} from "../../../../../../actions/tickets";
 import SingleEventCardSkeleton from "@/components/skeletons/single-event-card";
 import SingleTicketCard from "./single-ticket-card";
 
@@ -16,10 +19,10 @@ export default function TicketsDisplay({ userId }: { userId: string }) {
 		const fetchEvent = async () => {
 			setLoading(true);
 			try {
-				const data = await getTicketsByUserID(userId);
+				const data = await getFutureTicketsByUserId(userId, {});
 				if (data) {
 					setLoading(false);
-					setTickets(data as SingleTicketProps[]);
+					setTickets(data.filteredTickets as SingleTicketProps[]);
 				} else {
 					setLoading(false);
 				}
