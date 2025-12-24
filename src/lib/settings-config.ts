@@ -3,6 +3,6 @@ export const SETTINGS = {
 		allow_payment: false,
 	},
 	google_api: {
-		isWorking: false,
+		isWorking: true,
 	},
 };
