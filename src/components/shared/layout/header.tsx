@@ -64,14 +64,15 @@ export default function Header({ title, user, hasBack }: HederType) {
 			<div className=" flex items-center gap-5">
 				<div className=" relative">
 					{count > 0 && (
-						<div className=" rounded-full absolute right-0 bg-error w-3 h-3"></div>
+						<div className=" rounded-full absolute right-0 bg-error w-3 h-3">
+							<p className=" text-center text-[9px]">
+								{count.toString()}
+							</p>
+						</div>
 					)}
-					<FaBell
-						onClick={() => {
-							router.push("/user/events/notifications");
-						}}
-						className=" w-5 h-5"
-					/>
+					<Link href={"/user/events/notifications"}>
+						<FaBell className=" w-5 h-5" />
+					</Link>
 				</div>
 				<Sheet>
 					<SheetTrigger asChild>

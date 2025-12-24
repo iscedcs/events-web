@@ -8,7 +8,7 @@ export interface NotificationProps {
 	read: boolean;
 	createdAt: string;
 	updatedAt: string;
-	deletedAt: string;
+	deletedAt?: string | null;
 }
 
 export interface SingleNotificationCardProps
