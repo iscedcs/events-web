@@ -1,36 +1,155 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+GADA
 
-## Getting Started
+A modern, scalable event management and discovery platform built as part of the ISCE Ecosystem. GADA enables individuals, communities, and organizations to create, discover, manage, and attend events seamlessly — with real-time interactions, notifications, and a clean user experience.
 
-First, run the development server:
+Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+GADA is designed to power the full event lifecycle:
+
+Event creation and publishing
+
+Event discovery and registration
+
+Ticketing and attendee management
+
+Real-time chat and notifications
+
+Secure check-in and engagement tools
+
+This application is built with scalability and extensibility in mind and integrates cleanly with other ISCE products such as ISCE CONNECT.
+
+ Key Features
+
+Event Creation & ManagementCreate, edit, publish, and manage events with flexible configurations.
+
+Event DiscoveryBrowse and search events by category, location, or popularity.
+
+Registration & TicketingSeamless attendee registration with ticket support.
+
+Real-Time Chat & MessagingPublic and private messaging for event discussions and engagement.
+
+Push & In-App NotificationsReal-time updates using sockets and push notifications.
+
+QR Code / Check-In SupportFast attendee verification and check-in at events.
+
+Admin & Organizer DashboardsManage events, attendees, and analytics from a centralized dashboard.
+
+Progressive Web App (PWA)Installable experience with offline support and push notifications.
+
+Tech Stack
+
+Framework: Next.js (App Router)
+
+Language: TypeScript
+
+UI: Tailwind CSS
+
+Forms & Validation: React Hook Form + Zod
+
+State & Realtime: WebSockets
+
+Architecture: Polyrepo
+
+Notifications: Push Notifications (PWA + Firebase)
+
+Authentication: Next Auth 
+
+Project Structure (High-Level)
+
+src/
+  app/            # Main Next.js application
+
+Getting Started
+
+Prerequisites
+
+Node.js (v18+ recommended)
+
+pnpm / yarn / npm
+
+Installation
+
+# Install dependencies
+pnpm install
+
+Development
+
+# Start development server
 pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+pnpm build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Environment Variables
 
-## Learn More
+Create a .env file and configure the required environment variables:
 
-To learn more about Next.js, take a look at the following resources:
+NEXT_PUBLIC_LIVE_EVENTS_BACKEND_URL = 
+NEXT_PUBLIC_LIVE_ISCEAUTH_BACKEND_URL =
+DATABASE_URL=
+AUTH_SECRET=
+NEXT_PUBLIC_AUTH_BASE_URL=
+NEXT_PUBLIC_AUTH_LOGIN_PATH=
+NEXT_PUBLIC_URL=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+⚠️ Do not commit environment variables to the repository.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+ISCE Ecosystem
 
-## Deploy on Vercel
+GADA is part of the ISCE Ecosystem, a suite of products focused on empowering:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Student entrepreneurs
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Professionals
+
+Communities
+
+Businesses and creators
+
+Related products:
+
+ISCE CONNECT – Professional and community networking
+
+ISCE STORE – Digital commerce (coming soon)
+
+ISCE WALLET – Payments & digital assets (planned)
+
+Contributing
+
+Contributions are welcome!
+
+Fork the repository
+
+Create a new feature branch
+
+Commit your changes
+
+Open a pull request
+
+Please ensure code follows the existing structure and conventions.
+
+Roadmap
+
+Advanced event analytics
+
+Paid ticketing & payouts
+
+Organizer verification
+
+Event recommendations
+
+Deeper ISCE CONNECT integration
+
+License
+
+This project is proprietary to ISCE Digital Concept. Unauthorized distribution or commercial use is not permitted.
+
+Contact
+
+For questions, feedback, or partnerships:
+
+ISCE Digital ConceptWebsite: https://www.isce.tech/Email: isceofficial@gmail.com
+
+Built by the ISCE Engineering Team
+
