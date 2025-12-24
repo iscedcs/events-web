@@ -1,90 +1,107 @@
-GADA
+# GADA
 
-A modern, scalable event management and discovery platform built as part of the ISCE Ecosystem. GADA enables individuals, communities, and organizations to create, discover, manage, and attend events seamlessly — with real-time interactions, notifications, and a clean user experience.
+A modern, scalable **event management and discovery platform** built as part of the **ISCE Ecosystem**. GADA enables individuals, communities, and organizations to create, discover, manage, and attend events seamlessly — with real-time interactions, notifications, and a clean user experience.
 
-Overview
+---
+
+## Overview
 
 GADA is designed to power the full event lifecycle:
 
-Event creation and publishing
+* Event creation and publishing
+* Event discovery and registration
+* Ticketing and attendee management
+* Real-time chat and notifications
+* Secure check-in and engagement tools
 
-Event discovery and registration
+This application is built with scalability and extensibility in mind and integrates cleanly with other ISCE products such as **ISCE CONNECT**.
 
-Ticketing and attendee management
+---
 
-Real-time chat and notifications
+##  Key Features
 
-Secure check-in and engagement tools
+* **Event Creation & Management**
+  Create, edit, publish, and manage events with flexible configurations.
 
-This application is built with scalability and extensibility in mind and integrates cleanly with other ISCE products such as ISCE CONNECT.
+* **Event Discovery**
+  Browse and search events by category, location, or popularity.
 
- Key Features
+* **Registration & Ticketing**
+  Seamless attendee registration with ticket support.
 
-Event Creation & ManagementCreate, edit, publish, and manage events with flexible configurations.
+* **Real-Time Chat & Messaging**
+  Public and private messaging for event discussions and engagement.
 
-Event DiscoveryBrowse and search events by category, location, or popularity.
+* **Push & In-App Notifications**
+  Real-time updates using sockets and push notifications.
 
-Registration & TicketingSeamless attendee registration with ticket support.
+* **QR Code / Check-In Support**
+  Fast attendee verification and check-in at events.
 
-Real-Time Chat & MessagingPublic and private messaging for event discussions and engagement.
+* **Admin & Organizer Dashboards**
+  Manage events, attendees, and analytics from a centralized dashboard.
 
-Push & In-App NotificationsReal-time updates using sockets and push notifications.
+* **Progressive Web App (PWA)**
+  Installable experience with offline support and push notifications.
 
-QR Code / Check-In SupportFast attendee verification and check-in at events.
+---
 
-Admin & Organizer DashboardsManage events, attendees, and analytics from a centralized dashboard.
+## Tech Stack
 
-Progressive Web App (PWA)Installable experience with offline support and push notifications.
+* **Framework:** Next.js (App Router)
+* **Language:** TypeScript
+* **UI:** Tailwind CSS
+* **Forms & Validation:** React Hook Form + Zod
+* **State & Realtime:** WebSockets
+* **Architecture:** Polyrepo
+* **Notifications:** Push Notifications (PWA + Firebase)
+* **Authentication:** Next Auth 
 
-Tech Stack
+---
 
-Framework: Next.js (App Router)
+## Project Structure (High-Level)
 
-Language: TypeScript
-
-UI: Tailwind CSS
-
-Forms & Validation: React Hook Form + Zod
-
-State & Realtime: WebSockets
-
-Architecture: Polyrepo
-
-Notifications: Push Notifications (PWA + Firebase)
-
-Authentication: Next Auth 
-
-Project Structure (High-Level)
-
+```
 src/
   app/            # Main Next.js application
+```
 
-Getting Started
+---
 
-Prerequisites
+## Getting Started
 
-Node.js (v18+ recommended)
+### Prerequisites
 
-pnpm / yarn / npm
+* Node.js (v18+ recommended)
+* pnpm / yarn / npm
 
-Installation
+### Installation
 
+```bash
 # Install dependencies
 pnpm install
+```
 
-Development
+### Development
 
+```bash
 # Start development server
 pnpm dev
+```
 
-Build
+### Build
 
+```bash
 pnpm build
+```
 
-Environment Variables
+---
 
-Create a .env file and configure the required environment variables:
+## Environment Variables
 
+Create a `.env` file and configure the required environment variables:
+
+```env
 NEXT_PUBLIC_LIVE_EVENTS_BACKEND_URL = 
 NEXT_PUBLIC_LIVE_ISCEAUTH_BACKEND_URL =
 DATABASE_URL=
@@ -92,64 +109,66 @@ AUTH_SECRET=
 NEXT_PUBLIC_AUTH_BASE_URL=
 NEXT_PUBLIC_AUTH_LOGIN_PATH=
 NEXT_PUBLIC_URL=
+```
 
-⚠️ Do not commit environment variables to the repository.
+> ⚠️ Do not commit environment variables to the repository.
 
-ISCE Ecosystem
+---
 
-GADA is part of the ISCE Ecosystem, a suite of products focused on empowering:
+## ISCE Ecosystem
 
-Student entrepreneurs
+GADA is part of the **ISCE Ecosystem**, a suite of products focused on empowering:
 
-Professionals
-
-Communities
-
-Businesses and creators
+* Student entrepreneurs
+* Professionals
+* Communities
+* Businesses and creators
 
 Related products:
 
-ISCE CONNECT – Professional and community networking
+* **ISCE CONNECT** – Professional and community networking
+* **ISCE STORE** – Digital commerce (coming soon)
+* **ISCE WALLET** – Payments & digital assets (planned)
 
-ISCE STORE – Digital commerce (coming soon)
+---
 
-ISCE WALLET – Payments & digital assets (planned)
-
-Contributing
+## Contributing
 
 Contributions are welcome!
 
-Fork the repository
-
-Create a new feature branch
-
-Commit your changes
-
-Open a pull request
+1. Fork the repository
+2. Create a new feature branch
+3. Commit your changes
+4. Open a pull request
 
 Please ensure code follows the existing structure and conventions.
 
-Roadmap
+---
 
-Advanced event analytics
+## Roadmap
 
-Paid ticketing & payouts
+* Advanced event analytics
+* Paid ticketing & payouts
+* Organizer verification
+* Event recommendations
+* Deeper ISCE CONNECT integration
 
-Organizer verification
+---
 
-Event recommendations
+## License
 
-Deeper ISCE CONNECT integration
+This project is proprietary to **ISCE Digital Concept**. Unauthorized distribution or commercial use is not permitted.
 
-License
+---
 
-This project is proprietary to ISCE Digital Concept. Unauthorized distribution or commercial use is not permitted.
-
-Contact
+## Contact
 
 For questions, feedback, or partnerships:
 
-ISCE Digital ConceptWebsite: https://www.isce.tech/Email: isceofficial@gmail.com
+**ISCE Digital Concept**
+Website: [https://www.isce.tech/](https://www.isce.tech/)
+Email: [isceofficial@gmail.com](mailto:isceofficial@gmail.com)
+
+---
 
 Built by the ISCE Engineering Team
-
