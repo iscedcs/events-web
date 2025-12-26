@@ -109,6 +109,16 @@ export const URLS = {
 		update_preferences: "/notifications/preferences",
 		update_all_preferences: "/notifications/preferences/toggle",
 	},
+	feeds: {
+		create: "/feeds/create",
+		all_for_event: "/feeds/event/{eventId}",
+		one: "/feeds/{id}",
+		delete: "/feeds/{id}",
+		update: "/feeds/{id}/update",
+		create_comment: "/feeds/{id}/comments",
+		get_comment_for_feed: "/feeds/{id}/comments",
+		delete_comment: "/feeds/comments/{id}",
+	},
 };
 
 export const PASSWORDCHECK = [
