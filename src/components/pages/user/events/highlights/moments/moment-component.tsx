@@ -13,8 +13,8 @@ export default function MomentComponent({
 }) {
 	return (
 		<div>
-			<div className="fixed bg-black pb-[10px] mt-[70px] top-0 w-full">
-				<ScrollArea className=" w-[95%]">
+			<div className="fixed z-50 bg-black left-0 pb-[10px] py-[20px] mt-[55px] top-0 w-full">
+				<ScrollArea className=" w-[100%] px-[10px]">
 					<div className=" w-[1000px] gap-4  flex flex-row">
 						<Link
 							href={"highlights/moment/create"}

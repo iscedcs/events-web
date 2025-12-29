@@ -1,13 +1,9 @@
-import Header from "@/components/shared/layout/header";
-import React from "react";
-import { getCurrentUser } from "../../../../../../../../../actions/auth";
-import { getUserByID } from "../../../../../../../../../actions/user";
-import { Textarea } from "@/components/ui/textarea";
-import { Image, Video } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import FeedCreateView from "@/components/pages/user/events/highlights/feeds/feed-create";
-import { getEventsByCleanName } from "../../../../../../../../../actions/events";
+import Header from "@/components/shared/layout/header";
 import { SingleEventProps } from "@/lib/types/event";
+import { getCurrentUser } from "../../../../../../../../../actions/auth";
+import { getEventsByCleanName } from "../../../../../../../../../actions/events";
+import { getUserByID } from "../../../../../../../../../actions/user";
 
 type Params = Promise<{ slug: string }>;
 export default async function FeedCreate(props: { params: Params }) {

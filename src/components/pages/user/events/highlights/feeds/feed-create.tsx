@@ -55,7 +55,8 @@ export default function FeedCreateView({ eventId }: { eventId: string }) {
 	}) => {
 		setLoading(true);
 		if (file.size > MAX_FILE_SIZE) {
-			toast.error("Media must be less than 10MB");
+			toast.error("Media must be less than 100MB");
+			setLoading(false);
 			return;
 		}
 		switch (mediaType) {
@@ -241,13 +242,25 @@ export default function FeedCreateView({ eventId }: { eventId: string }) {
 				)}
 				{mediaUrl && (
 					<div className=" relative mb-[20px] mt-[15px]">
-						<Image
-							alt=""
-							src={mediaUrl}
-							width={"1000"}
-							height={"1000"}
-							className=" rounded-[20px]"
-						/>
+						{mediaType === "IMAGE" ? (
+							<Image
+								alt="image"
+								src={mediaUrl}
+								width={"1000"}
+								height={"1000"}
+								className=" rounded-[20px]"
+							/>
+						) : (
+							<video
+								src={mediaUrl}
+								autoPlay
+								playsInline
+								controls
+								muted
+								loop
+								className=" rounded-[20px]"
+							></video>
+						)}
 						<div
 							onClick={handleDeleteImage}
 							className=" rounded-full mt-[10px] mr-[10px] right-0 top-0 absolute py-[15px] px-[15px] bg-secondary"

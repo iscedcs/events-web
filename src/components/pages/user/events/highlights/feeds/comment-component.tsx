@@ -1,31 +1,53 @@
-import { DialogTitle } from "@/components/ui/dialog";
-import { DrawerContent } from "@/components/ui/drawer";
+"use client";
+
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { SingleCommentProps } from "@/lib/types/feed";
+import { formatDistance } from "date-fns";
 import { EllipsisVertical, Trash } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import { deleteComment } from "../../../../../../../actions/comments";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function CommentComponent({
-	displayPicture,
-	feedId,
+	sessionUserId,
+	comment,
 }: {
-	displayPicture: string;
-	feedId: string;
+	comment: SingleCommentProps;
+	sessionUserId: string;
 }) {
+	const fullName = `${comment.user?.firstName} ${comment.user?.lastName}`;
+	const router = useRouter();
+
+	// console.log({ id: comment.id });
+
+	const handleCommentDelete = async () => {
+		try {
+			const res = await deleteComment(comment.id);
+			if (res) {
+				router.refresh();
+			} else {
+				router.refresh();
+				toast.error("Something went wrong with deleting comment");
+			}
+		} catch (e: any) {
+			console.log("Unable to delete cooment", e);
+		}
+	};
+
 	return (
 		<div>
 			<div className=" flex items-center justify-between mt-[10px]">
 				<div className=" flex items-center gap-3">
 					<Image
 						src={
-							displayPicture === ""
+							comment.user?.displayPicture! === ""
 								? "/resources/no-profile.jpg"
-								: displayPicture
+								: comment.user?.displayPicture!
 						}
 						alt="displayPicture"
 						width={"1000"}
@@ -33,38 +55,48 @@ export default function CommentComponent({
 						className=" w-[40px] rounded-full h-[40px] object-cover"
 					/>
 					<div className="">
-						<span className=" flex items-center gap-3">
-							<p className=" text-[14px] font-bold">John Doe</p>
-							<p className=" text-[12px] text-accent">
-								20 seconds ago
-							</p>
+						<span className=" flex flex-row gap-1.5 justify-between w-full items-center ">
+							<div className="">
+								<p className=" line-clamp-1 text-[14px] font-bold">
+									{fullName}
+								</p>
+							</div>
+							<div className="">
+								<p className=" text-right text-[12px] text-accent">
+									{formatDistance(
+										new Date(comment.createdAt),
+										new Date(),
+										{
+											includeSeconds: true,
+											addSuffix: true,
+										}
+									)}
+								</p>
+							</div>
 						</span>
-						<p className=" text-[12px]">
-							Just another commenet my guyyy
-						</p>
+						<p className=" text-[12px]">{comment.content}</p>
 					</div>
 				</div>
-				<div className="">
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<EllipsisVertical />
-						</DropdownMenuTrigger>
-						<DropdownMenuContent className=" mr-[10px] border-0 bg-secondary rounded-[14px]">
-							<div className=" px-[10px] py-[10px]">
-								<span className=" py-[4px] flex items-center gap-5">
-									<Trash className=" w-4 h-4 text-error" />
-									<p className=" text-error">Delete</p>
-								</span>
-							</div>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</div>
-			</div>
-			<div className=" mt-[20px]">
-				<Input
-					className=" bg-[#151515] px-[10px] border-0 rounded-[10px]"
-					placeholder="Start typing..."
-				/>
+				{sessionUserId === comment.userId && (
+					<div className="">
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<EllipsisVertical />
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className=" mr-[10px] border-0 bg-secondary rounded-[14px]">
+								<div className=" px-[10px] py-[10px]">
+									<span
+										onClick={handleCommentDelete}
+										className=" py-[4px] flex items-center gap-5"
+									>
+										<Trash className=" w-4 h-4 text-error" />
+										<p className=" text-error">Delete</p>
+									</span>
+								</div>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+				)}
 			</div>
 		</div>
 	);
