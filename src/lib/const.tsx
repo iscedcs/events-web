@@ -109,6 +109,32 @@ export const URLS = {
 		update_preferences: "/notifications/preferences",
 		update_all_preferences: "/notifications/preferences/toggle",
 	},
+	feeds: {
+		create: "/feeds/create",
+		all_for_event: "/feeds/event/{eventId}",
+		one: "/feeds/{id}",
+		delete: "/feeds/{id}",
+		update: "/feeds/{id}/update",
+		create_comment: "/feeds/{id}/comments",
+		get_comment_for_feed: "/feeds/{id}/comments",
+		delete_comment: "/feeds/comments/{id}",
+	},
+	likes: {
+		toggle: "/likes/toggle",
+		count_feed_or_moment: "/likes/count/{likeType}/{itemId}",
+		user_likes: "/likes/user/{userId}",
+		all_likes_feed_or_moment: "/likes/item/{likeType}/{itemId}",
+		delete_like: "/likes/{id}",
+	},
+	moments: {
+		create: "/moments/create",
+		all_for_events: "/moments/event/{eventId}",
+		one: "/moments/{id}",
+		delete: "/moments/{id}",
+		update: "/moments/{id}/update",
+		pin: "/moments/{id}/pin",
+		unpin: "/moments/{id}/pin",
+	},
 };
 
 export const PASSWORDCHECK = [

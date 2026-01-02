@@ -132,3 +132,18 @@
 		display: initial;
 	}
 }
+
+@keyframes progress {
+	from {
+		transform: scaleX(0);
+		transform-origin: left;
+	}
+	to {
+		transform: scaleX(1);
+		transform-origin: left;
+	}
+}
+
+.animate-progress {
+	animation: progress linear forwards;
+}

@@ -324,6 +324,23 @@ model UserDevice {
   @@index([userId])
 }
 
+model UserNotificationPreferences {
+  id                   String   @id
+  userId               String   @unique
+  notificationsEnabled Boolean  @default(true)
+  pushEnabled          Boolean  @default(true)
+  inAppEnabled         Boolean  @default(true)
+  chatMessageEnabled   Boolean  @default(true)
+  eventReminderEnabled Boolean  @default(true)
+  eventStartingEnabled Boolean  @default(true)
+  systemEnabled        Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime
+  emailEnabled         Boolean  @default(true)
+
+  @@index([userId])
+}
+
 enum PaymentStatus {
   PENDING
   PAID
