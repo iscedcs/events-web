@@ -62,15 +62,14 @@ export const deleteComment = async (commentId: string) => {
 				Authorization: `Bearer ${BEARER}`,
 			},
 		});
-		const data = await res.json();
+		let data = null;
 
-		console.log({ res, url });
-
-		if (res.ok) {
-			return data;
-		} else {
+		// console.log(res.status);
+		if (res.status !== 204) {
 			return null;
 		}
+
+		return res.status === 204 ? res.status : null;
 	} catch (e: any) {
 		console.log("Unable to delete comment", e);
 	}

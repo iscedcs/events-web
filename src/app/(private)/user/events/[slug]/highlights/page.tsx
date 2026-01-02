@@ -6,9 +6,15 @@ import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { getUserByID } from "../../../../../../../actions/user";
 
 type Params = Promise<{ slug: string }>;
-export default async function Highlights(props: { params: Params }) {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+export default async function Highlights(props: {
+	params: Params;
+	searchParams: SearchParams;
+}) {
 	const me = await getCurrentUser();
+	const searchParams = await props.searchParams;
 	const params = await props.params;
+	const story = searchParams.story;
 
 	const formattedProps = encodeURIComponent(params.slug);
 	const event: SingleEventProps = await getEventsByCleanName(
@@ -18,7 +24,7 @@ export default async function Highlights(props: { params: Params }) {
 	const headerUser = userId ? await getUserByID(userId) : null;
 
 	return (
-		<div>
+		<div className=" relative">
 			<Header
 				hasBack
 				title={`Highlights: ${event?.title.toLowerCase()}`}
@@ -28,6 +34,8 @@ export default async function Highlights(props: { params: Params }) {
 				<HightLightsView
 					displayPicture={me?.displayPicture ?? ""}
 					eventId={event.id}
+					searchParams={searchParams}
+					event={event}
 				/>
 			</div>
 		</div>

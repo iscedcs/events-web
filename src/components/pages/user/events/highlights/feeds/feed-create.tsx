@@ -1,27 +1,23 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { Textarea } from "@/components/ui/textarea";
-import { MediaType } from "@prisma/client";
-import { FileImage, LoaderCircle, Trash, Video } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useState } from "react";
 import {
 	AlertDialog,
-	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
 	AlertDialogDescription,
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
-import { truncates } from "bcryptjs";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
+import { MediaType } from "@prisma/client";
+import { FileImage, LoaderCircle, Trash, Video } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function FeedCreateView({ eventId }: { eventId: string }) {
 	const [mediaType, setMediaType] = useState<MediaType>("IMAGE");
@@ -123,7 +119,7 @@ export default function FeedCreateView({ eventId }: { eventId: string }) {
 			});
 			const data = await res.json();
 
-			console.log({ data });
+			// console.log({ data });
 			if (res.ok) {
 				toast.success("Your post has been sent");
 				router.push("./../../highlights");

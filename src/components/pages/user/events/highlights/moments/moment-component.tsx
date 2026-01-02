@@ -1,107 +1,93 @@
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { CircleFadingPlus } from "lucide-react";
+"use client";
+
+import { SingleMomentPostProps } from "@/lib/types/moment";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { useSearchParams } from "next/navigation";
+import SingleMomentView from "./single-moment-view";
 
 export default function MomentComponent({
-	displayPicture,
-	eventId,
+	moments,
+	firstName,
+	lastName,
+	sessionUserId,
 }: {
-	displayPicture: string;
-	eventId: string;
+	sessionUserId: string;
+	lastName: string;
+	firstName: string;
+	moments: SingleMomentPostProps[];
 }) {
+	// console.log({ moment });
+	const fullName = `${firstName} ${lastName}`;
+	const firstStory = moments[0];
+	const lastStory = moments[moments.length - 1];
+	const searchParams = useSearchParams();
+	const momentId = searchParams.get("story");
+
+	// console.log({ momentId });
+
+	// console.log({
+	// 	firstStory: moments.indexOf(firstStory),
+	// 	moments: moments.length,
+	// 	items: moments,
+	// 	lastStory: moments.indexOf(lastStory!),
+	// });
+
+	// console.log("MomentComponent render", {
+	// 	momentsLength: moments.length,
+	// 	momentsIds: moments.map((m) => m.id),
+	// 	firstStoryId: moments[0]?.id ?? "no moments",
+	// 	currentQueryParam: momentId ?? "none",
+	// 	showingViewer: momentId !== null,
+	// });
+
+	// console.log("MomentComponent → moments info", {
+	// 	user: `${firstName} ${lastName}`,
+	// 	momentsCount: moments.length,
+	// 	momentIds: moments.map((m) => m.id),
+	// 	currentStoryFromUrl: momentId ?? "no story param",
+	// });
+
 	return (
-		<div>
-			<div className="fixed z-50 bg-black left-0 pb-[10px] py-[20px] mt-[55px] top-0 w-full">
-				<ScrollArea className=" w-[100%] px-[10px]">
-					<div className=" w-[1000px] gap-4  flex flex-row">
-						<Link
-							href={"highlights/moment/create"}
-							className=" justify-center items-center gap-2 flex flex-col "
-						>
-							<div className=" relative">
+		<div className=" ">
+			<Link href={`?story=${firstStory.id}`}>
+				<div className="">
+					<div className=" justify-center items-center gap-2 flex flex-col ">
+						<div className=" relative">
+							{lastStory?.mediaType === "IMAGE" ? (
 								<Image
-									src={
-										displayPicture === ""
-											? "/resources/no-profile.jpg"
-											: displayPicture
-									}
-									alt="displayPicture"
+									src={lastStory?.mediaUrl!}
+									alt="post"
 									width={"1000"}
 									height={"1000"}
 									className=" w-[70px] rounded-full border-white border-3 h-[70px] object-cover"
 								/>
-								<div className=" py-[5px] rounded-full px-[5px] absolute right-0 bottom-0 bg-white">
-									<CircleFadingPlus className=" text-black" />
-								</div>
-							</div>
-							<p>You</p>
-						</Link>
-						<div className="">
-							<div className=" justify-center items-center gap-2 flex flex-col ">
-								<div className=" relative">
-									<Image
-										src={
-											displayPicture === ""
-												? "/resources/no-profile.jpg"
-												: displayPicture
-										}
-										alt="displayPicture"
-										width={"1000"}
-										height={"1000"}
-										className=" w-[70px] rounded-full border-white border-3 h-[70px] object-cover"
-									/>
-								</div>
-								<p>Angela</p>
-							</div>
+							) : (
+								<video
+									src={lastStory?.mediaUrl!}
+									autoPlay
+									playsInline
+									// controls
+									muted
+									loop
+									className=" w-[70px] rounded-full border-white border-3 h-[70px] object-cover"
+								></video>
+							)}
 						</div>
-						<div className="">
-							<div className=" justify-center items-center gap-2 flex flex-col ">
-								<div className=" relative">
-									<Image
-										src={"/resources/no-profile.jpg"}
-										alt="displayPicture"
-										width={"1000"}
-										height={"1000"}
-										className=" w-[70px] rounded-full border-white border-3 h-[70px] object-cover"
-									/>
-								</div>
-								<p>Angela</p>
-							</div>
-						</div>
-						<div className="">
-							<div className=" justify-center items-center gap-2 flex flex-col ">
-								<div className=" relative">
-									<Image
-										src={"/resources/no-profile.jpg"}
-										alt="displayPicture"
-										width={"1000"}
-										height={"1000"}
-										className=" w-[70px] rounded-full border-white border-3 h-[70px] object-cover"
-									/>
-								</div>
-								<p>Angela</p>
-							</div>
-						</div>
-						<div className="">
-							<div className=" justify-center items-center gap-2 flex flex-col ">
-								<div className=" relative">
-									<Image
-										src={"/resources/no-profile.jpg"}
-										alt="displayPicture"
-										width={"1000"}
-										height={"1000"}
-										className=" w-[70px] rounded-full border-white border-3 h-[70px] object-cover"
-									/>
-								</div>
-								<p>Angela</p>
-							</div>
-						</div>
+						<p className=" font-extrabold text-[12px]">
+							{firstName}
+						</p>
 					</div>
-					<ScrollBar orientation="horizontal" />
-				</ScrollArea>
-			</div>
+				</div>
+			</Link>
+
+			{momentId !== null && (
+				<SingleMomentView
+					sessionUserId={sessionUserId}
+					moments={moments}
+					momentId={momentId}
+				/>
+			)}
 		</div>
 	);
 }

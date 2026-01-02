@@ -30,6 +30,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentComponent from "./comment-component";
 import { deleteFeed } from "../../../../../../../actions/feeds";
 import { toast } from "sonner";
+import { deleteComment } from "../../../../../../../actions/comments";
 
 export default function FeedComponent({
 	feedProps,
@@ -49,6 +50,7 @@ export default function FeedComponent({
 	const [commentNumber, setCommentNumber] = useState(feedProps.commentsCount);
 	const [commentText, setCommentText] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [deletingComment, setDeletingComment] = useState(false);
 
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const router = useRouter();
@@ -142,19 +144,39 @@ export default function FeedComponent({
 		}
 	};
 
+	const handleCommentDelete = async (commentId: string) => {
+		setDeletingComment(true);
+		try {
+			const res = await deleteComment(commentId);
+			if (res) {
+				router.refresh();
+				setDeletingComment(false);
+				toast.success("Comment deleted");
+				setCommentNumber((prev) => Math.max(prev - 1, 0));
+			} else {
+				setDeletingComment(false);
+				router.refresh();
+				toast.error("Something went wrong with deleting comment");
+			}
+		} catch (e: any) {
+			console.log("Unable to delete cooment", e);
+		}
+	};
 	// console.log({ id: feedProps.id });
 
 	const handleDeletePost = async () => {
 		try {
-			const res = await deleteFeed(feedProps.id);
-			if (res) {
+			const success = await deleteFeed(feedProps.id);
+
+			if (success) {
 				router.refresh();
+				toast.success("Post deleted");
 			} else {
-				router.refresh();
-				toast.error("Something went wrong with deleting post");
+				toast.error("Something went wrong deleting the post");
 			}
-		} catch (e: any) {
+		} catch (e) {
 			console.log("Unable to delete feed post", e);
+			toast.error("Unexpected error");
 		}
 	};
 
@@ -285,10 +307,20 @@ export default function FeedComponent({
 														</p>
 													</div>
 												) : (
-													<div className="">
+													<div
+														className={`${
+															deletingComment &&
+															" opacity-95"
+														}`}
+													>
 														{comments.map(
 															(item) => (
 																<CommentComponent
+																	onCommentDelete={() => {
+																		handleCommentDelete(
+																			item.id
+																		);
+																	}}
 																	sessionUserId={
 																		sessionUserId
 																	}
@@ -306,6 +338,7 @@ export default function FeedComponent({
 											</ScrollArea>
 											<div className=" flex items-center gap-3 mt-[20px]">
 												<Input
+													autoFocus
 													value={commentText}
 													onChange={(e) =>
 														setCommentText(

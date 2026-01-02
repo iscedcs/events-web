@@ -78,16 +78,17 @@ export const deleteFeed = async (feedId: string) => {
 				Authorization: `Bearer ${BEARER}`,
 			},
 		});
-		const data = await res.json();
 
-		console.log({ res, url });
+		let data = null;
 
-		if (res.ok) {
-			return data;
-		} else {
+		// console.log(res.status);
+		if (res.status !== 204) {
 			return null;
 		}
+
+		return res.status === 204 ? res.status : null;
 	} catch (e: any) {
 		console.log("Unable to delete feed", e);
+		return null;
 	}
 };

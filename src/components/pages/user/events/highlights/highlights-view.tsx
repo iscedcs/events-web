@@ -1,22 +1,39 @@
+import { Button } from "@/components/ui/button";
+import { SingleCommentProps, SingleFeedPostProps } from "@/lib/types/feed";
+import { SingleMomentPostProps } from "@/lib/types/moment";
+import { UserProps } from "@/lib/types/user";
+import Link from "next/link";
 import { HiPlus } from "react-icons/hi";
+import { getAuthInfo } from "../../../../../../actions/auth";
+import { getAllCommentForFeed } from "../../../../../../actions/comments";
+import { getAllFeedByEventId } from "../../../../../../actions/feeds";
+import { getAllLikesForStoryOrFeed } from "../../../../../../actions/likes";
+import {
+	getAllMomentsForEventId,
+	getPinnedMoments,
+} from "../../../../../../actions/moment";
+import { getUserByID } from "../../../../../../actions/user";
 import FeedComponent from "./feeds/feed-component";
 import MomentComponent from "./moments/moment-component";
-import Link from "next/link";
-import { getAllFeedByEventId } from "../../../../../../actions/feeds";
-import { getAuthInfo } from "../../../../../../actions/auth";
-import { getUserByID } from "../../../../../../actions/user";
-import { SingleCommentProps, SingleFeedPostProps } from "@/lib/types/feed";
-import { getAllLikesForStoryOrFeed } from "../../../../../../actions/likes";
-import { getAllCommentForFeed } from "../../../../../../actions/comments";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { CircleFadingPlus } from "lucide-react";
+import GlobalMomentViewer from "./moments/global-moment-viewer";
+import PinnedSection from "./pinned-section";
+import { SingleEventProps } from "@/lib/types/event";
 
+type SearchParams = { [key: string]: string | string[] | undefined };
 export default async function HightLightsView({
 	eventId,
 	displayPicture,
+	searchParams,
+	event,
 }: {
+	event: SingleEventProps;
 	eventId: string;
 	displayPicture: string;
+	searchParams: SearchParams;
 }) {
+	const { story } = searchParams;
 	const session = await getAuthInfo();
 	const user = session.user;
 
@@ -25,6 +42,46 @@ export default async function HightLightsView({
 			limit: 20,
 			page: 1,
 		});
+
+	const momentsDisplay: Record<string, SingleMomentPostProps[]> | null =
+		await getAllMomentsForEventId(eventId);
+
+	const pinnedDisplay = await getPinnedMoments(eventId);
+
+	const fullMomentDisplay = (
+		await Promise.all(
+			Object.entries(momentsDisplay ?? []).map(
+				async ([userId, userMoments]) => {
+					const user = await getUserByID(userId);
+
+					return {
+						user,
+						moments: userMoments,
+					};
+				}
+			)
+		)
+	).filter(
+		(item): item is { user: UserProps; moments: SingleMomentPostProps[] } =>
+			Boolean(item.user)
+	);
+
+	const fullPinnedMomentDisplay = await Promise.all(
+		(pinnedDisplay ?? []).map(async (item) => {
+			const user = await getUserByID(item.userId);
+			const likeListDisplay = await getAllLikesForStoryOrFeed({
+				itemId: item.id,
+				likeType: "STORY",
+				limit: 20,
+				page: 1,
+			});
+			return {
+				...item,
+				user,
+				likeListDisplay,
+			};
+		})
+	);
 
 	const fullFeedDisplay = await Promise.all(
 		(feedsDisplay ?? []).map(async (item) => {
@@ -63,15 +120,73 @@ export default async function HightLightsView({
 		})
 	);
 
+	// console.log({ fullPinnedMomentDisplay });
 	// console.log({ fullFeedDisplay });
 
+	// console.log({ fullMomentDisplay });
+
 	return (
-		<div className=" ">
+		<div className=" relative ">
 			<div className="relative">
-				<MomentComponent
-					displayPicture={displayPicture}
-					eventId={eventId}
-				/>
+				<div className=" pl-[10px] fixed z-50 bg-black left-0 pb-[10px] py-[20px] mt-[55px] top-0 w-full flex flex-col ">
+					<div className="flex items-center flex-row gap-3">
+						<Link
+							href={"highlights/moment/create"}
+							className=" justify-center items-center gap-2 flex flex-col "
+						>
+							<div className=" relative">
+								<Image
+									src={
+										displayPicture === ""
+											? "/resources/no-profile.jpg"
+											: displayPicture
+									}
+									alt="displayPicture"
+									width={"1000"}
+									height={"1000"}
+									className=" w-[70px] rounded-full border-white border-3 h-[70px] object-cover"
+								/>
+								<div className=" py-[5px] rounded-full px-[5px] absolute right-0 bottom-0 bg-white">
+									<CircleFadingPlus className=" text-black" />
+								</div>
+							</div>
+							<p className=" text-[12px]">You</p>
+						</Link>
+						<div className="flex items-center flex-row gap-3">
+							{fullMomentDisplay.map((item) => {
+								return (
+									<MomentComponent
+										key={item.user?.id}
+										sessionUserId={user?.id ?? ""}
+										// eventId={eventId}
+										moments={item.moments}
+										firstName={item.user?.firstName!}
+										lastName={item.user?.lastName!}
+									/>
+								);
+							})}
+						</div>
+						{searchParams.story && (
+							<GlobalMomentViewer
+								sessionUserId={user?.id ?? ""}
+								allUserMoments={fullMomentDisplay}
+								currentStoryId={
+									Array.isArray(searchParams.story)
+										? searchParams.story[0] ?? ""
+										: searchParams.story ?? ""
+								}
+							/>
+						)}
+					</div>
+					{fullPinnedMomentDisplay.length > 0 && (
+						<PinnedSection
+							pinned={fullPinnedMomentDisplay}
+							// likes={fullPinnedMomentDisplay}
+							// user={fullPinnedMomentDisplay.}
+							event={event}
+						/>
+					)}
+				</div>
 
 				{fullFeedDisplay.length === 0 ? (
 					<div className=" flex flex-col items-center gap-3 mt-[300px]">
@@ -85,7 +200,7 @@ export default async function HightLightsView({
 						</Button>
 					</div>
 				) : (
-					<div className=" mt-[100px]">
+					<div className=" mt-[340px]">
 						{fullFeedDisplay?.map((item) => {
 							return (
 								<FeedComponent

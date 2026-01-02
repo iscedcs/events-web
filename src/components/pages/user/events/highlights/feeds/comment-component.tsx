@@ -14,30 +14,18 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function CommentComponent({
+	onCommentDelete,
 	sessionUserId,
 	comment,
 }: {
 	comment: SingleCommentProps;
 	sessionUserId: string;
+	onCommentDelete: () => void;
 }) {
 	const fullName = `${comment.user?.firstName} ${comment.user?.lastName}`;
 	const router = useRouter();
 
 	// console.log({ id: comment.id });
-
-	const handleCommentDelete = async () => {
-		try {
-			const res = await deleteComment(comment.id);
-			if (res) {
-				router.refresh();
-			} else {
-				router.refresh();
-				toast.error("Something went wrong with deleting comment");
-			}
-		} catch (e: any) {
-			console.log("Unable to delete cooment", e);
-		}
-	};
 
 	return (
 		<div>
@@ -86,7 +74,7 @@ export default function CommentComponent({
 							<DropdownMenuContent className=" mr-[10px] border-0 bg-secondary rounded-[14px]">
 								<div className=" px-[10px] py-[10px]">
 									<span
-										onClick={handleCommentDelete}
+										onClick={onCommentDelete}
 										className=" py-[4px] flex items-center gap-5"
 									>
 										<Trash className=" w-4 h-4 text-error" />
