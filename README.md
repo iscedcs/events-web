@@ -16,7 +16,7 @@ GADA is designed to power the full event lifecycle:
 
 This application is built with scalability and extensibility in mind and integrates cleanly with other ISCE products such as **ISCE CONNECT**.
 
----
+--- 
 
 ##  Key Features
 
