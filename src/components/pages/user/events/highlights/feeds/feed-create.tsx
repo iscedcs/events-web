@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
-import { MediaType } from "@prisma/client";
+import { MediaType } from "@/lib/types/feed";
 import { FileImage, LoaderCircle, Trash, Video } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

@@ -1,4 +1,3 @@
-import { MediaType } from "@prisma/client";
 import { UserProps } from "./user";
 
 export interface SingleFeedPostValues {
@@ -35,3 +34,5 @@ export interface SingleCommentProps {
 	deletedAt: Date;
 	user?: UserProps;
 }
+
+export type MediaType = "IMAGE" | "VIDEO";

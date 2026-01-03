@@ -1,5 +1,4 @@
-import { DurationType, MediaType } from "@prisma/client";
-import { UserProps } from "./user";
+import { MediaType } from "./feed";
 
 export interface SingleMomentPostValues {
 	eventId: "string";
@@ -30,3 +29,4 @@ export interface SingleMomentPostProps
 	likesCount: number;
 	isLikedByUser: boolean;
 }
+export type DurationType = "TWENTY_FOUR_HOURS" | "UNTIL_EVENT_END";
