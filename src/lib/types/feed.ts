@@ -36,3 +36,5 @@ export interface SingleCommentProps {
 }
 
 export type MediaType = "IMAGE" | "VIDEO";
+
+export type LikeType = "STORY" | "FEED";

@@ -1,4 +1,4 @@
-import { LikeType } from "@prisma/client";
+import { LikeType } from "./feed";
 import { UserProps } from "./user";
 
 export interface LikesValue {
