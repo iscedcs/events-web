@@ -49,7 +49,7 @@ export default function Categories(searchParams: {
 						</div>
 					) : (
 						<ScrollArea>
-							<div className=" gap-3 flex-row w-[30rem] flex-wrap flex">
+							<div className=" gap-3 flex-row w-max flex-wrap flex">
 								{category?.map((category, k) => (
 									<div key={k}>
 										<Link

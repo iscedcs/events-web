@@ -296,30 +296,35 @@ export const getMostRecentEvent = async ({ limit, page }: PaginationType) => {
 				Authorization: `Bearer ${BEARER}`,
 				"Content-Type": "application/json",
 			},
-			next: { revalidate: 20 },
 		});
 
 		const data = await res.json();
 		const events: SingleEventProps[] = data.data.events;
 		const today = new Date();
 
-		const eventDates = events.map((e) => new Date(e.startDate));
-
-		const upcomingEventDate = closestTo(today, eventDates);
-
-		if (!upcomingEventDate) return null;
-
-		const upcomingEvent = events.find((ev) =>
-			isAfter(new Date(ev.startDate), upcomingEventDate)
+		const upcomingPublicEvents = events.filter(
+			(e) => e.isPublic === true && isAfter(new Date(e.startDate), today)
 		);
 
-		if (!upcomingEvent) return null;
+		// console.log({ upcomingPublicEvents });
 
-		const isPublic = upcomingEvent.isPublic === true;
-		const alreadyPast = isPast(new Date(upcomingEvent.startDate));
+		if (upcomingPublicEvents.length === 1) {
+			return upcomingPublicEvents[0];
+		}
 
-		if (data.success && isPublic && !alreadyPast) {
-			return upcomingEvent;
+		if (upcomingPublicEvents.length > 1) {
+			const eventDates = upcomingPublicEvents.map(
+				(e) => new Date(e.startDate)
+			);
+			const upcomingEventDate = closestTo(today, eventDates);
+
+			return (
+				upcomingPublicEvents.find(
+					(e) =>
+						new Date(e.startDate).getTime() ===
+						upcomingEventDate?.getTime()
+				) || null
+			);
 		}
 
 		return null;

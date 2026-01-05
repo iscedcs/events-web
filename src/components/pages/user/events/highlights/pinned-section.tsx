@@ -25,7 +25,7 @@ export default async function PinnedSection({
 				<p>Pinned by Host</p>
 			)}
 			<ScrollArea className="w-full">
-				<div className=" w-[1000px]  flex flex-row gap-4 mt-[10px]">
+				<div className="w-max  flex flex-row gap-4 mt-[10px]">
 					{pinned.map((story) => {
 						return (
 							<SinglePinnedView

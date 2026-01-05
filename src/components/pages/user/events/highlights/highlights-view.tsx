@@ -20,6 +20,7 @@ import { CircleFadingPlus } from "lucide-react";
 import GlobalMomentViewer from "./moments/global-moment-viewer";
 import PinnedSection from "./pinned-section";
 import { SingleEventProps } from "@/lib/types/event";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 export default async function HightLightsView({
@@ -128,56 +129,61 @@ export default async function HightLightsView({
 	return (
 		<div className=" relative ">
 			<div className="relative">
-				<div className=" pl-[10px] fixed z-50 bg-black left-0 pb-[10px] py-[20px] mt-[55px] top-0 w-full flex flex-col ">
-					<div className="flex items-center flex-row gap-3">
-						<Link
-							href={"highlights/moment/create"}
-							className=" justify-center items-center gap-2 flex flex-col "
-						>
-							<div className=" relative">
-								<Image
-									src={
-										displayPicture === ""
-											? "/resources/no-profile.jpg"
-											: displayPicture
-									}
-									alt="displayPicture"
-									width={"1000"}
-									height={"1000"}
-									className=" w-[70px] rounded-full border-white border-3 h-[70px] object-cover"
-								/>
-								<div className=" py-[5px] rounded-full px-[5px] absolute right-0 bottom-0 bg-white">
-									<CircleFadingPlus className=" text-black" />
-								</div>
-							</div>
-							<p className=" text-[12px]">You</p>
-						</Link>
-						<div className="flex items-center flex-row gap-3">
-							{fullMomentDisplay.map((item) => {
-								return (
-									<MomentComponent
-										key={item.user?.id}
-										sessionUserId={user?.id ?? ""}
-										// eventId={eventId}
-										moments={item.moments}
-										firstName={item.user?.firstName!}
-										lastName={item.user?.lastName!}
+				<div className=" px-[10px] fixed z-50 bg-black left-0 pb-[10px] py-[20px] mt-[55px] top-0 w-full flex flex-col ">
+					<ScrollArea className=" w-full">
+						<div className="flex w-max items-center flex-row gap-3">
+							<Link
+								href={"highlights/moment/create"}
+								className=" justify-center items-center gap-2 flex flex-col "
+							>
+								<div className=" relative">
+									<Image
+										src={
+											displayPicture === ""
+												? "/resources/no-profile.jpg"
+												: displayPicture
+										}
+										alt="displayPicture"
+										width={"1000"}
+										height={"1000"}
+										className=" w-[70px] rounded-full border-white border-3 h-[70px] object-cover"
 									/>
-								);
-							})}
+									<div className=" py-[5px] rounded-full px-[5px] absolute right-0 bottom-0 bg-white">
+										<CircleFadingPlus className=" text-black" />
+									</div>
+								</div>
+								<p className=" text-[12px]">You</p>
+							</Link>
+							<div className="flex items-center flex-row gap-3">
+								{fullMomentDisplay.map((item) => {
+									return (
+										<MomentComponent
+											key={item.user?.id}
+											sessionUserId={user?.id ?? ""}
+											// eventId={eventId}
+											moments={item.moments}
+											firstName={item.user?.firstName!}
+											lastName={item.user?.lastName!}
+										/>
+									);
+								})}
+								{/* <div className=" rounded-full w-[70px] h-[70px] bg-secondary"></div>
+								<div className=" rounded-full w-[70px] h-[70px] bg-secondary"></div> */}
+							</div>
+							{searchParams.story && (
+								<GlobalMomentViewer
+									sessionUserId={user?.id ?? ""}
+									allUserMoments={fullMomentDisplay}
+									currentStoryId={
+										Array.isArray(searchParams.story)
+											? searchParams.story[0] ?? ""
+											: searchParams.story ?? ""
+									}
+								/>
+							)}
 						</div>
-						{searchParams.story && (
-							<GlobalMomentViewer
-								sessionUserId={user?.id ?? ""}
-								allUserMoments={fullMomentDisplay}
-								currentStoryId={
-									Array.isArray(searchParams.story)
-										? searchParams.story[0] ?? ""
-										: searchParams.story ?? ""
-								}
-							/>
-						)}
-					</div>
+						<ScrollBar orientation="horizontal" />
+					</ScrollArea>
 					{fullPinnedMomentDisplay.length > 0 && (
 						<PinnedSection
 							pinned={fullPinnedMomentDisplay}
