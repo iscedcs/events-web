@@ -27,6 +27,7 @@ export default function UpcomingEvent() {
 				getMostRecentEvent({}),
 				getAllUpcomingEvents({}),
 			]);
+
 			try {
 				if (
 					event === undefined ||

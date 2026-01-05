@@ -75,18 +75,20 @@ export default function Header({ title, user, hasBack }: HederType) {
 					</Link>
 				</div>
 				<Sheet>
-					<SheetTrigger asChild>
-						<Image
-							src={
-								user?.displayPicture === ""
-									? "/resources/no-profile.jpg"
-									: user?.displayPicture!
-							}
-							width={"1000"}
-							height={"1000"}
-							alt="image"
-							className=" w-[35px] h-[35px] object-cover rounded-full"
-						/>
+					<SheetTrigger>
+						<div className="">
+							<Image
+								src={
+									user?.displayPicture === ""
+										? "/resources/no-profile.jpg"
+										: user?.displayPicture!
+								}
+								width={"1000"}
+								height={"1000"}
+								alt="image"
+								className=" w-[35px] h-[35px] object-cover rounded-full"
+							/>
+						</div>
 					</SheetTrigger>
 					<SheetContent className=" border-0 flex justify-between flex-col bg-secondary py-[30px] px-[20px]">
 						<div className="">

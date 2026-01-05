@@ -67,7 +67,7 @@ export default function TrendingEvents() {
 								</div>
 							) : (
 								<ScrollArea className=" mt-[20px]">
-									<div className=" w-[900px] grid grid-cols-3 gap-4">
+									<div className=" w-max grid grid-cols-3 gap-4">
 										{event?.map((event, k) => (
 											<TrendingEventCard
 												key={k}
