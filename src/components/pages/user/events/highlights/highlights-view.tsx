@@ -184,14 +184,6 @@ export default async function HightLightsView({
 						</div>
 						<ScrollBar orientation="horizontal" />
 					</ScrollArea>
-					{fullPinnedMomentDisplay.length > 0 && (
-						<PinnedSection
-							pinned={fullPinnedMomentDisplay}
-							// likes={fullPinnedMomentDisplay}
-							// user={fullPinnedMomentDisplay.}
-							event={event}
-						/>
-					)}
 				</div>
 
 				{fullFeedDisplay.length === 0 ? (
@@ -206,23 +198,33 @@ export default async function HightLightsView({
 						</Button>
 					</div>
 				) : (
-					<div className=" mt-[340px]">
-						{fullFeedDisplay?.map((item) => {
-							return (
-								<FeedComponent
-									sessionUserId={user?.id ?? ""}
-									key={item.id}
-									feedProps={{
-										...item,
-									}}
-									user={{
-										...item.user!,
-									}}
-									likes={item.likesWithUsers}
-									comments={item.commentsWithUsers}
-								/>
-							);
-						})}
+					<div className=" mt-[110px]">
+						{fullPinnedMomentDisplay.length > 0 && (
+							<PinnedSection
+								pinned={fullPinnedMomentDisplay}
+								// likes={fullPinnedMomentDisplay}
+								// user={fullPinnedMomentDisplay.}
+								event={event}
+							/>
+						)}
+						<div className=" ">
+							{fullFeedDisplay?.map((item) => {
+								return (
+									<FeedComponent
+										sessionUserId={user?.id ?? ""}
+										key={item.id}
+										feedProps={{
+											...item,
+										}}
+										user={{
+											...item.user!,
+										}}
+										likes={item.likesWithUsers}
+										comments={item.commentsWithUsers}
+									/>
+								);
+							})}
+						</div>
 					</div>
 				)}
 			</div>
