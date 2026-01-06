@@ -55,7 +55,7 @@ export default function UpcomingEvent() {
 			<div className=" mt-[40px]">
 				<div className="flex items-center justify-between">
 					<p className="text-[24px]">Upcoming Event</p>
-					{totalUpcoming > 0 && (
+					{totalUpcoming > 1 && (
 						<Button
 							onClick={() => {
 								router.push("/user/events/upcoming");

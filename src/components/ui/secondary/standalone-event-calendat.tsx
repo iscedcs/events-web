@@ -115,24 +115,26 @@ export default function StandaloneCurrentMonthCalendar() {
 						const title = singleEvent.title;
 
 						return (
-							<Link
-								href={`/user/events/${link?.toLowerCase()}`}
-								key={i}
-								className="min-h-[36px] flex items-center justify-center px-3 py-2 rounded-full hover:bg-primary hover:text-white transition relative"
-								style={{
-									backgroundImage: bgImage
-										? `url(${bgImage})`
-										: undefined,
-									backgroundSize: "cover",
-									backgroundPosition: "center",
-									color: bgImage ? "white" : undefined,
-								}}
-							>
-								{bgImage && (
-									<div className="absolute inset-0 bg-black/70 rounded-full"></div>
-								)}
-								<span className="relative z-10">{day}</span>
-							</Link>
+							<div className=" relative">
+								<Image
+									src={bgImage!}
+									alt="image"
+									width={"1000"}
+									height={"1000"}
+									className=" left-0 top-0 absolute w-[200px]  rounded-full h-[45px] object-cover"
+								/>
+								<div className=" bg-black/75 left-0 top-0 absolute w-[48px]  rounded-full h-[45px]"></div>
+								<Link
+									href={`/user/events/${link?.toLowerCase()}`}
+									key={i}
+									className="min-h-[36px] flex items-center justify-center px-3 py-2 rounded-full hover:bg-primary hover:text-white transition relative"
+								>
+									{!bgImage && (
+										<div className="absolute inset-0 bg-black/70 rounded-full"></div>
+									)}
+									<span className="relative z-10">{day}</span>
+								</Link>
+							</div>
 						);
 					}
 
