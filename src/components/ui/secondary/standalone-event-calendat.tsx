@@ -116,14 +116,16 @@ export default function StandaloneCurrentMonthCalendar() {
 
 						return (
 							<div className=" relative">
-								<Image
-									src={bgImage!}
-									alt="image"
-									width={"1000"}
-									height={"1000"}
-									className=" left-0 top-0 absolute w-[200px]  rounded-full h-[45px] object-cover"
-								/>
-								<div className=" bg-black/75 left-0 top-0 absolute w-[48px]  rounded-full h-[45px]"></div>
+								<div className="  relative">
+									<Image
+										src={bgImage!}
+										alt="image"
+										width={"1000"}
+										height={"1000"}
+										className=" left-0 top-0 absolute w-full  rounded-full h-[45px] object-cover"
+									/>
+									<div className=" bg-black/75 left-0 top-0 absolute w-full  rounded-full h-[45px]"></div>
+								</div>
 								<Link
 									href={`/user/events/${link?.toLowerCase()}`}
 									key={i}
