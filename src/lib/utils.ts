@@ -159,3 +159,22 @@ export const formatDateForChat = (iso: string) => {
 
 	return format(new Date(iso), "PPPP");
 };
+
+export const combineDateAndTime = (date: string | Date, time: string) => {
+	const d = date instanceof Date ? new Date(date) : new Date(date);
+
+	// Example time: "12:00 AM" or "5:30 PM"
+	const [timePart, meridiem] = time.split(" ");
+	let [hours, minutes] = timePart.split(":").map(Number);
+
+	if (meridiem === "PM" && hours !== 12) {
+		hours += 12;
+	}
+
+	if (meridiem === "AM" && hours === 12) {
+		hours = 0;
+	}
+
+	d.setHours(hours, minutes, 0, 0);
+	return d;
+};

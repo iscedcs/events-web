@@ -1,10 +1,17 @@
 import { SingleEventProps } from "@/lib/types/event";
+import { combineDateAndTime } from "@/lib/utils";
 
 export function generateICS({ event }: { event: SingleEventProps }) {
-	const formatDate = (date: Date | string) => {
-		const d = date instanceof Date ? date : new Date(date);
-		return d.toISOString().replace(/[-:]|\.\d{3}/g, "");
-	};
+	const formatDate = (date: Date) =>
+		date.toISOString().replace(/[-:]|\.\d{3}/g, "");
+
+	const startDateTime = combineDateAndTime(event.startDate, event.time);
+
+	let endDateTime = combineDateAndTime(event.endDate, event.endTime);
+
+	if (endDateTime <= startDateTime) {
+		endDateTime.setDate(endDateTime.getDate() + 1);
+	}
 
 	return `
 BEGIN:VCALENDAR
@@ -13,16 +20,15 @@ PRODID:-//YourApp//EN
 BEGIN:VEVENT
 UID:${Date.now()}@yourapp.com
 DTSTAMP:${formatDate(new Date())}
-DTSTART:${formatDate(event.startDate)}
-DTEND:${formatDate(event.endDate)}
+DTSTART:${formatDate(startDateTime)}
+DTEND:${formatDate(endDateTime)}
 SUMMARY:${event.title}
-DESCRIPTION:${event.description}
+DESCRIPTION:${event.description.replace(/<[^>]+>/g, "")}
 LOCATION:${event.location}
 END:VEVENT
 END:VCALENDAR
 `.trim();
 }
-
 export const downloadICS = ({ event }: { event: SingleEventProps }) => {
 	const icsContent = generateICS({ event });
 	const blob = new Blob([icsContent], { type: "text/calendar" });
