@@ -1,4 +1,5 @@
 import { SingleEventProps } from "@/lib/types/event";
+import { combineDateAndTime } from "@/lib/utils";
 import React from "react";
 
 export default function googleCalendarUrl({
@@ -11,12 +12,16 @@ export default function googleCalendarUrl({
 		return d.toISOString().replace(/[-:]|\.\d{3}/g, "");
 	};
 
+	const startDateTime = combineDateAndTime(event.startDate, event.time);
+
+	const endDateTime = combineDateAndTime(event.endDate, event.endTime);
+
 	const params = new URLSearchParams({
 		action: "TEMPLATE",
 		text: event.title,
 		details: event.description,
 		location: event.location,
-		dates: `${formatDate(event.startDate)}/${formatDate(event.endDate)}`,
+		dates: `${formatDate(startDateTime)}/${formatDate(endDateTime)}`,
 	});
 
 	return `https://www.google.com/calendar/render?${params.toString()}`;
