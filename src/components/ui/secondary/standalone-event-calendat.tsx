@@ -115,7 +115,7 @@ export default function StandaloneCurrentMonthCalendar() {
 						const title = singleEvent.title;
 
 						return (
-							<div className=" relative">
+							<div key={i} className=" relative">
 								{bgImage && (
 									<div className="  relative">
 										<Image
