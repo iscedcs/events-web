@@ -17,6 +17,7 @@ import { getTicketsByEventID } from "../../../../../../../actions/tickets";
 import CloseRegistration from "./close-registration";
 import DeleteEvent from "./delete-event";
 import ShareButton from "./share-button";
+import QuickActionsCarousels from "./quick-actions-carousels";
 
 export default async function CreatorEvent({ slug }: { slug: string }) {
 	const formattedProps = encodeURIComponent(slug);
@@ -104,52 +105,12 @@ export default async function CreatorEvent({ slug }: { slug: string }) {
 					)}
 					{data?.event?.time && (
 						<p className=" text-accent text-[14px]">
-							{data?.event?.time}{" "}
-							{data.event.endTime && (
-								<p> - {data?.event?.endTime} </p>
-							)}{" "}
-							GMT +1
+							{data?.event?.time} - {data?.event?.endTime} GMT +1
 						</p>
 					)}
 				</div>
-				<div className=" rounded-[20px] px-[20px] py-[20px] my-[20px] bg-secondary">
-					{!extraInfo.isPublic ? (
-						<div className="">
-							<p className=" text-accent">
-								This event is a private event, share event link
-								to get more attendees
-							</p>
-						</div>
-					) : (
-						<div className="">
-							<p className=" text-accent">
-								This event is public!! Share the event link to
-								increase visibility and attendance.
-							</p>
-						</div>
-					)}
-					<ShareButton
-						url={`/event/${data?.event.cleanName}`}
-						eventTitle={data?.event.title}
-						text={data?.event.description}
-					/>
-				</div>
-				{(isSameDay(today, eventStartDate) ||
-					(!isAfter(eventEndDate, today) && isTime)) && (
-					<div className="">
-						<Button
-							asChild
-							className=" mt-[30px] flex flex-row items-center w-full rounded-[12px] font-semibold py-[24px]"
-						>
-							<Link
-								href={`/user/events/${data?.event.cleanName.toLowerCase()}/check-in`}
-							>
-								Begin Contactless Entry
-							</Link>
-						</Button>
-					</div>
-				)}
 
+				<QuickActionsCarousels extraInfo={extraInfo} />
 				<div className="">
 					<div className=" flex mt-[20px] items-center justify-between">
 						<p className=" text-[24px]">Tickets</p>
