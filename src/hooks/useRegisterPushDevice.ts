@@ -59,6 +59,7 @@ export function useRegisterPushDevice() {
 
 			// 6. Request FCM token
 			const fcmToken = await requestFcmToken(vapidKey);
+			console.log({ fcmToken });
 			if (!fcmToken) {
 				throw new Error("Failed to obtain FCM token");
 			}

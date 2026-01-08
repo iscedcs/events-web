@@ -14,6 +14,7 @@ import { getCurrentUser } from "../../../../../../../actions/auth";
 import { getEventsByCleanName } from "../../../../../../../actions/events";
 import { checkWatchList } from "../../../../../../../actions/watchlists";
 import BookmarkButton from "../../../../../ui/secondary/bookmark-button";
+import CalendarButton from "../calendar-button";
 import ClosedRegistration from "./closed-registration";
 import EventMapLocation from "./event-map-location";
 import EventRegistrationCTA from "./event-registration-cta";
@@ -145,11 +146,16 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 										<p className="text-[24px] capitalize">
 											{event.title.toLowerCase()}
 										</p>
-										<ShareButton
-											url={`/event/${event.cleanName}`}
-											description={event.description}
-											title={event.title}
-										/>
+										<div className=" flex flex-row gap-5 items-center">
+											<ShareButton
+												url={`/event/${event.cleanName}`}
+												description={event.description}
+												title={event.title}
+											/>
+											{check?.check && (
+												<CalendarButton event={event} />
+											)}
+										</div>
 									</div>
 									<div className=" flex justify-between items-center">
 										<div className=" flex mt-[10px] items-center gap-3">
@@ -201,9 +207,9 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 											<p className=" line-clamp-2 text-[16px] capitalize">
 												{event.location.toLowerCase()}
 											</p>
-											{/* <p className=" text-accent text-[14px] capitalize">
+											<p className=" text-accent text-[14px] capitalize">
 												{event.town.toLowerCase()}
-											</p> */}
+											</p>
 										</div>
 									</div>
 									{isAfter(now, startDate) ||
@@ -235,9 +241,9 @@ export default async function EventRegistration({ slug }: { slug: string }) {
 											<p className=" capitalize text-[16px]">
 												{event.location.toLowerCase()}
 											</p>
-											{/* <p className=" text-[12px] capitalize">
+											<p className=" text-[12px] capitalize">
 												{event.town.toLowerCase()}
-											</p> */}
+											</p>
 											<div className=" mt-[10px]">
 												<EventMapLocation
 													event={event}
